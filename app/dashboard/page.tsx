@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface Order {
   id: string;
@@ -37,10 +37,13 @@ function calcScore(
   phone: string,
   orders: Order[],
   blacklist: BlacklistEntry[],
+  excludeId?: string,
 ): { score: number; risk: Risk } {
   if (blacklist.some((b) => b.phone === phone))
     return { score: 0, risk: "HIGH" };
-  const count = orders.filter((o) => o.buyerPhone === phone).length;
+  const count = orders.filter(
+    (o) => o.buyerPhone === phone && o.id !== excludeId,
+  ).length;
   if (count === 0) return { score: 60, risk: "MEDIUM" };
   return { score: 85, risk: "LOW" };
 }
@@ -90,11 +93,11 @@ function Gauge({ score, risk }: { score: number; risk: Risk }) {
   );
 }
 
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+      className={`w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${className ?? ""}`}
     />
   );
 }
@@ -131,6 +134,8 @@ export default function Dashboard() {
   const [blPhone, setBlPhone] = useState("");
   const [blReason, setBlReason] = useState("");
 
+  const lastVerifiedRef = useRef("");
+
   function saveSellerName(name: string) {
     setSellerName(name);
     localStorage.setItem("ugzio_seller_name", name);
@@ -145,9 +150,10 @@ export default function Dashboard() {
 
   function handlePhoneChange(value: string) {
     setPhone(value);
-    setVerificationSent(false);
-    if (value.trim().length >= 8) {
-      sendWhatsAppVerification(value.trim());
+    const trimmed = value.trim();
+    if (trimmed.length >= 8 && trimmed !== lastVerifiedRef.current) {
+      lastVerifiedRef.current = trimmed;
+      sendWhatsAppVerification(trimmed);
     }
   }
 
@@ -175,6 +181,12 @@ export default function Dashboard() {
       setFormError("Invalid price");
       return;
     }
+    if (blacklist.some((b) => b.phone === phone.trim())) {
+      const ok = window.confirm(
+        "This buyer is BLACKLISTED.\n\nPlacing this order is HIGH RISK.\n\nContinue anyway?",
+      );
+      if (!ok) return;
+    }
 
     saveOrders([
       {
@@ -191,11 +203,13 @@ export default function Dashboard() {
       ...orders,
     ]);
     setSuccess(`Order placed for ${name}`);
+    setTimeout(() => setSuccess(""), 4000);
     setPhone("");
     setName("");
     setProduct("");
     setPrice("");
     setVerificationSent(false);
+    lastVerifiedRef.current = "";
   }
 
   function handleBlacklist(e: React.FormEvent) {
@@ -431,7 +445,7 @@ export default function Dashboard() {
             </div>
           ) : (
             orders.map((order) => {
-              const s = calcScore(order.buyerPhone, orders, blacklist);
+              const s = calcScore(order.buyerPhone, orders, blacklist, order.id);
               const m = META[s.risk];
               return (
                 <div

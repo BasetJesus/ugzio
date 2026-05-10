@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UGZIO - Darija AI Caption Generator",
+  title: "UGZIO — Social Commerce OS for Tunisian Sellers",
   description:
-    "Generate stunning captions in Moroccan Darija using AI. Perfect for Instagram, TikTok, and more.",
+    "AI caption generator in Tunisian Darija + seller dashboard with buyer trust scoring, order management, and blacklist protection.",
 };
 
 export default function RootLayout({
@@ -37,12 +37,9 @@ export default function RootLayout({
           >
             Captions
           </Link>
-          <Link
-            href="/"
-            className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-lg font-bold tracking-tight text-transparent"
-          >
+          <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-lg font-bold tracking-tight text-transparent">
             UGZIO
-          </Link>
+          </span>
           <Link
             href="/dashboard"
             className="text-sm font-medium text-zinc-500 transition hover:text-zinc-200"
