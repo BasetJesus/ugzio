@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import CaptionGenerator from "../components/CaptionGenerator";
+import { useLanguage } from "../context/LanguageContext";
 
 interface Order {
   id: string;
@@ -20,14 +22,8 @@ interface BlacklistEntry {
   addedAt: number;
 }
 
-type Tab = "new-order" | "orders" | "blacklist";
+type Tab = "new-order" | "orders" | "blacklist" | "captions";
 type Risk = "LOW" | "MEDIUM" | "HIGH";
-
-const TABS: { id: Tab; label: string }[] = [
-  { id: "new-order", label: "New Order" },
-  { id: "orders", label: "Orders" },
-  { id: "blacklist", label: "Blacklist" },
-];
 
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -48,10 +44,10 @@ function calcScore(
   return { score: 85, risk: "LOW" };
 }
 
-const META = {
-  LOW: { bg: "bg-green-500/15", text: "text-green-400", bar: "bg-green-500", label: "LOW RISK" },
-  MEDIUM: { bg: "bg-orange-500/15", text: "text-orange-400", bar: "bg-orange-500", label: "MEDIUM RISK" },
-  HIGH: { bg: "bg-red-500/15", text: "text-red-400", bar: "bg-red-500", label: "HIGH RISK" },
+const META: Record<Risk, { bg: string; text: string; bar: string; labelKey: string }> = {
+  LOW: { bg: "bg-green-500/15", text: "text-green-400", bar: "bg-green-500", labelKey: "risk.low-long" },
+  MEDIUM: { bg: "bg-orange-500/15", text: "text-orange-400", bar: "bg-orange-500", labelKey: "risk.medium-long" },
+  HIGH: { bg: "bg-red-500/15", text: "text-red-400", bar: "bg-red-500", labelKey: "risk.high-long" },
 };
 
 const COLORS: Record<Risk, string> = {
@@ -112,13 +108,16 @@ function loadFrom<T>(key: string): T[] {
   }
 }
 
+const TAB_IDS: Tab[] = ["new-order", "orders", "blacklist", "captions"];
+
 export default function Dashboard() {
+  const { t, lang, setLang } = useLanguage();
   const [tab, setTab] = useState<Tab>("new-order");
   const [orders, setOrders] = useState<Order[]>(() => loadFrom<Order>("ugzio_orders"));
   const [blacklist, setBlacklist] = useState<BlacklistEntry[]>(() => loadFrom<BlacklistEntry>("ugzio_blacklist"));
 
   const [sellerName, setSellerName] = useState(() => {
-    if (typeof window === "undefined") return "Seller";
+    if (typeof window === "undefined") return "Moncef";
     return localStorage.getItem("ugzio_seller_name") || "Moncef";
   });
   const [editingName, setEditingName] = useState(false);
@@ -173,18 +172,16 @@ export default function Dashboard() {
     setSuccess("");
 
     if (!phone.trim() || !name.trim() || !product.trim() || !price.trim()) {
-      setFormError("All fields are required");
+      setFormError(t("order.error.required"));
       return;
     }
     const p = parseFloat(price);
     if (isNaN(p) || p <= 0) {
-      setFormError("Invalid price");
+      setFormError(t("order.error.price"));
       return;
     }
     if (blacklist.some((b) => b.phone === phone.trim())) {
-      const ok = window.confirm(
-        "This buyer is BLACKLISTED.\n\nPlacing this order is HIGH RISK.\n\nContinue anyway?",
-      );
+      const ok = window.confirm(t("order.error.blacklist"));
       if (!ok) return;
     }
 
@@ -202,7 +199,7 @@ export default function Dashboard() {
       },
       ...orders,
     ]);
-    setSuccess(`Order placed for ${name}`);
+    setSuccess(`${t("order.success")} ${name}`);
     setTimeout(() => setSuccess(""), 4000);
     setPhone("");
     setName("");
@@ -253,32 +250,55 @@ export default function Dashboard() {
   const verificationRate = orders.length > 0 ? Math.round((verifiedCount / orders.length) * 100) : 0;
 
   const cards = [
-    { label: "Orders Today", value: todayOrders.length, color: "text-purple-400", icon: "M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" },
-    { label: "Revenue Today", value: `${todayRevenue.toFixed(3)} TND`, color: "text-emerald-400", icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "High Risk Orders", value: highRiskCount, color: highRiskCount > 0 ? "text-red-400" : "text-zinc-500", icon: "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" },
-    { label: "Verification Rate", value: `${verificationRate}%`, color: "text-sky-400", icon: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { labelKey: "kpi.orders-today", value: todayOrders.length, color: "text-purple-400", icon: "M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" },
+    { labelKey: "kpi.revenue-today", value: `${todayRevenue.toFixed(3)} TND`, color: "text-emerald-400", icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { labelKey: "kpi.high-risk", value: highRiskCount, color: highRiskCount > 0 ? "text-red-400" : "text-zinc-500", icon: "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" },
+    { labelKey: "kpi.verification-rate", value: `${verificationRate}%`, color: "text-sky-400", icon: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <header className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Seller Dashboard</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Order intake & buyer risk scoring
-        </p>
+      <header className="relative mb-8 text-center">
+        <div className="absolute right-0 top-0 flex gap-1">
+          <button
+            onClick={() => setLang("ar")}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              lang === "ar"
+                ? "bg-purple-600/20 text-purple-300"
+                : "text-zinc-600 hover:text-zinc-400"
+            }`}
+          >
+            العربية
+          </button>
+          <button
+            onClick={() => setLang("fr")}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              lang === "fr"
+                ? "bg-purple-600/20 text-purple-300"
+                : "text-zinc-600 hover:text-zinc-400"
+            }`}
+          >
+            Français
+          </button>
+        </div>
+        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+          <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
+            UGZIO
+          </span>
+        </h1>
       </header>
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {cards.map((c) => (
           <div
-            key={c.label}
+            key={c.labelKey}
             className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 transition hover:border-zinc-700"
           >
             <div className="mb-2 flex items-center gap-2">
               <svg className="h-4 w-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={c.icon} />
               </svg>
-              <span className="text-xs font-medium text-zinc-500">{c.label}</span>
+              <span className="text-xs font-medium text-zinc-500">{t(c.labelKey)}</span>
             </div>
             <p className={`text-xl font-bold tracking-tight ${c.color}`}>
               {c.value}
@@ -288,17 +308,17 @@ export default function Dashboard() {
       </div>
 
       <div className="mb-8 flex justify-center gap-2">
-        {TABS.map((t) => (
+        {TAB_IDS.map((id) => (
           <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
+            key={id}
+            onClick={() => setTab(id)}
             className={`rounded-full px-5 py-2 text-sm font-medium transition ${
-              tab === t.id
+              tab === id
                 ? "bg-purple-600 text-white shadow-lg shadow-purple-600/25"
                 : "border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700"
             }`}
           >
-            {t.label}
+            {t(`tab.${id}`)}
           </button>
         ))}
       </div>
@@ -310,12 +330,12 @@ export default function Dashboard() {
             className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6"
           >
             <h2 className="text-lg font-semibold text-zinc-200">
-              Order Intake
+              {t("order.title")}
             </h2>
 
             <div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/30 px-4 py-2.5">
               <span className="text-xs font-medium text-zinc-500">
-                Merchant:
+                {t("order.merchant")}
               </span>
               {editingName ? (
                 <input
@@ -342,20 +362,20 @@ export default function Dashboard() {
 
             <div>
               <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-                Buyer Phone
+                {t("order.buyer-phone")}
               </label>
               <Input
                 type="tel"
                 value={phone}
                 onChange={(e) => handlePhoneChange(e.target.value)}
-                placeholder="e.g. +216 XX XXX XXX"
+                placeholder={t("order.phone-placeholder")}
               />
               {phone.trim().length >= 8 && (
                 <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-emerald-400">
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
-                  Verification sent to {phone.trim()}
+                  {t("order.verification-sent")} {phone.trim()}
                 </p>
               )}
             </div>
@@ -365,12 +385,12 @@ export default function Dashboard() {
                 <Gauge score={trust.score} risk={trust.risk} />
                 <div>
                   <p className={`text-sm font-semibold ${meta.text}`}>
-                    {meta.label}
+                    {t(meta.labelKey)}
                   </p>
-                  <p className="text-xs text-zinc-500">Buyer trust score</p>
+                  <p className="text-xs text-zinc-500">{t("risk.buyer-score")}</p>
                   {trust.risk === "HIGH" && (
                     <p className="mt-1 text-xs font-semibold text-red-400">
-                      This buyer is blacklisted &mdash; DO NOT FULFILL
+                      {t("risk.blacklisted-warn")}
                     </p>
                   )}
                 </div>
@@ -380,18 +400,18 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-                  Buyer Name
+                  {t("order.buyer-name")}
                 </label>
                 <Input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Full name"
+                  placeholder={t("order.name-placeholder")}
                 />
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-                  Price (TND)
+                  {t("order.price")}
                 </label>
                 <Input
                   type="number"
@@ -406,13 +426,13 @@ export default function Dashboard() {
 
             <div>
               <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-                Product
+                {t("order.product")}
               </label>
               <Input
                 type="text"
                 value={product}
                 onChange={(e) => setProduct(e.target.value)}
-                placeholder="e.g. 3abia, zeyt zitoun, m3aqroun"
+                placeholder={t("order.product-placeholder")}
               />
             </div>
 
@@ -431,7 +451,7 @@ export default function Dashboard() {
               type="submit"
               className="w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-500"
             >
-              Place Order
+              {t("order.place")}
             </button>
           </form>
         </div>
@@ -441,7 +461,7 @@ export default function Dashboard() {
         <div className="space-y-4">
           {orders.length === 0 ? (
             <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
-              <p className="text-zinc-500">No orders yet</p>
+              <p className="text-zinc-500">{t("orders.empty")}</p>
             </div>
           ) : (
             orders.map((order) => {
@@ -470,7 +490,7 @@ export default function Dashboard() {
                     <div className="flex shrink-0 flex-col items-end gap-1.5">
                       {order.ugcRequested && (
                         <span className="rounded-full bg-pink-500/15 px-2.5 py-0.5 text-xs font-medium text-pink-400">
-                          UGC Requested
+                          {t("orders.ugc-requested")}
                         </span>
                       )}
                       {!order.ugcRequested && order.delivered && (
@@ -478,12 +498,12 @@ export default function Dashboard() {
                           onClick={() => requestUgc(order)}
                           className="rounded-full bg-pink-600/20 px-2.5 py-0.5 text-xs font-medium text-pink-400 transition hover:bg-pink-600/40"
                         >
-                          Request UGC
+                          {t("orders.request-ugc")}
                         </button>
                       )}
                       {order.delivered && (
                         <span className="rounded-full bg-blue-500/15 px-2.5 py-0.5 text-xs font-medium text-blue-400">
-                          Delivered
+                          {t("orders.delivered")}
                         </span>
                       )}
                       {!order.delivered && order.verified && (
@@ -491,12 +511,12 @@ export default function Dashboard() {
                           onClick={() => markDelivered(order.id)}
                           className="rounded-full bg-blue-600/20 px-2.5 py-0.5 text-xs font-medium text-blue-400 transition hover:bg-blue-600/40"
                         >
-                          Mark Delivered
+                          {t("orders.mark-delivered")}
                         </button>
                       )}
                       {order.verified && (
                         <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                          ✓ Verified
+                          {t("orders.verified")}
                         </span>
                       )}
                       <div className="flex items-center gap-1.5">
@@ -534,27 +554,27 @@ export default function Dashboard() {
               type="tel"
               value={blPhone}
               onChange={(e) => setBlPhone(e.target.value)}
-              placeholder="Phone number to blacklist"
+              placeholder={t("bl.phone-placeholder")}
               className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
             />
             <Input
               type="text"
               value={blReason}
               onChange={(e) => setBlReason(e.target.value)}
-              placeholder="Reason (optional)"
+              placeholder={t("bl.reason-placeholder")}
               className="min-w-[140px] flex-1 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
             />
             <button
               type="submit"
               className="rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-500"
             >
-              Blacklist
+              {t("bl.add")}
             </button>
           </form>
 
           {blacklist.length === 0 ? (
             <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
-              <p className="text-zinc-500">No blacklisted numbers</p>
+              <p className="text-zinc-500">{t("bl.empty")}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -580,7 +600,7 @@ export default function Dashboard() {
                     onClick={() => removeBlacklist(entry.phone)}
                     className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:bg-zinc-800 hover:text-red-400"
                   >
-                    Remove
+                    {t("bl.remove")}
                   </button>
                 </div>
               ))}
@@ -588,6 +608,8 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      {tab === "captions" && <CaptionGenerator />}
     </div>
   );
 }

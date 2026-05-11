@@ -1,0 +1,323 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── BILLING ─────────────────────────────────────────────────────────────────
+
+model Plan {
+  id                   String         @id @default(cuid())
+  name                 String         @unique // starter|grower|pro|scale
+  maxOrdersPerMonth    Int
+  maxUsersPerOrg       Int
+  hasZioConfirm        Boolean        @default(false)
+  hasZioBrain          Boolean        @default(false)
+  hasZioConnect        Boolean        @default(false)
+  hasZioFlow           Boolean        @default(false)
+  hasZioNetwork        Boolean        @default(false)
+  aiInsightsPerMonth   Int            @default(0)
+  verificationsPerMonth Int           @default(0)
+  price                Float
+  currency             String         @default("TND")
+  subscriptions        Subscription[]
+}
+
+model Subscription {
+  id                   String       @id @default(cuid())
+  organizationId       String       @unique
+  organization         Organization @relation(fields: [organizationId], references: [id])
+  planId               String
+  plan                 Plan         @relation(fields: [planId], references: [id])
+  status               String       // active|past_due|canceled|trialing
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  stripeSubscriptionId String?
+  konnectSubscriptionId String?
+  canceledAt           DateTime?
+  createdAt            DateTime     @default(now())
+}
+
+model UsageMeter {
+  id                    String       @id @default(cuid())
+  organizationId        String
+  organization          Organization @relation(fields: [organizationId], references: [id])
+  periodStart           DateTime
+  periodEnd             DateTime
+  ordersProcessed       Int          @default(0)
+  aiInsightsGenerated   Int          @default(0)
+  verificationsSent     Int          @default(0)
+  aiTokensUsed          Int          @default(0)
+  ordersLimit           Int
+  aiInsightsLimit       Int
+  verificationsLimit    Int
+  createdAt             DateTime     @default(now())
+}
+
+// ─── FEATURE FLAGS (v3, Sprint 1) ────────────────────────────────────────────
+
+model FeatureFlag {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  enabled        Boolean  @default(false)
+  rolloutPercent Int      @default(0)
+  planGate       String?
+  description    String
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── ORGANIZATION & USERS ────────────────────────────────────────────────────
+
+model Organization {
+  id                String             @id @default(cuid())
+  name              String
+  slug              String             @unique
+  subscription      Subscription?
+  usageMeters       UsageMeter[]
+  orders            Order[]
+  automationRules   AutomationRule[]
+  workflowExecutions WorkflowExecution[]
+  conversations     Conversation[]
+  members           OrganizationMember[]
+  webhookLogs       WebhookLog[]
+  aiEvaluations     AIEvaluation[]
+  deletionRequests  BuyerDeletionRequest[]
+  createdAt         DateTime           @default(now())
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  role           String       // owner|admin|member
+  createdAt      DateTime     @default(now())
+  @@unique([organizationId, userId])
+}
+
+model User {
+  id            String               @id @default(cuid())
+  email         String               @unique
+  name          String?
+  password      String?
+  image         String?
+  memberships   OrganizationMember[]
+  createdAt     DateTime             @default(now())
+}
+
+// ─── ORDERS & BUYERS ─────────────────────────────────────────────────────────
+
+model BuyerIdentity {
+  id               String   @id @default(cuid())
+  anonymizedId     String   @unique
+  riskScore        Float    @default(50)
+  networkMlScore   Float    @default(50)
+  totalOrders      Int      @default(0)
+  failedOrders     Int      @default(0)
+  successfulOrders Int      @default(0)
+  blacklistedCount Int      @default(0)
+  updatedAt        DateTime @updatedAt
+}
+
+model Order {
+  id                 String               @id @default(cuid())
+  organizationId     String
+  organization       Organization         @relation(fields: [organizationId], references: [id])
+  buyerName          String
+  buyerPhone         String
+  buyerWilaya        String?
+  buyerAddress       String?
+  amount             Float
+  currency           String               @default("TND")
+  riskLevel          String               @default("medium")
+  trustScore         Int                  @default(50)
+  mlScore            Float?
+  status             String               @default("pending")
+  verificationStatus String               @default("none")
+  deletedAt          DateTime?
+  createdAt          DateTime             @default(now())
+  conversations      Conversation[]
+  rawFeatures        RawOrderFeatures?
+  outcome            OrderOutcome?
+  workflowExecutions WorkflowExecution[]
+}
+
+// ─── WEBHOOK IDEMPOTENCY (v3) ─────────────────────────────────────────────────
+
+model WebhookLog {
+  id              String       @id @default(cuid())
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  provider        String
+  eventType       String
+  eventId         String       @unique
+  payload         String
+  signature       String
+  processed       Boolean      @default(false)
+  receivedAt      DateTime     @default(now())
+}
+
+// ─── WORKFLOW AUTOMATION ──────────────────────────────────────────────────────
+
+model AutomationRule {
+  id                    String             @id @default(cuid())
+  organizationId        String
+  organization          Organization       @relation(fields: [organizationId], references: [id])
+  name                  String
+  enabled               Boolean            @default(true)
+  trigger               String
+  conditions            String             @default("[]")
+  actions               String             @default("[]")
+  priority              Int                @default(0)
+  maxExecutionsPerHour  Int                @default(10)
+  executionCount        Int                @default(0)
+  lastTriggeredAt       DateTime?
+  createdAt             DateTime           @default(now())
+  executions            WorkflowExecution[]
+}
+
+model WorkflowExecution {
+  id               String         @id @default(cuid())
+  automationRuleId String
+  automationRule   AutomationRule @relation(fields: [automationRuleId], references: [id])
+  organizationId   String
+  organization     Organization   @relation(fields: [organizationId], references: [id])
+  orderId          String?
+  order            Order?         @relation(fields: [orderId], references: [id])
+  triggeredBy      String
+  eventPayload     String
+  conditionsMatched Boolean
+  actionsDispatched String
+  status           String         @default("queued")
+  errorMessage     String?
+  executedAt       DateTime       @default(now())
+  completedAt      DateTime?
+}
+
+// ─── ZIOINBOX ────────────────────────────────────────────────────────────────
+
+model Conversation {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  orderId        String?
+  order          Order?       @relation(fields: [orderId], references: [id])
+  buyerPhone     String
+  messages       Message[]
+  notes          InternalNote[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  direction      String       // inbound|outbound
+  content        String
+  channel        String       // whatsapp|sms
+  status         String       // sent|delivered|read|failed
+  createdAt      DateTime     @default(now())
+}
+
+model InternalNote {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  content        String
+  authorId       String
+  createdAt      DateTime     @default(now())
+}
+
+// ─── ML TRAINING PIPELINE (v3, Sprint 1) ─────────────────────────────────────
+
+model RawOrderFeatures {
+  id                        String   @id @default(cuid())
+  orderId                   String   @unique
+  order                     Order    @relation(fields: [orderId], references: [id])
+  phoneAgeDays              Int?
+  codHistoryCount           Int?
+  failedDeliveryRate        Float?
+  blacklistCount            Int?
+  orderValueZscore          Float?
+  timeOfDay                 Int?
+  verificationResponseTimeS Int?
+  networkMlScore            Float?
+  featureSchemaVersion      String   @default("v1")
+  capturedAt                DateTime @default(now())
+}
+
+model OrderOutcome {
+  id             String   @id @default(cuid())
+  orderId        String   @unique
+  order          Order    @relation(fields: [orderId], references: [id])
+  organizationId String
+  outcome        String   // DELIVERED|RETURNED|REFUSED|DISPUTED
+  labelSource    String   // WEBHOOK|SELLER|INFERRED
+  labelWeight    Float    @default(1.0)
+  confirmedAt    DateTime @default(now())
+}
+
+model MLModelVersion {
+  id               String   @id @default(cuid())
+  modelName        String
+  artifactPath     String
+  trainingRows     Int
+  accuracy         Float
+  f1Score          Float
+  aucRoc           Float
+  featureImportance String
+  status           String   @default("shadow")
+  promotedAt       DateTime?
+  createdAt        DateTime @default(now())
+}
+
+model DatasetVersion {
+  id            String   @id @default(cuid())
+  rowCount      Int
+  labeledRows   Int
+  dateRange     String
+  exportPath    String
+  featureSchema String
+  createdAt     DateTime @default(now())
+}
+
+// ─── AI EVALUATION (v3) ──────────────────────────────────────────────────────
+
+model AIEvaluation {
+  id                  String       @id @default(cuid())
+  organizationId      String
+  organization        Organization @relation(fields: [organizationId], references: [id])
+  insightId           String
+  recommendationType  String
+  wasActedOn          Boolean      @default(false)
+  sellerRating        Int?
+  outcomeAfter14d     String?
+  evaluatedAt         DateTime     @default(now())
+}
+
+// ─── COMPLIANCE (v3) ─────────────────────────────────────────────────────────
+
+model BuyerDeletionRequest {
+  id             String       @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  requestedPhone String
+  requestedAt    DateTime     @default(now())
+  status         String       @default("pending")
+  completedAt    DateTime?
+  orgsAffected   Int          @default(0)
+  requestSource  String       // seller|buyer_self|legal
+}
+
+model DataProcessingAgreement {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  version        String
+  signedAt       DateTime @default(now())
+  signedByUserId String
+}
