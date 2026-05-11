@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { handleConfirmButton } from "@/lib/zioconfirm/service";
 import { handleIncomingMedia } from "@/lib/ugc/service";
 
-async function processMessage(message: Record<string, unknown>) {
+async function processMessage(message: Record<string, unknown>, phoneNumberId?: string) {
   const type = message.type as string;
   const from = message.from as string;
 
