@@ -54,7 +54,7 @@ async function processMessage(message: Record<string, unknown>, phoneNumberId?: 
     case "text": {
       const textObj = message.text as Record<string, unknown> | undefined;
       const textBody = textObj?.body as string;
-      console.log(`[WebhookWorker] Text from ${from}: ${textBody}`);
+      console.log(`[WebhookWorker] Text from ${from}: ${textBody}`, phoneNumberId ? `(phone: ${phoneNumberId})` : "");
       break;
     }
   }
