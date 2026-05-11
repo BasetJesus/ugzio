@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     data: { organizationId: org.id, userId: user.id, role: "owner" },
   });
 
-  const plan = await prisma.plan.findUnique({ where: { name: "starter" } });
+  const plan = await prisma.plan.findUnique({ where: { name: "free" } });
   if (plan) {
     await prisma.subscription.create({
       data: {

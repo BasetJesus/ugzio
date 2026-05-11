@@ -1,18 +1,21 @@
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
+import { startWebhookWorker } from "@/lib/events/webhook-worker";
+import { executeTimelineMessage } from "@/lib/zioconfirm/service";
 
 const redis = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
   maxRetriesPerRequest: null,
 });
 
-const worker = new Worker(
+// ── Critical events worker ──
+
+const criticalWorker = new Worker(
   "critical-events",
   async (job) => {
     console.log(`[Worker] Processing ${job.name}:`, job.data);
 
     switch (job.name) {
       case "ORDER_CREATED":
-        // Forward to Python service for feature extraction
         try {
           await fetch("http://localhost:8000/consumers/order-created", {
             method: "POST",
@@ -31,7 +34,75 @@ const worker = new Worker(
   { connection: redis },
 );
 
-worker.on("completed", (job) => console.log(`[Worker] Job ${job.id} completed`));
-worker.on("failed", (job, err) => console.error(`[Worker] Job ${job?.id} failed:`, err));
+criticalWorker.on("completed", (job) => console.log(`[Worker] Critical ${job.id} completed`));
+criticalWorker.on("failed", (job, err) => console.error(`[Worker] Critical ${job?.id} failed:`, err));
 
-console.log("[Worker] BullMQ worker started");
+// ── Scheduled messages worker ──
+
+const messageWorker = new Worker(
+  "scheduled-messages",
+  async (job) => {
+    console.log(`[MessageWorker] Processing ${job.name}:`, job.data);
+    const { orderId } = job.data as { orderId: string };
+    await executeTimelineMessage(job.name, orderId);
+  },
+  { connection: redis },
+);
+
+messageWorker.on("completed", (job) => console.log(`[MessageWorker] Job ${job.id} completed`));
+messageWorker.on("failed", (job, err) => console.error(`[MessageWorker] Job ${job?.id} failed:`, err));
+
+// ── WhatsApp outbound worker ──
+
+const whatsappWorker = new Worker(
+  "whatsapp-outbound",
+  async (job) => {
+    console.log(`[WhatsAppWorker] Sending message:`, job.data);
+    const { to, type, content } = job.data as {
+      to: string;
+      type: "text" | "interactive" | "media";
+      content: unknown;
+    };
+
+    const { sendText, sendButtons, sendMedia } = await import("@/lib/whatsapp/client");
+
+    switch (type) {
+      case "text":
+        await sendText(to, (content as { body: string }).body);
+        break;
+      case "interactive":
+        await sendButtons(
+          to,
+          (content as { body: string; buttons: { id: string; title: string }[] }).body,
+          (content as { buttons: { id: string; title: string }[] }).buttons,
+        );
+        break;
+      case "media":
+        await sendMedia(
+          to,
+          (content as { url: string }).url,
+          (content as { mediaType: "image" | "video" }).mediaType,
+        );
+        break;
+    }
+  },
+  { connection: redis },
+);
+
+whatsappWorker.on("completed", (job) => console.log(`[WhatsAppWorker] Job ${job.id} completed`));
+whatsappWorker.on("failed", (job, err) => console.error(`[WhatsAppWorker] Job ${job?.id} failed:`, err));
+
+// ── Start webhook worker ──
+
+const webhookWorker = startWebhookWorker();
+
+console.log("[Worker] All workers started");
+
+// Graceful shutdown
+process.on("SIGTERM", async () => {
+  await criticalWorker.close();
+  await messageWorker.close();
+  await whatsappWorker.close();
+  await webhookWorker.close();
+  await redis.quit();
+});

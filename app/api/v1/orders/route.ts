@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib/zioconfirm/service";
+import { computeAndAlert } from "@/lib/zioshield/scoring";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const orgId = searchParams.get("orgId");
-  if (!orgId) return NextResponse.json({ error: "orgId required" }, { status: 400 });
+export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const orgId = await getOrgFromUserId(session.user.id);
+  if (!orgId) {
+    return NextResponse.json({ error: "No organization" }, { status: 400 });
+  }
 
   const orders = await prisma.order.findMany({
     where: { organizationId: orgId, deletedAt: null },
@@ -17,21 +28,57 @@ export async function GET(request: NextRequest) {
       id: o.id,
       buyerName: o.buyerName,
       buyerPhone: o.buyerPhone,
+      product: o.product,
       amount: Number(o.amount),
       riskLevel: o.riskLevel,
       trustScore: o.trustScore,
       status: o.status,
-      verificationStatus: o.verificationStatus,
       createdAt: o.createdAt.toISOString(),
     })),
   );
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const orgId = await getOrgFromUserId(session.user.id);
+  if (!orgId) {
+    return NextResponse.json({ error: "No organization" }, { status: 400 });
+  }
+
+  const org = await prisma.organization.findUnique({ where: { id: orgId } });
+  if (!org) {
+    return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+  }
+
   const body = await request.json();
-  const { orgId, buyerName, buyerPhone, amount } = body;
-  if (!orgId || !buyerName || !buyerPhone || amount == null) {
-    return NextResponse.json({ error: "orgId, buyerName, buyerPhone, amount required" }, { status: 400 });
+  const { buyerName, buyerPhone, product, amount } = body;
+
+  if (!buyerName || !buyerPhone || amount == null) {
+    return NextResponse.json(
+      { error: "buyerName, buyerPhone, and amount are required" },
+      { status: 400 },
+    );
+  }
+
+  if (org.subscriptionStatus === "free") {
+    const monthlyCount = await prisma.order.count({
+      where: {
+        organizationId: orgId,
+        createdAt: {
+          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        },
+      },
+    });
+    if (monthlyCount >= org.maxOrdersPerMonth) {
+      return NextResponse.json(
+        { error: "Limite mensuelle atteinte. Passe à Croissance (129 TND/mois)." },
+        { status: 403 },
+      );
+    }
   }
 
   const order = await prisma.order.create({
@@ -39,9 +86,22 @@ export async function POST(request: NextRequest) {
       organizationId: orgId,
       buyerName,
       buyerPhone,
+      product: product ?? null,
       amount: Number(amount),
+      status: "CREATED",
     },
   });
 
-  return NextResponse.json(order, { status: 201 });
+  await computeAndAlert(buyerPhone, orgId, buyerName, order.id);
+
+  await schedulePsychologicalSequence(order.id);
+
+  const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+  await schedulePreDeliveryConfirm(order.id, estimatedDelivery);
+
+  return NextResponse.json({
+    id: order.id,
+    status: order.status,
+    createdAt: order.createdAt.toISOString(),
+  }, { status: 201 });
 }

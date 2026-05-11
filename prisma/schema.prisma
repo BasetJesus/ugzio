@@ -85,6 +85,11 @@ model Organization {
   webhookLogs       WebhookLog[]
   aiEvaluations     AIEvaluation[]
   deletionRequests  BuyerDeletionRequest[]
+  maxOrdersPerMonth  Int                @default(3)
+  subscriptionStatus String            @default("free")  // free|croissance
+  ordersThisMonth   Int                @default(0)
+  sellerPhone       String?
+  sellerName        String?
   createdAt         DateTime           @default(now())
 }
 
@@ -123,27 +128,55 @@ model BuyerIdentity {
   updatedAt        DateTime @updatedAt
 }
 
+// Canonical status values:
+// CREATED | PRE_SHIPPING_CONFIRM_SENT | BUYER_CONFIRMED | SHIPPED | DELIVERED
+// UGC_REQUESTED | UGC_RECEIVED | INTELLIGENT_CANCEL | PENDING_RESCHEDULE | REFUSED
 model Order {
   id                 String               @id @default(cuid())
   organizationId     String
   organization       Organization         @relation(fields: [organizationId], references: [id])
   buyerName          String
   buyerPhone         String
+  product            String?
   buyerWilaya        String?
   buyerAddress       String?
   amount             Float
   currency           String               @default("TND")
-  riskLevel          String               @default("medium")
-  trustScore         Int                  @default(50)
+  riskLevel          String               @default("medium")    // low|medium|high
+  trustScore         Int                  @default(50)          // 0-100
   mlScore            Float?
-  status             String               @default("pending")
-  verificationStatus String               @default("none")
+  status             String               @default("CREATED")
+  verificationStatus String               @default("none")     // deprecated, use status
   deletedAt          DateTime?
   createdAt          DateTime             @default(now())
   conversations      Conversation[]
   rawFeatures        RawOrderFeatures?
   outcome            OrderOutcome?
   workflowExecutions WorkflowExecution[]
+  timeline           MessageTimelineEntry[]
+  ugcItems           UgcItem[]
+}
+
+model MessageTimelineEntry {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id])
+  eventType    String   // anticipation|social_proof|visual_ownership|pre_delivery_confirm|d3_ugc_ask
+  scheduledFor DateTime
+  sentAt       DateTime?
+  status       String   @default("scheduled") // scheduled|sent|failed
+  createdAt    DateTime @default(now())
+}
+
+model UgcItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  mediaUrl   String
+  mediaType  String   // image|video
+  buyerPhone String
+  status     String   @default("received") // received|approved|rejected
+  createdAt  DateTime @default(now())
 }
 
 // ─── WEBHOOK IDEMPOTENCY (v3) ─────────────────────────────────────────────────

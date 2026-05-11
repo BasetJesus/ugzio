@@ -3,13 +3,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  // ── Plans ──
-  const starter = await prisma.plan.upsert({
-    where: { name: "starter" },
+  // ── Plans (MVP) ──
+  const free = await prisma.plan.upsert({
+    where: { name: "free" },
     update: {},
     create: {
-      name: "starter",
-      maxOrdersPerMonth: 50,
+      name: "free",
+      maxOrdersPerMonth: 3,
       maxUsersPerOrg: 1,
       hasZioConfirm: true,
       hasZioBrain: false,
@@ -17,70 +17,32 @@ async function main() {
       hasZioFlow: false,
       hasZioNetwork: false,
       aiInsightsPerMonth: 0,
-      verificationsPerMonth: 50,
+      verificationsPerMonth: 3,
       price: 0,
       currency: "TND",
     },
   });
 
-  const grower = await prisma.plan.upsert({
-    where: { name: "grower" },
+  const croissance = await prisma.plan.upsert({
+    where: { name: "croissance" },
     update: {},
     create: {
-      name: "grower",
-      maxOrdersPerMonth: 200,
+      name: "croissance",
+      maxOrdersPerMonth: 99999,
       maxUsersPerOrg: 3,
       hasZioConfirm: true,
       hasZioBrain: true,
       hasZioConnect: false,
       hasZioFlow: false,
       hasZioNetwork: false,
-      aiInsightsPerMonth: 100,
-      verificationsPerMonth: 200,
-      price: 29,
-      currency: "TND",
-    },
-  });
-
-  const pro = await prisma.plan.upsert({
-    where: { name: "pro" },
-    update: {},
-    create: {
-      name: "pro",
-      maxOrdersPerMonth: 1000,
-      maxUsersPerOrg: 10,
-      hasZioConfirm: true,
-      hasZioBrain: true,
-      hasZioConnect: true,
-      hasZioFlow: true,
-      hasZioNetwork: false,
-      aiInsightsPerMonth: 500,
-      verificationsPerMonth: 1000,
-      price: 79,
-      currency: "TND",
-    },
-  });
-
-  const scale = await prisma.plan.upsert({
-    where: { name: "scale" },
-    update: {},
-    create: {
-      name: "scale",
-      maxOrdersPerMonth: 99999,
-      maxUsersPerOrg: 99999,
-      hasZioConfirm: true,
-      hasZioBrain: true,
-      hasZioConnect: true,
-      hasZioFlow: true,
-      hasZioNetwork: true,
-      aiInsightsPerMonth: 5000,
+      aiInsightsPerMonth: 99999,
       verificationsPerMonth: 99999,
-      price: 199,
+      price: 129,
       currency: "TND",
     },
   });
 
-  console.log("Seeded plans:", { starter, grower, pro, scale });
+  console.log("Seeded plans:", { free, croissance });
 
   // ── Feature Flags ──
   const flags = [

@@ -6,10 +6,9 @@ import { getOrgFromUserId } from "@/lib/billing/enforce";
 import Link from "next/link";
 
 const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/orders", label: "Orders" },
-  { href: "/shield", label: "ZioShield" },
-  { href: "/confirm", label: "Confirm" },
+  { href: "/", label: "Tableau de Bord" },
+  { href: "/orders", label: "Commandes" },
+  { href: "/orders/new", label: "+ Nouvelle" },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

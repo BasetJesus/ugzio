@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { alertSeller, highRiskAlert } from "@/lib/alerts/seller";
 
 interface ScoreResult {
   score: number;
@@ -6,56 +7,73 @@ interface ScoreResult {
   signals: string[];
 }
 
+const WEIGHTS = {
+  replyDelayMinutes: (delay: number) => (delay > 20 ? 30 : 0),
+  changedAddress: (changed: boolean) => (changed ? 20 : 0),
+  noConfirmIn6h: (expired: boolean) => (expired ? 35 : 0),
+  hesitationMessages: (count: number) => (count > 2 ? 15 : 0),
+  firstTimeOrder: (isFirst: boolean) => (isFirst ? 10 : 0),
+};
+
 export async function computeScore(
   phone: string,
   orgId: string,
   excludeOrderId?: string,
 ): Promise<ScoreResult> {
   const signals: string[] = [];
+  let score = 50;
 
-  // 1. Order history
-  const orderCount = await prisma.order.count({
+  const previousOrders = await prisma.order.findMany({
     where: { organizationId: orgId, buyerPhone: phone, id: { not: excludeOrderId }, deletedAt: null },
-  });
-  const hasHistory = orderCount > 0;
-
-  // 2. Failed deliveries
-  const failedCount = await prisma.order.count({
-    where: { organizationId: orgId, buyerPhone: phone, status: "failed", deletedAt: null },
+    orderBy: { createdAt: "desc" },
   });
 
-  // 3. Blacklist check
-  const blacklistEntry = await prisma.order.findFirst({
-    where: { organizationId: orgId, buyerPhone: phone, riskLevel: "high" },
-  });
-  const isBlacklisted = blacklistEntry !== null;
-
-  // 4. Anonymized network score (placeholder — Python ML in Sprint 4)
-  const identity = await prisma.buyerIdentity.findFirst({
-    where: { anonymizedId: phone }, // will use computeAnonymizedId in production
-  });
-  const networkScore = identity?.networkMlScore ?? 50;
-
-  // Compute score
-  let score = 60; // default medium
-
-  if (isBlacklisted) {
-    score = 0;
-    signals.push("blacklisted");
+  const isFirst = previousOrders.length === 0;
+  if (isFirst) {
+    score += WEIGHTS.firstTimeOrder(true);
+    signals.push("first-time-order");
   }
 
-  if (hasHistory) score += 15;
-  if (failedCount > 2) { score -= 20; signals.push("high-failure-rate"); }
-  if (failedCount > 0 && failedCount <= 2) { score -= 10; signals.push("prior-failures"); }
-  if (networkScore < 30) { score -= 15; signals.push("low-network-score"); }
-  if (networkScore > 70) { score += 10; signals.push("high-network-score"); }
+  const latestPending = previousOrders.find(
+    (o) => o.status === "PENDING_RESCHEDULE",
+  );
+  if (latestPending) {
+    score += WEIGHTS.hesitationMessages(3);
+    signals.push("hesitation");
+  }
+
+  const prevFailed = previousOrders.filter((o) => o.status === "REFUSED" || o.status === "INTELLIGENT_CANCEL");
+  if (prevFailed.length > 0) {
+    score += prevFailed.length * 10;
+    signals.push("prior-failures");
+  }
 
   score = Math.max(0, Math.min(100, score));
 
   let riskLevel: "low" | "medium" | "high";
-  if (score >= 70) riskLevel = "low";
-  else if (score >= 40) riskLevel = "medium";
+  if (score < 30) riskLevel = "low";
+  else if (score <= 60) riskLevel = "medium";
   else riskLevel = "high";
 
   return { score, riskLevel, signals };
+}
+
+export async function computeAndAlert(
+  phone: string,
+  orgId: string,
+  buyerName: string,
+  orderId: string,
+) {
+  const result = await computeScore(phone, orgId, orderId);
+
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { trustScore: 100 - result.score, riskLevel: result.riskLevel },
+  });
+
+  if (result.riskLevel === "high") {
+    await alertSeller(orgId, highRiskAlert(buyerName, result.score));
+  }
+
+  return result;
 }
