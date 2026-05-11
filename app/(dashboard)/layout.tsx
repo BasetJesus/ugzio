@@ -3,21 +3,9 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import Link from "next/link";
+import SidebarNav from "@/components/shared/SidebarNav";
 import MobileBottomNav from "@/components/shared/MobileBottomNav";
-import NotificationBell from "@/components/shared/NotificationBell";
 import LanguageToggle from "@/components/shared/LanguageToggle";
-
-const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/orders", label: "Orders" },
-  { href: "/orders/new", label: "+ New Order" },
-  { href: "/inbox", label: "Inbox" },
-  { href: "/shield", label: "ZioShield" },
-  { href: "/confirm", label: "ZioConfirm" },
-  { href: "/blacklist", label: "Blacklist" },
-  { href: "/success", label: "Success" },
-];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -35,53 +23,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
     where: { organizationId: orgId },
   });
   const completedCount = events.length;
-  const showOnboarding = completedCount < 4;
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-6xl pb-16 sm:pb-0">
-      <aside className="hidden w-56 border-r border-zinc-800 p-4 sm:flex sm:flex-col">
-        <div className="mb-6 flex items-start justify-between">
-          <div>
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
-                UGZIO
-              </span>
-            </Link>
-            {org && (
-              <p className="mt-1 truncate text-xs text-zinc-600">
-                {org.name} · {org.subscription?.plan?.name ?? "starter"}
-              </p>
-            )}
-          </div>
-          <NotificationBell orgId={orgId} />
-        </div>
-        <nav className="flex flex-col gap-1 flex-1">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-zinc-200"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        {showOnboarding && (
-          <div className="pt-4 border-t border-zinc-800">
-            <Link
-              href="/onboarding"
-              className="block rounded-lg bg-purple-600/20 px-3 py-2 text-xs font-semibold text-purple-400 transition hover:bg-purple-600/30"
-            >
-              Onboarding ({completedCount}/4)
-            </Link>
-          </div>
-        )}
-        <div className="mt-4 pt-4 border-t border-zinc-800">
-          <LanguageToggle />
-        </div>
-      </aside>
+      <SidebarNav
+        orgName={org?.name ?? ""}
+        planName={org?.subscription?.plan?.name ?? "free"}
+        orgId={orgId}
+        completedCount={completedCount}
+      />
       <main className="flex-1 overflow-y-auto">{children}</main>
       <MobileBottomNav />
+      <div className="fixed bottom-20 right-4 z-50 sm:bottom-4">
+        <LanguageToggle />
+      </div>
     </div>
   );
 }

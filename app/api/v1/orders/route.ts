@@ -29,6 +29,7 @@ export async function GET() {
       id: o.id,
       buyerName: o.buyerName,
       buyerPhone: o.buyerPhone,
+      buyerWilaya: o.buyerWilaya,
       product: o.product,
       amount: Number(o.amount),
       riskLevel: o.riskLevel,

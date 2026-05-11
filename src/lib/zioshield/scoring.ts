@@ -1,6 +1,17 @@
 import { prisma } from "@/lib/db";
 import { alertSeller, highRiskAlert } from "@/lib/alerts/seller";
 
+async function ensureActivationEvent(orgId: string, eventType: string) {
+  const existing = await prisma.activationEvent.findFirst({
+    where: { organizationId: orgId, eventType },
+  });
+  if (!existing) {
+    await prisma.activationEvent.create({
+      data: { organizationId: orgId, eventType },
+    });
+  }
+}
+
 interface ScoreResult {
   score: number;
   riskLevel: "low" | "medium" | "high";
@@ -74,6 +85,8 @@ export async function computeAndAlert(
   if (result.riskLevel === "high") {
     await alertSeller(orgId, highRiskAlert(buyerName, result.score));
   }
+
+  await ensureActivationEvent(orgId, "FIRST_TRUST_SCORE");
 
   return result;
 }

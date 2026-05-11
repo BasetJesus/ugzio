@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "UGZIO — Social Commerce OS for Tunisian Sellers",
   description:
-    "AI caption generator in Tunisian Darija + seller dashboard with buyer trust scoring, order management, and blacklist protection.",
+    "Activate buyers post-delivery, collect authentic UGC with rights cleared, and track what converts.",
 };
 
 export default function RootLayout({

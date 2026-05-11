@@ -42,7 +42,7 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
           <Link
             href="/shield"
             onClick={() => setShow(false)}
-            className="mt-2 block rounded-lg bg-purple-600 px-3 py-1.5 text-center text-xs font-semibold text-white"
+            className="mt-2 block rounded-lg bg-emerald-500 px-3 py-1.5 text-center text-xs font-semibold text-white"
           >
             View in ZioShield
           </Link>

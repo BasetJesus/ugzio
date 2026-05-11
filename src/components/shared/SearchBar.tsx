@@ -19,7 +19,7 @@ export default function SearchBar({ value, onChange, placeholder = "Search..." }
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 py-2.5 pl-9 pr-4 text-sm text-zinc-100 outline-none transition focus:border-purple-500 placeholder:text-zinc-600"
+        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 py-2.5 pl-9 pr-4 text-sm text-zinc-100 outline-none transition focus:border-emerald-400 placeholder:text-zinc-600"
       />
       {value && (
         <button

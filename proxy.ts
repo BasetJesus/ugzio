@@ -5,12 +5,8 @@ import { getToken } from "next-auth/jwt";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip auth for webhooks and auth endpoints
-  if (
-    pathname.startsWith("/api/webhooks") ||
-    pathname.startsWith("/api/auth") ||
-    pathname === "/api/generate"
-  ) {
+  // API routes handle their own auth via getServerSession — skip proxy entirely
+  if (pathname.startsWith("/api")) {
     return NextResponse.next();
   }
 
@@ -24,5 +20,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|auth|_next/static|_next/image|favicon.ico|public).*)"],
+  matcher: ["/((?!api|auth|_next/static|_next/image|favicon.ico|public).*)"],
 };

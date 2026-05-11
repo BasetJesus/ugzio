@@ -83,9 +83,10 @@ export default function InboxPage() {
     <div className="h-[calc(100dvh-3rem)] grid grid-cols-1 md:grid-cols-12 border border-zinc-800 rounded-xl overflow-hidden">
       <div className="md:col-span-4 border-r border-zinc-800 overflow-y-auto bg-zinc-950/50">
         <div className="p-3 border-b border-zinc-800 space-y-2">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-zinc-200">ZioInbox</h2>
-            <p className="text-xs text-zinc-500">{filtered.length} conversations</p>
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10 text-[10px]">📸</span>
+            <h2 className="font-semibold text-zinc-200">Collect — Inbox</h2>
+            <span className="ml-auto text-xs text-zinc-500">{filtered.length}</span>
           </div>
           <SearchBar value={search} onChange={setSearch} placeholder="Search conversations..." />
         </div>

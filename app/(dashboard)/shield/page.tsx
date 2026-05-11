@@ -32,12 +32,18 @@ export default async function ShieldPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-zinc-100">ZioShield Risk Dashboard</h1>
+      <div className="mb-6 flex items-center gap-3">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">📈</span>
+        <div>
+          <h1 className="text-xl font-bold text-white">Track — ZioShield</h1>
+          <p className="text-xs text-zinc-500">Buyer risk scores & what converts</p>
+        </div>
+      </div>
 
       <div className="mb-6 grid grid-cols-3 gap-4">
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
           <p className="text-xs font-medium text-zinc-500">Avg Trust Score</p>
-          <p className="text-xl font-bold text-purple-400">{Math.round(averageScore)}/100</p>
+          <p className="text-xl font-bold text-emerald-400">{Math.round(averageScore)}/100</p>
         </div>
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
           <p className="text-xs font-medium text-zinc-500">High Risk Orders</p>

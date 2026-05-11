@@ -56,7 +56,7 @@ export default async function OrderDetailPage({
                 )}
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-purple-400">
+                <p className="text-2xl font-bold text-emerald-400">
                   {Number(order.amount).toFixed(3)} TND
                 </p>
                 <div className="mt-2 flex items-center justify-end gap-2">
@@ -113,7 +113,7 @@ export default async function OrderDetailPage({
                   {new Date(order.createdAt).toLocaleDateString()}
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-purple-500" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
                   <span className="text-xs text-zinc-300">Order Created</span>
                 </div>
               </div>
@@ -138,7 +138,7 @@ export default async function OrderDetailPage({
               <h2 className="text-sm font-semibold text-zinc-300 mb-3">Conversation</h2>
               <Link
                 href={`/inbox?id=${order.conversations[0].id}`}
-                className="text-sm text-purple-400 hover:underline"
+                className="text-sm text-emerald-400 hover:underline"
               >
                 View in Inbox →
               </Link>

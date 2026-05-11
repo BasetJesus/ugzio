@@ -17,7 +17,7 @@ export default function EmptyState({
       {action && (
         <a
           href={action.href}
-          className="mt-4 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-purple-500"
+          className="mt-4 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
         >
           {action.label}
         </a>

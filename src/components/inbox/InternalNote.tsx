@@ -34,12 +34,12 @@ export default function InternalNote({
           value={noteText}
           onChange={(e) => onNoteChange(e.target.value)}
           placeholder="Ajouter une note..."
-          className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 outline-none transition focus:border-purple-500"
+          className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 outline-none transition focus:border-emerald-400"
         />
         <button
           onClick={onAddNote}
           disabled={!noteText.trim()}
-          className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:opacity-50"
+          className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
         >
           Ajouter
         </button>

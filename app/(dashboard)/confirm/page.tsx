@@ -29,7 +29,13 @@ export default async function ConfirmPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-zinc-100">ZioConfirm Queue</h1>
+      <div className="mb-6 flex items-center gap-3">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">📤</span>
+        <div>
+          <h1 className="text-xl font-bold text-white">Activate — Confirmations</h1>
+          <p className="text-xs text-zinc-500">D+3 WhatsApp verification queue</p>
+        </div>
+      </div>
 
       {orders.length === 0 ? (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
@@ -49,7 +55,7 @@ export default async function ConfirmPage() {
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${meta.bg} ${meta.text}`}>
                     {meta.label}
                   </span>
-                  <p className="text-sm font-medium text-purple-300">{Number(order.amount).toFixed(3)} TND</p>
+                  <p className="text-sm font-medium text-emerald-300">{Number(order.amount).toFixed(3)} TND</p>
                   <p className="text-xs text-zinc-600">{order.createdAt.toLocaleDateString()}</p>
                 </div>
               </div>

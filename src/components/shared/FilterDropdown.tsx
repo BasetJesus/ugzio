@@ -12,7 +12,7 @@ export default function FilterDropdown({ label, options, value, onChange }: Prop
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-3 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-purple-500"
+      className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-3 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-emerald-400"
     >
       <option value="">{label}</option>
       {options.map((opt) => (

@@ -89,7 +89,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
           </div>
           {conversation.order && (
             <div className="shrink-0 text-right">
-              <p className="font-medium text-purple-300">{Number(conversation.order.amount).toFixed(3)} TND</p>
+              <p className="font-medium text-emerald-300">{Number(conversation.order.amount).toFixed(3)} TND</p>
               <div className="mt-1">
                 <RiskBadge risk={conversation.order.riskLevel as "low" | "medium" | "high"} />
               </div>
@@ -113,7 +113,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
             <div
               className={`max-w-[75%] rounded-xl px-4 py-2 text-sm ${
                 msg.direction === "outbound"
-                  ? "bg-purple-600/20 text-zinc-200"
+                  ? "bg-emerald-500/20 text-zinc-200"
                   : msg.channel === "system"
                     ? "bg-zinc-800/30 text-zinc-500 italic"
                     : "bg-zinc-800 text-zinc-200"

@@ -1,4 +1,7 @@
-import Link from "next/link"
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 interface Order {
   id: string
@@ -11,7 +14,33 @@ interface Order {
 }
 
 export default function RiskAlerts({ orders }: { orders: Order[] }) {
+  const router = useRouter()
+  const [sendingId, setSendingId] = useState<string | null>(null)
+  const [error, setError] = useState("")
+
   if (orders.length === 0) return null
+
+  async function handleSendConfirm(orderId: string) {
+    setSendingId(orderId)
+    setError("")
+    try {
+      const res = await fetch("/api/v1/zioconfirm/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error ?? "Erreur")
+        return
+      }
+      router.refresh()
+    } catch {
+      setError("Erreur réseau")
+    } finally {
+      setSendingId(null)
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -28,16 +57,22 @@ export default function RiskAlerts({ orders }: { orders: Order[] }) {
               <p className="mt-1 text-xs text-zinc-400">{Number(order.amount).toFixed(3)} TND · Score {order.trustScore}/100</p>
             </div>
             <div className="shrink-0">
-              <Link
-                href={`/api/v1/zioconfirm/send?orderId=${order.id}`}
-                className="inline-block rounded-lg bg-purple-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-purple-500"
+              <button
+                onClick={() => handleSendConfirm(order.id)}
+                disabled={sendingId !== null}
+                className="rounded-lg bg-emerald-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
               >
-                Send WhatsApp Confirm
-              </Link>
+                {sendingId === order.id ? "..." : "Send WhatsApp Confirm"}
+              </button>
             </div>
           </div>
         </div>
       ))}
+      {error && (
+        <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
+          {error}
+        </div>
+      )}
     </div>
   )
 }

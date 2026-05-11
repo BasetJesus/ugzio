@@ -35,7 +35,7 @@ export default function OrdersTable({ orders }: { orders: Order[] }) {
               <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="font-medium text-purple-300">{Number(order.amount).toFixed(3)} TND</p>
+              <p className="font-medium text-emerald-300">{Number(order.amount).toFixed(3)} TND</p>
               <div className="mt-1">
                 <RiskBadge risk={order.riskLevel as "low" | "medium" | "high"} />
               </div>

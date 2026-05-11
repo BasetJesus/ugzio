@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { getOrgFromUserId } from "@/lib/billing/enforce";
 
 export async function POST(
   request: NextRequest,
@@ -10,6 +11,11 @@ export async function POST(
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const orgId = await getOrgFromUserId(session.user.id);
+  if (!orgId) {
+    return NextResponse.json({ error: "No organization" }, { status: 400 });
   }
 
   const { id } = await params;
@@ -22,6 +28,10 @@ export async function POST(
   const conversation = await prisma.conversation.findUnique({ where: { id } });
   if (!conversation) {
     return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+  }
+
+  if (conversation.organizationId !== orgId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const note = await prisma.internalNote.create({

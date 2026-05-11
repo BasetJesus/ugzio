@@ -44,8 +44,11 @@ export default function RegisterPage() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="text-center">
         <p className="text-2xl font-bold tracking-tight">
-          <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
-            UGZIO
+          <span className="inline-flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500 text-xs font-bold text-white">U</span>
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+              UGZIO
+            </span>
           </span>
         </p>
         <p className="mt-1 text-sm text-zinc-500">Create your account</p>
@@ -67,7 +70,7 @@ export default function RegisterPage() {
           type="text"
           required
           autoComplete="name"
-          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-purple-600"
+          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
           placeholder="Your name"
         />
       </div>
@@ -82,7 +85,7 @@ export default function RegisterPage() {
           type="email"
           required
           autoComplete="email"
-          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-purple-600"
+          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
           placeholder="you@example.com"
         />
       </div>
@@ -97,7 +100,7 @@ export default function RegisterPage() {
           type="password"
           required
           autoComplete="new-password"
-          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-purple-600"
+          className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
           placeholder="••••••••"
         />
       </div>
@@ -105,14 +108,14 @@ export default function RegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:opacity-50"
+        className="w-full rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
       >
         {loading ? "Creating account..." : "Create account"}
       </button>
 
       <p className="text-center text-xs text-zinc-600">
         Already have an account?{" "}
-        <Link href="/auth/login" className="text-purple-400 hover:underline">
+        <Link href="/auth/login" className="text-emerald-400 hover:underline">
           Sign in
         </Link>
       </p>

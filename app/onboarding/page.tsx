@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import Link from "next/link";
+import OnboardingSetupForm from "./OnboardingSetupForm";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,11 @@ export default async function OnboardingChecklist() {
   if (!session?.user?.id) redirect("/api/auth/signin");
 
   const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) redirect("/onboarding");
+
+  // No org yet — show setup form instead of checklist
+  if (!orgId) {
+    return <OnboardingSetupForm />;
+  }
 
   const events = await prisma.activationEvent.findMany({
     where: { organizationId: orgId },
@@ -43,7 +48,7 @@ export default async function OnboardingChecklist() {
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-zinc-800">
             <div
-              className="h-full rounded-full bg-purple-600 transition-all duration-500"
+              className="h-full rounded-full bg-emerald-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -74,9 +79,9 @@ export default async function OnboardingChecklist() {
         </div>
 
         {completedCount === totalSteps && (
-          <div className="mt-6 rounded-xl border border-purple-900/30 bg-purple-950/20 p-4 text-center">
-            <p className="font-semibold text-purple-300">🎉 Toutes les étapes complétées!</p>
-            <Link href="/" className="mt-2 inline-block text-sm text-purple-400 underline">
+          <div className="mt-6 rounded-xl border border-emerald-900/30 bg-emerald-950/20 p-4 text-center">
+            <p className="font-semibold text-emerald-300">🎉 Toutes les étapes complétées!</p>
+            <Link href="/" className="mt-2 inline-block text-sm text-emerald-400 underline">
               Aller au tableau de bord
             </Link>
           </div>

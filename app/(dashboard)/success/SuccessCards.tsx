@@ -46,7 +46,7 @@ RTS réduit de ${stats.rtsBefore}% → ${stats.rtsAfter}%.
             className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5"
           >
             <p className="text-2xl">{card.icon}</p>
-            <p className="mt-3 text-2xl font-bold tracking-tight text-purple-400">{card.value}</p>
+            <p className="mt-3 text-2xl font-bold tracking-tight text-emerald-400">{card.value}</p>
             <p className="mt-1 text-xs font-medium text-zinc-500">{card.label}</p>
           </div>
         ))}
@@ -59,7 +59,7 @@ RTS réduit de ${stats.rtsBefore}% → ${stats.rtsAfter}%.
         </div>
         <button
           onClick={handleShare}
-          className="mt-3 rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-500"
+          className="mt-3 rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-white transition hover:bg-emerald-400"
         >
           {copied ? "Copié! ✓" : "Copier et partager"}
         </button>

@@ -50,10 +50,10 @@ async function main() {
     { key: "zioconfirm", description: "ZioConfirm WhatsApp verification", planGate: null },
     { key: "zioinbox", description: "ZioInbox unified conversations", planGate: null },
     { key: "zioanalytics", description: "ZioAnalytics dashboard charts", planGate: null },
-    { key: "ziobrain", description: "ZioBrain AI insights", planGate: "grower" },
-    { key: "zioconnect", description: "ZioConnect Shopify integration", planGate: "pro" },
-    { key: "zioflow", description: "ZioFlow workflow automation", planGate: "pro" },
-    { key: "zionetwork", description: "ZioNetwork cross-seller fraud graph", planGate: "scale" },
+    { key: "ziobrain", description: "ZioBrain AI insights", planGate: "croissance" },
+    { key: "zioconnect", description: "ZioConnect Shopify integration", planGate: "croissance" },
+    { key: "zioflow", description: "ZioFlow workflow automation", planGate: "croissance" },
+    { key: "zionetwork", description: "ZioNetwork cross-seller fraud graph", planGate: "croissance" },
   ];
 
   for (const f of flags) {

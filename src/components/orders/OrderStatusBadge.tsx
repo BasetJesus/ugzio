@@ -1,6 +1,6 @@
 const STATUS_META: Record<string, { bg: string; text: string; label: string }> = {
   CREATED: { bg: "bg-blue-500/15", text: "text-blue-400", label: "CREATED" },
-  PRE_SHIPPING_CONFIRM_SENT: { bg: "bg-purple-500/15", text: "text-purple-400", label: "CONFIRM SENT" },
+  PRE_SHIPPING_CONFIRM_SENT: { bg: "bg-emerald-500/15", text: "text-emerald-400", label: "CONFIRM SENT" },
   BUYER_CONFIRMED: { bg: "bg-emerald-500/15", text: "text-emerald-400", label: "CONFIRMED ✓" },
   SHIPPED: { bg: "bg-cyan-500/15", text: "text-cyan-400", label: "SHIPPED" },
   DELIVERED: { bg: "bg-green-500/15", text: "text-green-400", label: "DELIVERED ✓" },

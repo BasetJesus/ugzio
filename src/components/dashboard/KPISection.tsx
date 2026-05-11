@@ -22,7 +22,7 @@ export default function KPISection({ ordersToday, highRiskCount, rtsPrevented, r
         >
           <p className="text-lg">{card.icon}</p>
           <p className="text-xs font-medium text-zinc-500">{card.label}</p>
-          <p className={`mt-1 text-2xl font-bold tracking-tight ${card.alert && highRiskCount > 0 ? "text-red-400" : "text-purple-400"}`}>
+          <p className={`mt-1 text-2xl font-bold tracking-tight ${card.alert && highRiskCount > 0 ? "text-red-400" : "text-emerald-400"}`}>
             {card.value}
           </p>
         </div>
