@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import ConversationList from "@/components/inbox/ConversationList";
 import ChatWindow from "@/components/inbox/ChatWindow";
+import SearchBar from "@/components/shared/SearchBar";
 
 interface Conv {
   id: string
@@ -49,6 +50,7 @@ export default function InboxPage() {
   const [conversations, setConversations] = useState<Conv[]>([]);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [detail, setDetail] = useState<ConvDetail | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/v1/conversations").then((r) => r.json()).then(setConversations);
@@ -64,6 +66,14 @@ export default function InboxPage() {
     fetch(`/api/v1/conversations/${selectedId}`).then((r) => r.json()).then(setDetail);
   }, [selectedId]);
 
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    if (!q) return conversations;
+    return conversations.filter((c) =>
+      c.buyerName.toLowerCase().includes(q) || c.buyerPhone.includes(q)
+    );
+  }, [conversations, search]);
+
   function handleSelect(id: string) {
     setSelectedId(id);
     window.history.replaceState(null, "", `/inbox?id=${id}`);
@@ -72,12 +82,15 @@ export default function InboxPage() {
   return (
     <div className="h-[calc(100dvh-3rem)] grid grid-cols-1 md:grid-cols-12 border border-zinc-800 rounded-xl overflow-hidden">
       <div className="md:col-span-4 border-r border-zinc-800 overflow-y-auto bg-zinc-950/50">
-        <div className="p-3 border-b border-zinc-800">
-          <h2 className="font-semibold text-zinc-200">ZioInbox</h2>
-          <p className="text-xs text-zinc-500">{conversations.length} conversations</p>
+        <div className="p-3 border-b border-zinc-800 space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-zinc-200">ZioInbox</h2>
+            <p className="text-xs text-zinc-500">{filtered.length} conversations</p>
+          </div>
+          <SearchBar value={search} onChange={setSearch} placeholder="Search conversations..." />
         </div>
         <ConversationList
-          conversations={conversations.map((c) => ({
+          conversations={filtered.map((c) => ({
             ...c,
             messages: c.messages.map((m) => ({ createdAt: new Date(m.createdAt) })),
             updatedAt: new Date(c.updatedAt),
