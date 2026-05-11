@@ -6,9 +6,13 @@ import { getOrgFromUserId } from "@/lib/billing/enforce";
 import Link from "next/link";
 
 const NAV = [
-  { href: "/", label: "Tableau de Bord" },
-  { href: "/orders", label: "Commandes" },
-  { href: "/orders/new", label: "+ Nouvelle" },
+  { href: "/", label: "Dashboard" },
+  { href: "/orders", label: "Orders" },
+  { href: "/orders/new", label: "+ New Order" },
+  { href: "/inbox", label: "Inbox" },
+  { href: "/shield", label: "ZioShield" },
+  { href: "/confirm", label: "ZioConfirm" },
+  { href: "/success", label: "Success" },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -23,18 +27,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
     include: { subscription: { include: { plan: true } } },
   });
 
+  const events = await prisma.activationEvent.findMany({
+    where: { organizationId: orgId },
+  });
+  const completedCount = events.length;
+  const showOnboarding = completedCount < 4;
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-6xl">
-      <aside className="hidden w-56 border-r border-zinc-800 p-4 sm:block">
+      <aside className="hidden w-56 border-r border-zinc-800 p-4 sm:flex sm:flex-col">
         <div className="mb-6">
-          <p className="text-lg font-bold tracking-tight">
+          <Link href="/" className="text-lg font-bold tracking-tight">
             <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
               UGZIO
             </span>
-          </p>
+          </Link>
           {org && (
             <p className="mt-1 truncate text-xs text-zinc-600">
-              {org.name} · {org.subscription?.plan.name ?? "starter"}
+              {org.name} · {org.subscription?.plan?.name ?? "starter"}
             </p>
           )}
         </div>
@@ -49,8 +59,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </Link>
           ))}
         </nav>
+        {showOnboarding && (
+          <div className="mt-auto pt-4 border-t border-zinc-800">
+            <Link
+              href="/onboarding"
+              className="block rounded-lg bg-purple-600/20 px-3 py-2 text-xs font-semibold text-purple-400 transition hover:bg-purple-600/30"
+            >
+              Onboarding ({completedCount}/4)
+            </Link>
+          </div>
+        )}
       </aside>
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
+      <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

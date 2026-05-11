@@ -1,132 +1,87 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { getOrgFromUserId } from "@/lib/billing/enforce";
+import Link from "next/link";
 
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+export const dynamic = "force-dynamic";
 
-export default function OnboardingPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const STEPS = [
+  { id: "FIRST_ORDER_CREATED", label: "Créez votre première commande", href: "/orders/new" },
+  { id: "FIRST_TRUST_SCORE", label: "Analysez le score de confiance", href: "/shield" },
+  { id: "FIRST_VERIFICATION_SENT", label: "Envoyez une vérification WhatsApp", href: "/confirm" },
+  { id: "FIRST_HIGH_RISK_BLOCKED", label: "Bloquez une commande à risque", href: "/shield" },
+] as const;
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+export default async function OnboardingChecklist() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) redirect("/api/auth/signin");
 
-    const form = new FormData(e.currentTarget);
-    const shopName = form.get("shopName") as string;
-    const sellerPhone = form.get("sellerPhone") as string;
-    const wilaya = form.get("wilaya") as string;
-    const category = form.get("category") as string;
+  const orgId = await getOrgFromUserId(session.user.id);
+  if (!orgId) redirect("/onboarding");
 
-    try {
-      const res = await fetch("/api/v1/onboarding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shopName, sellerPhone, wilaya, category }),
-      });
+  const events = await prisma.activationEvent.findMany({
+    where: { organizationId: orgId },
+  });
 
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error ?? "Erreur");
-        return;
-      }
-
-      router.push("/");
-    } catch {
-      setError("Erreur réseau");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const completedEventTypes = new Set(events.map((e) => e.eventType));
+  const completedCount = STEPS.filter((s) => completedEventTypes.has(s.id)).length;
+  const totalSteps = STEPS.length;
+  const progress = Math.round((completedCount / totalSteps) * 100);
 
   return (
-    <div className="mx-auto max-w-md py-12">
-      <div className="text-center mb-8">
-        <p className="text-2xl font-bold tracking-tight">
-          <span className="bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
-            UGZIO
-          </span>
-        </p>
-        <p className="mt-2 text-zinc-400">Configure ton compte en 2 minutes</p>
-      </div>
+    <div className="mx-auto max-w-lg p-4 sm:p-0">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+        <h1 className="text-xl font-bold text-white">Bienvenue sur UGZIO</h1>
+        <p className="mt-1 text-sm text-zinc-400">Objectif: Prévenir votre première commande risquée</p>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {error && (
-          <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">
-            {error}
+        <div className="mt-6">
+          <div className="flex items-center justify-between text-sm text-zinc-400">
+            <span>Progression</span>
+            <span>{completedCount}/{totalSteps}</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+            <div
+              className="h-full rounded-full bg-purple-600 transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          {STEPS.map((step) => {
+            const done = completedEventTypes.has(step.id);
+            return (
+              <Link
+                key={step.id}
+                href={step.href}
+                className={`flex items-center gap-3 rounded-xl border p-4 transition ${
+                  done
+                    ? "border-green-900/30 bg-green-950/20"
+                    : "border-zinc-800 bg-zinc-900/30 hover:border-zinc-700"
+                }`}
+              >
+                <span className={`text-lg ${done ? "text-green-400" : "text-zinc-600"}`}>
+                  {done ? "✅" : "⬜"}
+                </span>
+                <span className={`text-sm font-medium ${done ? "text-green-300" : "text-zinc-300"}`}>
+                  {step.label}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+
+        {completedCount === totalSteps && (
+          <div className="mt-6 rounded-xl border border-purple-900/30 bg-purple-950/20 p-4 text-center">
+            <p className="font-semibold text-purple-300">🎉 Toutes les étapes complétées!</p>
+            <Link href="/" className="mt-2 inline-block text-sm text-purple-400 underline">
+              Aller au tableau de bord
+            </Link>
           </div>
         )}
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-            Nom de la boutique
-          </label>
-          <input
-            name="shopName"
-            required
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-purple-500"
-            placeholder="Moncef Store"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-            Téléphone (WhatsApp)
-          </label>
-          <input
-            name="sellerPhone"
-            type="tel"
-            required
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-purple-500"
-            placeholder="+216 XX XXX XXX"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-            Wilaya de livraison
-          </label>
-          <select
-            name="wilaya"
-            required
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-purple-500"
-          >
-            <option value="">Sélectionne</option>
-            {["Tunis", "Ariana", "Ben Arous", "Manouba", "Nabeul", "Hammamet", "Sousse", "Monastir", "Mahdia", "Sfax", "Kairouan", "Bizerte", "Gabès", "Gafsa", "Medenine", "Tataouine", "Tozeur", "Kebili", "Jendouba", "Béja", "Le Kef", "Siliana", "Kasserine", "Zaghouan"].map((w) => (
-              <option key={w} value={w}>{w}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-            Catégorie de produits
-          </label>
-          <select
-            name="category"
-            required
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-purple-500"
-          >
-            <option value="">Sélectionne</option>
-            <option value="vetements">Vêtements</option>
-            <option value="cosmetiques">Cosmétiques</option>
-            <option value="accessoires">Accessoires</option>
-            <option value="parfums">Parfums</option>
-            <option value="naturel">Produits naturels</option>
-            <option value="alimentation">Alimentation</option>
-            <option value="autre">Autre</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-500 disabled:opacity-50"
-        >
-          {loading ? "Configuration..." : "Commencer 🚀"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

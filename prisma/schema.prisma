@@ -28,18 +28,17 @@ model Plan {
 }
 
 model Subscription {
-  id                   String       @id @default(cuid())
-  organizationId       String       @unique
-  organization         Organization @relation(fields: [organizationId], references: [id])
-  planId               String
-  plan                 Plan         @relation(fields: [planId], references: [id])
-  status               String       // active|past_due|canceled|trialing
-  currentPeriodStart   DateTime
-  currentPeriodEnd     DateTime
-  stripeSubscriptionId String?
+  id                    String       @id @default(cuid())
+  organizationId        String       @unique
+  organization          Organization @relation(fields: [organizationId], references: [id])
+  planId                String
+  plan                  Plan         @relation(fields: [planId], references: [id])
+  status                String       // active|past_due|canceled|trialing
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
   konnectSubscriptionId String?
-  canceledAt           DateTime?
-  createdAt            DateTime     @default(now())
+  canceledAt            DateTime?
+  createdAt             DateTime     @default(now())
 }
 
 model UsageMeter {
@@ -86,6 +85,8 @@ model Organization {
   webhookLogs       WebhookLog[]
   aiEvaluations     AIEvaluation[]
   deletionRequests  BuyerDeletionRequest[]
+  waitlistEntries   WaitlistEntry[]
+  activationEvents  ActivationEvent[]
   maxOrdersPerMonth  Int                @default(3)
   subscriptionStatus String            @default("free")  // free|croissance
   ordersThisMonth   Int                @default(0)
@@ -240,6 +241,7 @@ model Conversation {
   organization   Organization @relation(fields: [organizationId], references: [id])
   orderId        String?
   order          Order?       @relation(fields: [orderId], references: [id])
+  buyerName      String
   buyerPhone     String
   messages       Message[]
   notes          InternalNote[]
@@ -354,4 +356,35 @@ model DataProcessingAgreement {
   version        String
   signedAt       DateTime @default(now())
   signedByUserId String
+}
+
+// ─── ZIOLAUNCH GROWTH (Sprint 3) ────────────────────────────────────────────
+
+model ActivationEvent {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  eventType      String       // FIRST_ORDER_CREATED|FIRST_TRUST_SCORE|FIRST_VERIFICATION_SENT|FIRST_HIGH_RISK_BLOCKED|FIRST_WORKFLOW_ENABLED
+  occurredAt     DateTime     @default(now())
+}
+
+model WaitlistEntry {
+  id             String        @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  name           String
+  instagram      String?
+  storeType      String?
+  monthlyOrders  Int?
+  biggestProblem String?
+  status         String        @default("new")  // new|reviewed|invited|activated
+  createdAt      DateTime      @default(now())
+}
+
+model Referral {
+  id         String   @id @default(cuid())
+  referrerId String
+  referredId String?
+  code       String   @unique
+  createdAt  DateTime @default(now())
 }

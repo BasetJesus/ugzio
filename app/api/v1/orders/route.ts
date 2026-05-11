@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib/zioconfirm/service";
 import { computeAndAlert } from "@/lib/zioshield/scoring";
+import { emitCritical } from "@/lib/events/queues";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { buyerName, buyerPhone, product, amount } = body;
+  const { buyerName, buyerPhone, product, amount, buyerWilaya } = body;
 
   if (!buyerName || !buyerPhone || amount == null) {
     return NextResponse.json(
@@ -87,6 +88,7 @@ export async function POST(request: NextRequest) {
       buyerName,
       buyerPhone,
       product: product ?? null,
+      buyerWilaya: buyerWilaya ?? null,
       amount: Number(amount),
       status: "CREATED",
     },
@@ -98,6 +100,17 @@ export async function POST(request: NextRequest) {
 
   const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
   await schedulePreDeliveryConfirm(order.id, estimatedDelivery);
+
+  await emitCritical("ORDER_CREATED", { orderId: order.id, orgId });
+
+  const existingEvent = await prisma.activationEvent.findFirst({
+    where: { organizationId: orgId, eventType: "FIRST_ORDER_CREATED" },
+  });
+  if (!existingEvent) {
+    await prisma.activationEvent.create({
+      data: { organizationId: orgId, eventType: "FIRST_ORDER_CREATED" },
+    });
+  }
 
   return NextResponse.json({
     id: order.id,
