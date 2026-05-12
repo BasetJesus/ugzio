@@ -14,18 +14,13 @@
     "db:studio": "prisma studio",
     "worker": "tsx apps/worker/index.ts"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^6.19.3",
+    "@prisma/client": "^6.9.0",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.76.6",
     "ioredis": "^5.10.1",
     "next": "16.2.6",
     "next-auth": "^4.24.14",
-    "prisma": "^6.19.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "recharts": "^3.8.1",
@@ -39,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "prisma": "^6.9.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.6"

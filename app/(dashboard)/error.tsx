@@ -14,7 +14,7 @@ export default function Error({
       <p className="mt-1 text-sm text-zinc-500">{error.message || "An unexpected error occurred."}</p>
       <button
         onClick={reset}
-        className="mt-4 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+        className="mt-4 rounded-md bg-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
       >
         Try again
       </button>

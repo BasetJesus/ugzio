@@ -13,13 +13,13 @@ export default function SearchBar({ value, onChange, placeholder = "Search..." }
 
   return (
     <div className="relative">
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-500">🔍</span>
+      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-zinc-500">🔍</span>
       <input
         ref={inputRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 py-2.5 pl-9 pr-4 text-sm text-zinc-100 outline-none transition focus:border-emerald-400 placeholder:text-zinc-600"
+        className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 py-2 pl-8 pr-4 text-sm text-zinc-100 outline-none transition focus:border-green-500 placeholder:text-zinc-600"
       />
       {value && (
         <button

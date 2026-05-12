@@ -80,12 +80,12 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="h-[calc(100dvh-3rem)] grid grid-cols-1 md:grid-cols-12 border border-zinc-800 rounded-xl overflow-hidden">
-      <div className="md:col-span-4 border-r border-zinc-800 overflow-y-auto bg-zinc-950/50">
-        <div className="p-3 border-b border-zinc-800 space-y-2">
+    <div className="h-[calc(100dvh-3rem)] grid grid-cols-1 md:grid-cols-12 border border-zinc-800/40 rounded-lg overflow-hidden">
+      <div className="md:col-span-4 border-r border-zinc-800/40 overflow-y-auto">
+        <div className="p-3 border-b border-zinc-800/40 space-y-2">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10 text-[10px]">📸</span>
-            <h2 className="font-semibold text-zinc-200">Collect — Inbox</h2>
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/10 text-[10px]">📸</span>
+            <h2 className="font-semibold text-zinc-200">Inbox</h2>
             <span className="ml-auto text-xs text-zinc-500">{filtered.length}</span>
           </div>
           <SearchBar value={search} onChange={setSearch} placeholder="Search conversations..." />
@@ -100,7 +100,7 @@ export default function InboxPage() {
           onSelect={handleSelect}
         />
       </div>
-      <div className="md:col-span-8 overflow-y-auto bg-zinc-950/30">
+      <div className="md:col-span-8 overflow-y-auto">
         <ChatWindow
           conversation={detail ? {
             ...detail,

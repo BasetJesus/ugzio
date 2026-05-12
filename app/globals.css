@@ -3,8 +3,10 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-brand: #10b981;
-  --color-brand-dark: #059669;
-  --color-accent: #f97316;
-  --color-accent-dark: #ea580c;
+  --color-pillar-activate: #22c55e;
+  --color-pillar-activate-dark: #16a34a;
+  --color-pillar-collect: #f59e0b;
+  --color-pillar-collect-dark: #d97706;
+  --color-pillar-track: #f97316;
+  --color-pillar-track-dark: #ea580c;
 }

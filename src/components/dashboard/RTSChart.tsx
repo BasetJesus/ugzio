@@ -10,14 +10,14 @@ interface DataPoint {
 export default function RTSChart({ data }: { data: DataPoint[] }) {
   if (data.length === 0) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
+      <div className="px-6 py-12 text-center">
         <p className="text-zinc-500">Not enough data to show RTS trend.</p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+    <div>
       <h2 className="mb-4 text-sm font-semibold text-zinc-300">RTS Rate Over Time</h2>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -32,7 +32,7 @@ export default function RTSChart({ data }: { data: DataPoint[] }) {
                 color: "#e4e4e7",
               }}
             />
-            <Line type="monotone" dataKey="rate" stroke="#9333ea" strokeWidth={2} dot={{ fill: "#9333ea", r: 3 }} />
+            <Line type="monotone" dataKey="rate" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 3 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

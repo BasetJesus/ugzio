@@ -206,11 +206,11 @@ export default function CaptionGenerator() {
             onChange={(e) => setTopic(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && generate()}
             placeholder={t("cg.topic-placeholder")}
-            className="w-full border-0 border-b-2 border-zinc-800 bg-transparent px-2 py-4 text-center text-2xl text-zinc-100 placeholder-zinc-700 outline-none transition focus:border-emerald-400 sm:text-3xl"
+            className="w-full border-0 border-b-2 border-zinc-800 bg-transparent px-2 py-4 text-center text-2xl text-zinc-100 placeholder-zinc-700 outline-none transition focus:border-green-400 sm:text-3xl"
           />
 
           <div className="flex justify-center">
-            <div className="flex w-full max-w-[200px] items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 transition focus-within:border-emerald-400">
+            <div className="flex w-full max-w-[200px] items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 transition focus-within:border-green-400">
               <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 TND
               </span>
@@ -281,7 +281,7 @@ export default function CaptionGenerator() {
               )}
             </div>
 
-            <div className="flex flex-1 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 transition focus-within:border-emerald-400">
+            <div className="flex flex-1 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 transition focus-within:border-green-400">
               <svg className="h-4 w-4 shrink-0 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.57a4.5 4.5 0 00-7.243-1.244l-4.5 4.5a4.5 4.5 0 006.364 6.364l1.758-1.757" />
               </svg>
@@ -306,7 +306,7 @@ export default function CaptionGenerator() {
                   onClick={() => setPlatform(p.id)}
                   className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition ${
                     platform === p.id
-                      ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+                      ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                       : "border border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-600 hover:text-zinc-200"
                   }`}
                 >
@@ -328,7 +328,7 @@ export default function CaptionGenerator() {
                   onClick={() => setTone(toneOpt.id)}
                   className={`rounded-full px-5 py-2.5 text-sm font-medium transition ${
                     tone === toneOpt.id
-                      ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+                      ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                       : "border border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-600 hover:text-zinc-200"
                   }`}
                 >
@@ -341,7 +341,7 @@ export default function CaptionGenerator() {
           <button
             onClick={generate}
             disabled={loading || !topic.trim()}
-            className="mt-10 flex w-full items-center justify-center gap-3 rounded-xl bg-emerald-500 px-6 py-4 text-lg font-bold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400 hover:shadow-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-10 flex w-full items-center justify-center gap-3 rounded-xl bg-green-500 px-6 py-4 text-lg font-bold text-white shadow-lg shadow-green-500/20 transition hover:bg-green-400 hover:shadow-green-500/30 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {loading ? (
               <>
@@ -393,7 +393,7 @@ export default function CaptionGenerator() {
                   <div className="space-y-3">
                     <p className="text-base leading-relaxed text-zinc-100 sm:text-lg">
                       {caption.hook && (
-                        <span className="font-semibold text-emerald-200">
+                        <span className="font-semibold text-green-200">
                           {caption.hook}
                         </span>
                       )}
@@ -408,12 +408,12 @@ export default function CaptionGenerator() {
                       </p>
                     )}
                     {link && (
-                      <p className="truncate text-xs text-emerald-400/50">
+                      <p className="truncate text-xs text-green-400/50">
                         {link}
                       </p>
                     )}
                     {caption.hashtags.length > 0 && (
-                      <p className="text-sm text-emerald-400/70">
+                      <p className="text-sm text-green-400/70">
                         {caption.hashtags.join("  ")}
                       </p>
                     )}
@@ -422,7 +422,7 @@ export default function CaptionGenerator() {
                   <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-3">
                     <button
                       onClick={() => copy(caption.full, i)}
-                      className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:bg-zinc-800 hover:text-emerald-400"
+                      className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:bg-zinc-800 hover:text-green-400"
                     >
                       {copiedIndex === i ? (
                         t("cg.copied")
@@ -488,7 +488,7 @@ export default function CaptionGenerator() {
                 <select
                   value={formNiche}
                   onChange={(e) => setFormNiche(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 outline-none transition focus:border-emerald-400"
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 outline-none transition focus:border-green-400"
                 >
                   {NICHES.map((n) => (
                     <option key={n.id} value={n.id} className="bg-zinc-900">
@@ -507,7 +507,7 @@ export default function CaptionGenerator() {
                   value={formAudience}
                   onChange={(e) => setFormAudience(e.target.value)}
                   placeholder={t("bp.q2-placeholder")}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-400"
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-green-400"
                 />
               </div>
 
@@ -523,7 +523,7 @@ export default function CaptionGenerator() {
                       onClick={() => setFormBrandVibe(bv.id)}
                       className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm font-medium transition ${
                         formBrandVibe === bv.id
-                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-300 shadow-sm shadow-emerald-500/20"
+                          ? "border-green-500 bg-green-500/10 text-green-300 shadow-sm shadow-green-500/20"
                           : "border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
                       }`}
                     >
@@ -543,7 +543,7 @@ export default function CaptionGenerator() {
                   value={formUsp}
                   onChange={(e) => setFormUsp(e.target.value)}
                   placeholder={t("bp.q4-placeholder")}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-400"
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-green-400"
                 />
               </div>
             </div>
@@ -551,7 +551,7 @@ export default function CaptionGenerator() {
             <button
               type="button"
               onClick={saveProfile}
-              className="mt-8 w-full rounded-xl bg-emerald-500 px-6 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400"
+              className="mt-8 w-full rounded-xl bg-green-500 px-6 py-4 text-base font-bold text-white shadow-lg shadow-green-500/20 transition hover:bg-green-400"
             >
               {t("bp.submit")}
             </button>

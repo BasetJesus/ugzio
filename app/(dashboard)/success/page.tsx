@@ -43,9 +43,9 @@ export default async function SuccessPage() {
   return (
     <div className="p-4 sm:p-6 space-y-6">
       <div className="flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">🏆</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-500/10 text-sm">🏆</span>
         <div>
-          <h1 className="text-xl font-bold text-white">Track — Success</h1>
+          <h1 className="text-xl font-bold text-zinc-100">Success</h1>
           <p className="text-xs text-zinc-500">What converts & shareable results</p>
         </div>
       </div>

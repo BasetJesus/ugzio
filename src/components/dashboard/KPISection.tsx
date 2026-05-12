@@ -14,15 +14,12 @@ export default function KPISection({ ordersToday, highRiskCount, rtsPrevented, r
   ]
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card) => (
-        <div
-          key={card.label}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4"
-        >
+        <div key={card.label}>
           <p className="text-lg">{card.icon}</p>
           <p className="text-xs font-medium text-zinc-500">{card.label}</p>
-          <p className={`mt-1 text-2xl font-bold tracking-tight ${card.alert && highRiskCount > 0 ? "text-red-400" : "text-emerald-400"}`}>
+          <p className={`mt-1 text-2xl font-bold tracking-tight ${card.alert && highRiskCount > 0 ? "text-red-400" : "text-green-400"}`}>
             {card.value}
           </p>
         </div>

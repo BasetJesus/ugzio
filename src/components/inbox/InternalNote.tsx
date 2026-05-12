@@ -22,7 +22,7 @@ export default function InternalNote({
 
       <div className="space-y-2">
         {notes.map((note) => (
-          <div key={note.id} className="rounded-lg border border-amber-900/30 bg-amber-950/20 px-3 py-2">
+          <div key={note.id} className="rounded-md border border-amber-900/30 bg-amber-950/20 px-3 py-2">
             <p className="text-sm text-zinc-300">{note.content}</p>
             <p className="mt-1 text-[10px] text-zinc-600">{new Date(note.createdAt).toLocaleString()}</p>
           </div>
@@ -34,12 +34,12 @@ export default function InternalNote({
           value={noteText}
           onChange={(e) => onNoteChange(e.target.value)}
           placeholder="Ajouter une note..."
-          className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-100 outline-none transition focus:border-emerald-400"
+          className="flex-1 rounded-md border border-zinc-800/50 bg-zinc-900/30 px-3 py-2 text-sm text-zinc-100 outline-none transition focus:border-amber-500 placeholder:text-zinc-600"
         />
         <button
           onClick={onAddNote}
           disabled={!noteText.trim()}
-          className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
+          className="rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-400 disabled:opacity-50"
         >
           Ajouter
         </button>

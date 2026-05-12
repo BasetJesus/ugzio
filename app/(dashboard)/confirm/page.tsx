@@ -30,23 +30,23 @@ export default async function ConfirmPage() {
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">📤</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-green-500/10 text-sm">📤</span>
         <div>
-          <h1 className="text-xl font-bold text-white">Activate — Confirmations</h1>
+          <h1 className="text-xl font-bold text-zinc-100">Confirmations</h1>
           <p className="text-xs text-zinc-500">D+3 WhatsApp verification queue</p>
         </div>
       </div>
 
       {orders.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
+        <div className="px-6 py-12 text-center">
           <p className="text-zinc-500">No orders to verify</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y divide-zinc-800/40">
           {orders.map((order) => {
             const meta = STATUS_META[order.verificationStatus] ?? STATUS_META.none;
             return (
-              <div key={order.id} className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+              <div key={order.id} className="flex items-center justify-between gap-4 px-1 py-3">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-zinc-200">{order.buyerName}</p>
                   <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
@@ -55,7 +55,7 @@ export default async function ConfirmPage() {
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${meta.bg} ${meta.text}`}>
                     {meta.label}
                   </span>
-                  <p className="text-sm font-medium text-emerald-300">{Number(order.amount).toFixed(3)} TND</p>
+                  <p className="text-sm font-medium text-green-400">{Number(order.amount).toFixed(3)} TND</p>
                   <p className="text-xs text-zinc-600">{order.createdAt.toLocaleDateString()}</p>
                 </div>
               </div>

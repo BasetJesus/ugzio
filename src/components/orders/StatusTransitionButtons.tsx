@@ -20,9 +20,9 @@ const STATUS_ACTIONS: Record<string, { label: string; nextStatus: string; varian
 }
 
 const VARIANTS = {
-  primary: "bg-emerald-500 hover:bg-emerald-400 text-white",
+  primary: "bg-green-600 hover:bg-green-500 text-white",
   danger: "bg-red-950/50 hover:bg-red-900/50 text-red-400 border border-red-900/30",
-  success: "bg-green-950/50 hover:bg-green-900/50 text-green-400 border border-green-900/30",
+  success: "bg-green-600 hover:bg-green-500 text-white",
 }
 
 export default function StatusTransitionButtons({

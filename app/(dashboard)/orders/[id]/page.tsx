@@ -45,18 +45,18 @@ export default async function OrderDetailPage({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <div className="lg:col-span-2 space-y-6">
+          <div>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-xl font-bold text-white">{order.buyerName}</h1>
+                <h1 className="text-xl font-bold text-zinc-100">{order.buyerName}</h1>
                 <p className="text-sm text-zinc-400">{order.buyerPhone}</p>
                 {order.buyerWilaya && (
                   <p className="text-xs text-zinc-500">{order.buyerWilaya}</p>
                 )}
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-emerald-400">
+                <p className="text-2xl font-bold text-green-400">
                   {Number(order.amount).toFixed(3)} TND
                 </p>
                 <div className="mt-2 flex items-center justify-end gap-2">
@@ -67,13 +67,13 @@ export default async function OrderDetailPage({
             </div>
 
             {order.product && (
-              <div className="mt-4 border-t border-zinc-800 pt-4">
+              <div className="mt-4 border-t border-zinc-800/40 pt-4">
                 <p className="text-xs text-zinc-500">Product</p>
                 <p className="text-sm text-zinc-300">{order.product}</p>
               </div>
             )}
 
-            <div className="mt-4 border-t border-zinc-800 pt-4">
+            <div className="mt-4 border-t border-zinc-800/40 pt-4">
               <p className="text-xs text-zinc-500 mb-2">Trust Score</p>
               <div className="w-48">
                 <TrustScoreBar score={order.trustScore} size="md" />
@@ -81,17 +81,17 @@ export default async function OrderDetailPage({
             </div>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+          <div className="border-t border-zinc-800/40 pt-4">
             <h2 className="text-sm font-semibold text-zinc-300 mb-3">Actions</h2>
             <StatusTransitionButtons orderId={order.id} currentStatus={order.status} />
           </div>
 
           {order.ugcItems.length > 0 && (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div className="border-t border-zinc-800/40 pt-4">
               <h2 className="text-sm font-semibold text-zinc-300 mb-3">UGC Media</h2>
               <div className="space-y-2">
                 {order.ugcItems.map((ugc) => (
-                  <div key={ugc.id} className="flex items-center justify-between rounded-lg bg-zinc-950/50 px-3 py-2">
+                  <div key={ugc.id} className="flex items-center justify-between rounded-md bg-zinc-900/30 px-3 py-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{ugc.mediaType === "video" ? "🎬" : "📸"}</span>
                       <span className="text-xs text-zinc-400">{ugc.mediaUrl.split("/").pop()}</span>
@@ -104,8 +104,8 @@ export default async function OrderDetailPage({
           )}
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <div className="space-y-6">
+          <div>
             <h2 className="text-sm font-semibold text-zinc-300 mb-3">Timeline</h2>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -113,7 +113,7 @@ export default async function OrderDetailPage({
                   {new Date(order.createdAt).toLocaleDateString()}
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="h-2 w-2 rounded-full bg-green-500" />
                   <span className="text-xs text-zinc-300">Order Created</span>
                 </div>
               </div>
@@ -134,11 +134,11 @@ export default async function OrderDetailPage({
           </div>
 
           {order.conversations.length > 0 && (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div className="border-t border-zinc-800/40 pt-4">
               <h2 className="text-sm font-semibold text-zinc-300 mb-3">Conversation</h2>
               <Link
                 href={`/inbox?id=${order.conversations[0].id}`}
-                className="text-sm text-emerald-400 hover:underline"
+                className="text-sm text-amber-400 hover:underline"
               >
                 View in Inbox →
               </Link>

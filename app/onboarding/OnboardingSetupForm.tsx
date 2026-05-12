@@ -46,13 +46,13 @@ export default function OnboardingSetupForm() {
 
   return (
     <div className="mx-auto max-w-lg p-4 sm:p-0">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-        <h1 className="text-xl font-bold text-white">Bienvenue sur UGZIO</h1>
-        <p className="mt-1 text-sm text-zinc-400">Configurez votre boutique pour commencer</p>
+      <div>
+        <h1 className="text-xl font-bold text-zinc-100">Bienvenue sur UGZIO</h1>
+        <p className="mt-1 text-sm text-zinc-500">Configurez votre boutique pour commencer</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label htmlFor="shopName" className="text-sm font-medium text-zinc-300">
+            <label htmlFor="shopName" className="text-sm font-medium text-zinc-400">
               Nom de la boutique
             </label>
             <input
@@ -61,13 +61,13 @@ export default function OnboardingSetupForm() {
               value={shopName}
               onChange={(e) => setShopName(e.target.value)}
               required
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-emerald-500"
+              className="mt-1 w-full rounded-md border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-green-500"
               placeholder="Ma Boutique"
             />
           </div>
 
           <div>
-            <label htmlFor="sellerPhone" className="text-sm font-medium text-zinc-300">
+            <label htmlFor="sellerPhone" className="text-sm font-medium text-zinc-400">
               Numéro de téléphone
             </label>
             <input
@@ -76,13 +76,13 @@ export default function OnboardingSetupForm() {
               value={sellerPhone}
               onChange={(e) => setSellerPhone(e.target.value)}
               required
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-sm text-white placeholder-zinc-600 outline-none focus:border-emerald-500"
+              className="mt-1 w-full rounded-md border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-green-500"
               placeholder="+216 XX XXX XXX"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
+            <div className="rounded-md border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
               {error}
             </div>
           )}
@@ -90,7 +90,7 @@ export default function OnboardingSetupForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
+            className="w-full rounded-md bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-50"
           >
             {loading ? "..." : "Commencer"}
           </button>

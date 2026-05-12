@@ -36,13 +36,13 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
         </span>
       </button>
       {show && (
-        <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-zinc-800 bg-zinc-900 p-3 shadow-xl z-50">
+        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-zinc-800/40 bg-zinc-950 p-3 shadow-xl z-50">
           <p className="text-xs font-semibold text-red-400">{count} high-risk order{count !== 1 ? "s" : ""}</p>
           <p className="mt-1 text-[11px] text-zinc-500">Requires your attention</p>
           <Link
             href="/shield"
             onClick={() => setShow(false)}
-            className="mt-2 block rounded-lg bg-emerald-500 px-3 py-1.5 text-center text-xs font-semibold text-white"
+            className="mt-2 block rounded-md bg-orange-500 px-3 py-1.5 text-center text-xs font-semibold text-white"
           >
             View in ZioShield
           </Link>

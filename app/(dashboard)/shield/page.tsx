@@ -31,51 +31,53 @@ export default async function ShieldPage() {
   });
 
   return (
-    <div>
-      <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">📈</span>
+    <div className="p-4 sm:p-6 space-y-6">
+      <div className="flex items-center gap-3">
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-500/10 text-sm">📈</span>
         <div>
-          <h1 className="text-xl font-bold text-white">Track — ZioShield</h1>
+          <h1 className="text-xl font-bold text-zinc-100">ZioShield</h1>
           <p className="text-xs text-zinc-500">Buyer risk scores & what converts</p>
         </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-          <p className="text-xs font-medium text-zinc-500">Avg Trust Score</p>
-          <p className="text-xl font-bold text-emerald-400">{Math.round(averageScore)}/100</p>
+      <div className="flex gap-6">
+        <div>
+          <p className="text-xs text-zinc-600">Avg Trust Score</p>
+          <p className="text-xl font-bold text-orange-400">{Math.round(averageScore)}/100</p>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-          <p className="text-xs font-medium text-zinc-500">High Risk Orders</p>
+        <div>
+          <p className="text-xs text-zinc-600">High Risk Orders</p>
           <p className={`text-xl font-bold ${highRiskOrders.length > 0 ? "text-red-400" : "text-zinc-500"}`}>{highRiskOrders.length}</p>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-          <p className="text-xs font-medium text-zinc-500">Orders Today</p>
-          <p className="text-xl font-bold text-emerald-400">{todayOrders}</p>
+        <div>
+          <p className="text-xs text-zinc-600">Orders Today</p>
+          <p className="text-xl font-bold text-orange-400">{todayOrders}</p>
         </div>
       </div>
 
-      <h2 className="mb-3 text-lg font-semibold text-zinc-200">Score Breakdown</h2>
-      {allOrders.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
-          <p className="text-zinc-500">No orders to score yet</p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {allOrders.map((order) => (
-            <div key={order.id} className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-zinc-200">{order.buyerName}</p>
-                <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
+      <div className="border-t border-zinc-800/40 pt-6">
+        <h2 className="mb-3 text-sm font-semibold text-zinc-300">Score Breakdown</h2>
+        {allOrders.length === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="text-zinc-500">No orders to score yet</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-zinc-800/40">
+            {allOrders.map((order) => (
+              <div key={order.id} className="flex items-center justify-between px-1 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-zinc-200">{order.buyerName}</p>
+                  <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-3">
+                  <RiskBadge risk={order.riskLevel as "low" | "medium" | "high"} />
+                  <span className="text-sm font-bold text-zinc-300">{order.trustScore}</span>
+                </div>
               </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <RiskBadge risk={order.riskLevel as "low" | "medium" | "high"} />
-                <span className="text-sm font-bold text-zinc-300">{order.trustScore}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

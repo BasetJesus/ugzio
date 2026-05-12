@@ -36,7 +36,7 @@ export default function ConversationList({
           <button
             key={conv.id}
             onClick={() => onSelect(conv.id)}
-            className={`w-full text-left px-4 py-3 transition hover:bg-zinc-900/50 ${isSelected ? "bg-zinc-900/70 border-l-2 border-emerald-500" : ""}`}
+            className={`w-full text-left px-4 py-3 transition hover:bg-zinc-800/20 ${isSelected ? "bg-amber-500/5 border-l-2 border-amber-500" : ""}`}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">

@@ -53,41 +53,41 @@ export default function NewOrderPage() {
   return (
     <div className="mx-auto max-w-lg p-4 sm:p-0">
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-sm">📤</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-green-500/10 text-sm">📤</span>
         <div>
-          <h1 className="text-xl font-bold text-white">Activate — New Order</h1>
+          <h1 className="text-xl font-bold text-zinc-100">New Order</h1>
           <p className="text-xs text-zinc-500">Create a new buyer order</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">{error}</div>
+          <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">{error}</div>
         )}
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-zinc-300">Nom de l&apos;acheteur</label>
-          <input name="buyerName" required className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-emerald-400" placeholder="Ahmed" />
+          <input name="buyerName" required className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-green-500 placeholder:text-zinc-600" placeholder="Ahmed" />
         </div>
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-zinc-300">Téléphone (WhatsApp)</label>
-          <input name="buyerPhone" type="tel" required className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-emerald-400" placeholder="+216 XX XXX XXX" />
+          <input name="buyerPhone" type="tel" required className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-green-500 placeholder:text-zinc-600" placeholder="+216 XX XXX XXX" />
         </div>
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-zinc-300">Produit</label>
-          <input name="product" required className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-emerald-400" placeholder="3abia, parfum..." />
+          <input name="product" required className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-green-500 placeholder:text-zinc-600" placeholder="3abia, parfum..." />
         </div>
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-zinc-300">Montant (TND)</label>
-          <input name="amount" type="number" step="0.5" min="0" required className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-emerald-400" placeholder="0.000" />
+          <input name="amount" type="number" step="0.5" min="0" required className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-green-500 placeholder:text-zinc-600" placeholder="0.000" />
         </div>
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-zinc-300">Wilaya de livraison</label>
-          <select name="buyerWilaya" className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 outline-none transition focus:border-emerald-400">
+          <select name="buyerWilaya" className="w-full rounded-lg border border-zinc-800/50 bg-zinc-900/30 px-4 py-2.5 text-zinc-100 outline-none transition focus:border-green-500">
             <option value="">Sélectionne une wilaya</option>
             {WILAYAS.map((w) => (
               <option key={w} value={w}>{w}</option>
@@ -98,7 +98,7 @@ export default function NewOrderPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
+          className="w-full rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition hover:bg-green-500 disabled:opacity-50"
         >
           {loading ? "Création..." : "Créer la commande"}
         </button>

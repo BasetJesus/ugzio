@@ -72,12 +72,12 @@ export default function OrdersPage() {
     <div className="p-4 sm:p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-xs">📤</span>
-          <h1 className="text-xl font-bold text-white">Activate — Orders</h1>
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-green-500/10 text-xs">📤</span>
+          <h1 className="text-xl font-bold text-zinc-100">Orders</h1>
         </div>
         <Link
           href="/orders/new"
-          className="rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
         >
           + New
         </Link>
@@ -101,31 +101,29 @@ export default function OrdersPage() {
           action={orders.length === 0 ? { label: "Create Order", href: "/orders/new" } : undefined}
         />
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y divide-zinc-800/40">
           {filtered.map((order) => (
             <Link
               key={order.id}
               href={`/orders/${order.id}`}
-              className="block rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 transition hover:border-zinc-700"
+              className="flex items-start justify-between gap-4 px-1 py-3 transition hover:bg-zinc-800/20 -mx-1 rounded"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate font-semibold text-zinc-200">{order.buyerName}</p>
-                    <span className="text-[10px] text-zinc-600">{order.id.slice(0, 8)}</span>
-                  </div>
-                  <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
-                  <p className="mt-0.5 text-xs text-zinc-600">{order.product ?? order.buyerWilaya ?? "—"}</p>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="truncate font-semibold text-zinc-200">{order.buyerName}</p>
+                  <span className="text-[10px] text-zinc-700">{order.id.slice(0, 8)}</span>
                 </div>
-                <div className="shrink-0 text-right">
-                  <p className="font-medium text-emerald-300">{Number(order.amount).toFixed(3)} TND</p>
-                  <div className="mt-1 flex items-center justify-end gap-1.5">
-                    <OrderStatusBadge status={order.status} />
-                    <RiskBadge risk={order.riskLevel as "low" | "medium" | "high"} />
-                  </div>
-                  <div className="mt-2 w-20 ml-auto">
-                    <TrustScoreBar score={order.trustScore} size="sm" />
-                  </div>
+                <p className="truncate text-xs text-zinc-500">{order.buyerPhone}</p>
+                <p className="mt-0.5 text-xs text-zinc-600">{order.product ?? order.buyerWilaya ?? "—"}</p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="font-medium text-green-400">{Number(order.amount).toFixed(3)} TND</p>
+                <div className="mt-1 flex items-center justify-end gap-1.5">
+                  <OrderStatusBadge status={order.status} />
+                  <RiskBadge risk={order.riskLevel as "low" | "medium" | "high"} />
+                </div>
+                <div className="mt-2 w-20 ml-auto">
+                  <TrustScoreBar score={order.trustScore} size="sm" />
                 </div>
               </div>
             </Link>

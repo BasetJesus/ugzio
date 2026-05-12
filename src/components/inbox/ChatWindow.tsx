@@ -81,7 +81,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-zinc-800 p-4">
+      <div className="border-b border-zinc-800/40 p-4">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="font-semibold text-zinc-200">{conversation.buyerName}</h2>
@@ -89,7 +89,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
           </div>
           {conversation.order && (
             <div className="shrink-0 text-right">
-              <p className="font-medium text-emerald-300">{Number(conversation.order.amount).toFixed(3)} TND</p>
+              <p className="font-medium text-amber-400">{Number(conversation.order.amount).toFixed(3)} TND</p>
               <div className="mt-1">
                 <RiskBadge risk={conversation.order.riskLevel as "low" | "medium" | "high"} />
               </div>
@@ -111,12 +111,12 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
             className={`flex ${msg.direction === "outbound" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[75%] rounded-xl px-4 py-2 text-sm ${
+              className={`max-w-[75%] rounded-lg px-4 py-2 text-sm ${
                 msg.direction === "outbound"
-                  ? "bg-emerald-500/20 text-zinc-200"
+                  ? "bg-amber-500/15 text-zinc-200"
                   : msg.channel === "system"
                     ? "bg-zinc-800/30 text-zinc-500 italic"
-                    : "bg-zinc-800 text-zinc-200"
+                    : "bg-zinc-800/50 text-zinc-200"
               }`}
             >
               <p>{msg.content}</p>
@@ -126,7 +126,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
         ))}
       </div>
 
-      <div className="border-t border-zinc-800 p-4">
+      <div className="border-t border-zinc-800/40 p-4">
         <InternalNote
           notes={conversation.notes}
           noteText={noteText}
@@ -136,7 +136,7 @@ export default function ChatWindow({ conversation }: { conversation: ConvDetail 
       </div>
 
       {conversation.order && (
-        <div className="border-t border-zinc-800 p-4">
+        <div className="border-t border-zinc-800/40 p-4">
           <ActivityTimeline events={activeEvents} />
         </div>
       )}
