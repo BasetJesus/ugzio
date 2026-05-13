@@ -65,7 +65,7 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
   return (
     <aside className="hidden w-52 border-r border-zinc-800/40 bg-zinc-950/50 p-3 sm:flex sm:flex-col">
       <div className="mb-5 flex items-center justify-between px-2">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-green-500 text-[10px] font-bold text-white">U</span>
           <span className="text-sm font-bold text-zinc-100">UGZIO</span>
         </Link>
@@ -73,9 +73,9 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
       </div>
       <nav className="flex flex-col gap-3 flex-1">
         <Link
-          href="/"
+          href="/dashboard"
           className={`rounded-md px-2 py-1.5 text-sm transition ${
-            pathname === "/" && !pathname.startsWith("/overview")
+            pathname.startsWith("/dashboard")
               ? "bg-zinc-800/40 text-zinc-100 font-medium"
               : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
           }`}
@@ -138,7 +138,7 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
         <button
           onClick={async () => {
             await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})
-            window.location.href = "/auth/login"
+            window.location.href = "/login"
           }}
           className="mt-2 w-full rounded-md px-2 py-1.5 text-left text-xs text-zinc-600 transition hover:text-red-400"
         >

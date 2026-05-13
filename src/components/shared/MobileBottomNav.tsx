@@ -19,7 +19,7 @@ export default function MobileBottomNav() {
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})
-    window.location.href = "/auth/login"
+    window.location.href = "/login"
   }
 
   return (

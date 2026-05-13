@@ -26,7 +26,7 @@ export default function LoginPage() {
     if (res?.error) {
       setError("Invalid email or password");
     } else {
-      router.push("/");
+      router.push("/overview");
     }
   }
 
@@ -89,7 +89,7 @@ export default function LoginPage() {
 
       <p className="text-center text-xs text-zinc-600">
         Don&apos;t have an account?{" "}
-        <Link href="/auth/register" className="text-green-400 hover:underline">
+        <Link href="/register" className="text-green-400 hover:underline">
           Register
         </Link>
       </p>

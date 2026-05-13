@@ -18,7 +18,7 @@ export default async function OrderDetailPage({
   params: Promise<{ id: string }>
 }) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/api/auth/signin");
+  if (!session?.user?.id) redirect("/login");
 
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");

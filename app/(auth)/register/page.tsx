@@ -32,7 +32,7 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push("/auth/login");
+      router.push("/login");
     } catch {
       setError("Something went wrong");
     } finally {
@@ -115,7 +115,7 @@ export default function RegisterPage() {
 
       <p className="text-center text-xs text-zinc-600">
         Already have an account?{" "}
-        <Link href="/auth/login" className="text-green-400 hover:underline">
+        <Link href="/login" className="text-green-400 hover:underline">
           Sign in
         </Link>
       </p>
