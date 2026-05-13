@@ -12,6 +12,7 @@ interface Props {
   onSelect?: () => void
   submitting?: string | null
   showActions?: boolean
+  previewMessage?: string
 }
 
 function failurePct(item: ConfirmationQueueItem): number {
@@ -49,7 +50,7 @@ function emotionLabel(riskLevel: string): string {
   return "protective"
 }
 
-export default function DecisionCard({ item, psychology, onAction, onSelect, submitting, showActions = true }: Props) {
+export default function DecisionCard({ item, psychology, onAction, onSelect, submitting, showActions = true, previewMessage }: Props) {
   const rl = item.riskLevel
   const pct = failurePct(item)
   const sub = submitting
@@ -129,6 +130,53 @@ export default function DecisionCard({ item, psychology, onAction, onSelect, sub
             className="flex-1 rounded-lg border border-[var(--risk-red)]/30 px-3 py-2 text-xs font-medium text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-50 transition-colors"
           >
             {sub === `${item.orderId}_cancel` ? "..." : "Prevent Loss"}
+          </button>
+        </div>
+      )}
+
+      {showActions && (
+        <div className="flex items-center gap-1.5 mt-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              const msg = previewMessage || `Hey ${item.buyerName}, just confirming your order of ${item.amount.toFixed(0)} TND`;
+              navigator.clipboard.writeText(msg);
+            }}
+            className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
+            title="Copy WhatsApp message"
+          >
+            \uD83D\uDCCB Copy
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(`https://wa.me/${item.buyerPhone.replace(/^\+/, "")}`, "_blank");
+            }}
+            className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
+            title="Open WhatsApp"
+          >
+            \uD83D\uDCF1 WhatsApp
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onAction(item.orderId, "buyer_replied") }}
+            disabled={sub === `${item.orderId}_buyer_replied`}
+            className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:text-[var(--success-green)] hover:border-[var(--success-green-border)] hover:bg-[var(--success-green-bg)] transition-colors disabled:opacity-50"
+          >
+            {sub === `${item.orderId}_buyer_replied` ? "..." : "\u2705 Replied"}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onAction(item.orderId, "delayed") }}
+            disabled={sub === `${item.orderId}_delayed`}
+            className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:text-[var(--warning-amber)] hover:border-[var(--warning-amber-border)] hover:bg-[var(--warning-amber-bg)] transition-colors disabled:opacity-50"
+          >
+            {sub === `${item.orderId}_delayed` ? "..." : "\u23F3 Delay"}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onAction(item.orderId, "wrong_number") }}
+            disabled={sub === `${item.orderId}_wrong_number`}
+            className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:text-[var(--risk-red)] hover:border-[var(--kpi-red-border)] hover:bg-[var(--kpi-red-bg)] transition-colors disabled:opacity-50"
+          >
+            {sub === `${item.orderId}_wrong_number` ? "..." : "\uD83D\uDCF5 Wrong #"}
           </button>
         </div>
       )}

@@ -8,6 +8,7 @@ import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
 import { resolveDeliveryOutcome } from "@/services/attribution.service";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
+import { addEvent } from "@/services/operation-timeline.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
 import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
@@ -160,7 +161,29 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
 
     if (newStatus === "DELIVERED") {
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.ORDER_DELIVERED)
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.DELIVERY_SUCCESS)
+      await addEvent(orgId, orderId, "delivery_completed", "system", {
+        newStatus: "DELIVERED",
+        orderAmount: Number(order.amount),
+        deliverySuccessScore: order.trustScore >= 70 ? 90 : order.trustScore >= 40 ? 60 : 40,
+        deliveryExperienceState: order.trustScore >= 70 ? "highly_satisfied" : order.trustScore >= 40 ? "satisfied" : "neutral",
+      })
       await scheduleD3UgcAsk(orderId);
+    }
+
+    if (newStatus === "UGC_REQUESTED") {
+      await addEvent(orgId, orderId, "ugc_request_sent", "system", {
+        orderAmount: Number(order.amount),
+      })
+    }
+
+    if (newStatus === "UGC_RECEIVED") {
+      await addEvent(orgId, orderId, "ugc_received", "system", {
+        orderAmount: Number(order.amount),
+      })
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.UGC_RECEIVED, {
+        method: "whatsapp",
+      })
     }
 
     if (newStatus === "REFUSED") {

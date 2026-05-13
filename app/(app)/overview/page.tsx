@@ -3,10 +3,17 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { getRevenueAtRisk, getNeedsConfirmCount, getRevenueProtectionStats } from "@/services/demo-orchestrator.service";
+import { getRecentActivity } from "@/services/operation-timeline.service";
+import { getWeeklyStory, getTrustMomentum } from "@/services/behavioral-outcome.service";
 import type { RevenueProtectionStats } from "@/services/demo-orchestrator.service";
+import type { OperationEventRecord } from "@/services/operation-timeline.service";
+import type { WeeklyStory, TrustMomentumData } from "@/services/behavioral-outcome.service";
 import KpiCard, { MiniKpiCard } from "@/components/shared/KpiCard";
 import RevenueShield from "@/components/shared/RevenueShield";
 import SystemNarrative from "@/components/shared/SystemNarrative";
+import OperationalFeed from "@/components/live/OperationalFeed";
+import RevenueStoryCard from "@/components/shared/RevenueStoryCard";
+import TrustMomentumCard from "@/components/shared/TrustMomentumCard";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +25,15 @@ export default async function OverviewPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
-  let [revenueAtRisk, needsAction, protectionStats] = [0, 0, null as RevenueProtectionStats | null];
+  let [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as WeeklyStory | null, null as TrustMomentumData | null];
   try {
-    [revenueAtRisk, needsAction, protectionStats] = await Promise.all([
+    [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum] = await Promise.all([
       getRevenueAtRisk(orgId),
       getNeedsConfirmCount(orgId),
       getRevenueProtectionStats(orgId),
+      getRecentActivity(orgId, 8),
+      getWeeklyStory(orgId),
+      getTrustMomentum(orgId),
     ]);
   } catch (e) {
     console.error("[overview] service error", e);
@@ -129,6 +139,19 @@ export default async function OverviewPage() {
             to start protecting revenue
           </p>
         </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-panel">
+        <div className="lg:col-span-2">
+          <RevenueStoryCard story={weeklyStory!} />
+        </div>
+        <div>
+          <OperationalFeed events={recentActivity} />
+        </div>
+      </div>
+
+      {trustMomentum && (
+        <TrustMomentumCard data={trustMomentum} />
       )}
     </div>
   );

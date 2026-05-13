@@ -6,6 +6,7 @@ import { recordOutcome } from "@/services/operation-outcome.service";
 import { getProviderRtsCost } from "@/services/delivery-provider.service";
 import { recordAction } from "@/services/attribution.service";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
+import { addEvent } from "@/services/operation-timeline.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import type { OrderStatus } from "@/types/order";
 
@@ -221,6 +222,11 @@ export async function markConfirmed(
       trustDelta: 15,
     })
 
+    await addEvent(orgId, orderId, "confirmed", "operator", {
+      method,
+      orderAmount: Number(order.amount),
+    })
+
     if (order.status === "CREATED") {
       const result = await transitionOrderStatus(orgId, orderId, "BUYER_CONFIRMED" as OrderStatus)
       if (result) {
@@ -287,6 +293,11 @@ export async function markUnreachable(
       attemptMethod: method,
     })
 
+    await addEvent(orgId, orderId, "unreachable", "operator", {
+      method,
+      orderAmount: Number(order.amount),
+    })
+
     return { success: true }
   } catch {
     return { success: false }
@@ -346,6 +357,11 @@ export async function markSuspicious(
       trustDelta: -20,
     })
 
+    await addEvent(orgId, orderId, "operator_note", "operator", {
+      note: notes ?? "Marked suspicious",
+      orderAmount: Number(order.amount),
+    })
+
     return { success: true }
   } catch {
     return { success: false }
@@ -395,6 +411,11 @@ export async function scheduleRetry(
         notes: notes ?? null,
       })
     }
+
+    await addEvent(orgId, orderId, "retry_scheduled", "operator", {
+      notes: notes ?? null,
+      orderAmount: Number(order.amount),
+    })
 
     return { success: true }
   } catch {
@@ -457,6 +478,11 @@ export async function cancelOrder(
       reason,
       cancelledBy: operator,
       lossPrevented: outcome.lossPrevented,
+    })
+
+    await addEvent(orgId, orderId, "cancelled", "operator", {
+      reason,
+      orderAmount: Number(order.amount),
     })
 
     const result = await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)

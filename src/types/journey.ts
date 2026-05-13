@@ -14,6 +14,11 @@ export const JOURNEY_EVENT_TYPES = {
   BUYER_RETRY_SCHEDULED: "BUYER_RETRY_SCHEDULED",
   ORDER_DELIVERED: "ORDER_DELIVERED",
   ORDER_CANCELLED: "ORDER_CANCELLED",
+  UGC_REQUEST_SENT: "UGC_REQUEST_SENT",
+  UGC_RECEIVED: "UGC_RECEIVED",
+  CUSTOMER_STORY_SHARED: "CUSTOMER_STORY_SHARED",
+  REVIEW_RECEIVED: "REVIEW_RECEIVED",
+  DELIVERY_SUCCESS: "DELIVERY_SUCCESS",
 } as const
 
 export type JourneyEventType = (typeof JOURNEY_EVENT_TYPES)[keyof typeof JOURNEY_EVENT_TYPES]
@@ -34,6 +39,11 @@ export const JOURNEY_EVENT_LABELS: Record<JourneyEventType, string> = {
   BUYER_RETRY_SCHEDULED: "Retry scheduled",
   ORDER_DELIVERED: "Delivered",
   ORDER_CANCELLED: "Cancelled",
+  UGC_REQUEST_SENT: "UGC request sent",
+  UGC_RECEIVED: "UGC received",
+  CUSTOMER_STORY_SHARED: "Customer shared story",
+  REVIEW_RECEIVED: "Review received",
+  DELIVERY_SUCCESS: "Delivery completed",
 }
 
 export type BehaviorTag = "responsive" | "hesitant" | "ghosting" | "engaged" | "high-friction"

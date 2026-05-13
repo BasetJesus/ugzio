@@ -287,6 +287,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
             key={item.orderId}
             item={item}
             psychology={psychologyMap?.[item.orderId]}
+            previewMessage={psychologyMap?.[item.orderId]?.previewMessage}
             onAction={performAction}
             submitting={submitting}
             onSelect={() => {

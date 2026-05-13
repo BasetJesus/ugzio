@@ -19,12 +19,17 @@ const TAG_STYLES: Record<BehaviorTag, string> = {
 const DOT_COLORS: Record<string, string> = {
   BUYER_CONFIRMED: "bg-[var(--success-green)]",
   ORDER_DELIVERED: "bg-[var(--success-green)]",
+  DELIVERY_SUCCESS: "bg-[var(--success-green)]",
   BUYER_RESPONDED: "bg-[var(--accent)]",
   BUYER_CONTACT_ATTEMPTED: "bg-[var(--border)]",
   BUYER_EXPRESSED_HESITATION: "bg-[var(--warning-amber)]",
   BUYER_STOPPED_RESPONDING: "bg-[var(--risk-red)]",
   BUYER_REFUSED: "bg-[var(--risk-red)]",
   ORDER_CANCELLED: "bg-[var(--risk-red)]",
+  UGC_REQUEST_SENT: "bg-[var(--psych-reassurance)]",
+  UGC_RECEIVED: "bg-[var(--accent)]",
+  CUSTOMER_STORY_SHARED: "bg-[var(--psych-reminder)]",
+  REVIEW_RECEIVED: "bg-[var(--warning-amber)]",
 }
 
 function dotColor(eventType: string): string {

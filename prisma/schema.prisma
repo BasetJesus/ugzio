@@ -405,6 +405,21 @@ model BuyerJourneyEvent {
   @@index([occurredAt])
 }
 
+// ─── OPERATION TIMELINE (v4) ────────────────────────────────────────────────
+
+model OperationEvent {
+  id             String   @id @default(cuid())
+  organizationId String
+  orderId        String
+  type           String   // message_sent|whatsapp_opened|buyer_replied|confirmed|unreachable|cancelled|retry_scheduled|operator_note|sequence_selected
+  metadata       String?  // JSON blob, never queried by value
+  actorType      String   // system|operator|buyer
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, orderId])
+  @@index([organizationId, createdAt])
+}
+
 // ─── COMPLIANCE (v3) ─────────────────────────────────────────────────────────
 
 model BuyerDeletionRequest {

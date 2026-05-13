@@ -126,3 +126,33 @@ export {
   getPendingOutcomeOrders,
 } from "./demo-orchestrator.service";
 export type { PendingOutcomeOrder } from "./confirmation.service";
+
+export {
+  addEvent,
+  getOrderTimeline,
+  getRecentActivity,
+} from "./operation-timeline.service";
+export type { OperationEventRecord, OperationEventType, ActorType } from "./operation-timeline.service";
+
+export {
+  getSequenceEffectiveness,
+  getWeeklyStory,
+  getTrustMomentum,
+  getBehavioralInsights,
+} from "./behavioral-outcome.service";
+export type { BehavioralInsight, SequenceEffectiveness, WeeklyStory, TrustMomentumData } from "./behavioral-outcome.service";
+
+export {
+  calculateUgcProbability,
+  getUgcIntelligence,
+  getUgcOpportunities,
+  getUgcMessage,
+  getUgcRequestTypes,
+} from "./ugc-intelligence.service";
+export type { UgcProbabilityScore, UgcFactor, UgcRequestType } from "./ugc-intelligence.service";
+
+export {
+  getOrderMemory,
+  getBuyerMemory,
+} from "./behavioral-memory.service";
+export type { OrderMemory, BuyerMemory } from "./behavioral-memory.service";
