@@ -1,57 +1,107 @@
 import { DEMO_MODE } from "@/lib/demo/demo-config";
+import type { OverviewData } from "@/services/overview.service";
+import type { ConfirmationQueue } from "@/services/confirmation.service";
+import type { OrdersPageData } from "@/types/order";
 
-async function importDemo<R>(modPath: string, fn: string, args: unknown[]): Promise<R> {
-  const mod = await import(modPath);
-  return (mod[fn] as (...a: typeof args) => R)(...args);
+export const EMPTY_OVERVIEW_DATA: OverviewData = {
+  stats: {
+    ordersToday: 0, ordersThisWeek: 0, revenueToday: 0, revenueThisWeek: 0,
+    atRiskOrders: 0, pendingVerifications: 0, ugcReceived: 0, deliveredRate: 0,
+  },
+  liveOrders: [],
+  riskAlerts: [],
+  ugcOpportunities: [],
+};
+
+export const EMPTY_CONFIRMATION_QUEUE: ConfirmationQueue = {
+  items: [], total: 0, pendingCount: 0, contactedCount: 0,
+};
+
+export const EMPTY_ORDERS_PAGE_DATA: OrdersPageData = {
+  stats: { total: 0, atRisk: 0, pendingToday: 0, revenueTotal: 0, deliveredRate: 0 },
+  orders: [],
+};
+
+export const EMPTY_NUMBER = 0;
+
+export function getEmptyState(): OverviewData {
+  return EMPTY_OVERVIEW_DATA;
 }
 
-async function importReal<R>(modPath: string, fn: string, args: unknown[]): Promise<R> {
-  const mod = await import(modPath);
-  return (mod[fn] as (...a: typeof args) => R)(...args);
+async function demoValue<R>(fn: () => Promise<R>, fallback: R): Promise<R> {
+  try {
+    return await fn();
+  } catch {
+    return fallback;
+  }
 }
 
 // ── Overview ──
 
-export async function getOverviewData(orgId: string) {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    return mod.getDemoOverviewData(orgId);
+export async function getOverviewData(orgId: string): Promise<OverviewData> {
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoOverviewData(orgId);
+    }
+    const mod = await import("@/services/overview.service");
+    return mod.getOverviewData(orgId);
+  } catch {
+    return EMPTY_OVERVIEW_DATA;
   }
-  const mod = await import("@/services/overview.service");
-  return mod.getOverviewData(orgId);
 }
 
 export async function getRevenueAtRisk(orgId: string): Promise<number> {
   if (DEMO_MODE) {
-    return await importDemo<number>("@/lib/demo/demo-engine", "getDemoRevenueAtRisk", [orgId]);
+    return demoValue(async () => {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoRevenueAtRisk(orgId);
+    }, 0);
   }
-  return await importReal<number>("@/services/risk.service", "getRevenueAtRisk", [orgId]);
+  return demoValue(async () => {
+    const mod = await import("@/services/risk.service");
+    return mod.getRevenueAtRisk(orgId);
+  }, 0);
 }
 
 export async function getNeedsConfirmCount(orgId: string): Promise<number> {
   if (DEMO_MODE) {
-    return await importDemo<number>("@/lib/demo/demo-engine", "getDemoNeedsConfirmCount", [orgId]);
+    return demoValue(async () => {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoNeedsConfirmCount(orgId);
+    }, 0);
   }
-  return await importReal<number>("@/services/risk.service", "getNeedsConfirmCount", [orgId]);
+  return demoValue(async () => {
+    const mod = await import("@/services/risk.service");
+    return mod.getNeedsConfirmCount(orgId);
+  }, 0);
 }
 
 // ── Confirmation ──
 
-export async function getConfirmationQueue(orgId: string) {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    return mod.getDemoConfirmationQueue(orgId);
+export async function getConfirmationQueue(orgId: string): Promise<ConfirmationQueue> {
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoConfirmationQueue(orgId);
+    }
+    const mod = await import("@/services/confirmation.service");
+    return mod.getConfirmationQueue(orgId);
+  } catch {
+    return EMPTY_CONFIRMATION_QUEUE;
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.getConfirmationQueue(orgId);
 }
 
 export async function getConfirmationDetail(orgId: string, orderId: string) {
-  if (DEMO_MODE) {
+  try {
+    if (DEMO_MODE) {
+      return null;
+    }
+    const mod = await import("@/services/confirmation.service");
+    return mod.getConfirmationDetail(orgId, orderId);
+  } catch {
     return null;
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.getConfirmationDetail(orgId, orderId);
 }
 
 export async function markConfirmed(
@@ -61,13 +111,17 @@ export async function markConfirmed(
   method: string = "manual_call",
   notes?: string,
 ): Promise<void> {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    mod.updateDemoOrderState(orgId, orderId, "confirm");
-    return;
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      mod.updateDemoOrderState(orgId, orderId, "confirm");
+      return;
+    }
+    const mod = await import("@/services/confirmation.service");
+    await mod.markConfirmed(orgId, orderId, operator, method, notes);
+  } catch {
+    // silent fallback
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.markConfirmed(orgId, orderId, operator, method, notes);
 }
 
 export async function markUnreachable(
@@ -76,13 +130,17 @@ export async function markUnreachable(
   method: string = "manual_call",
   notes?: string,
 ): Promise<void> {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    mod.updateDemoOrderState(orgId, orderId, "unreachable");
-    return;
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      mod.updateDemoOrderState(orgId, orderId, "unreachable");
+      return;
+    }
+    const mod = await import("@/services/confirmation.service");
+    await mod.markUnreachable(orgId, orderId, method, notes);
+  } catch {
+    // silent fallback
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.markUnreachable(orgId, orderId, method, notes);
 }
 
 export async function markSuspicious(
@@ -90,11 +148,15 @@ export async function markSuspicious(
   orderId: string,
   notes?: string,
 ): Promise<void> {
-  if (DEMO_MODE) {
-    return;
+  try {
+    if (DEMO_MODE) {
+      return;
+    }
+    const mod = await import("@/services/confirmation.service");
+    await mod.markSuspicious(orgId, orderId, notes);
+  } catch {
+    // silent fallback
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.markSuspicious(orgId, orderId, notes);
 }
 
 export async function scheduleRetry(
@@ -102,11 +164,15 @@ export async function scheduleRetry(
   orderId: string,
   notes?: string,
 ): Promise<void> {
-  if (DEMO_MODE) {
-    return;
+  try {
+    if (DEMO_MODE) {
+      return;
+    }
+    const mod = await import("@/services/confirmation.service");
+    await mod.scheduleRetry(orgId, orderId, notes);
+  } catch {
+    // silent fallback
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.scheduleRetry(orgId, orderId, notes);
 }
 
 export async function cancelOrder(
@@ -115,31 +181,43 @@ export async function cancelOrder(
   reason: string,
   operator: string,
 ): Promise<void> {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    mod.updateDemoOrderState(orgId, orderId, "cancel");
-    return;
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      mod.updateDemoOrderState(orgId, orderId, "cancel");
+      return;
+    }
+    const mod = await import("@/services/confirmation.service");
+    await mod.cancelOrder(orgId, orderId, reason, operator);
+  } catch {
+    // silent fallback
   }
-  const mod = await import("@/services/confirmation.service");
-  return mod.cancelOrder(orgId, orderId, reason, operator);
 }
 
 // ── Orders ──
 
-export async function getOrdersPageData(orgId: string) {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    return mod.getDemoOrdersPageData(orgId);
+export async function getOrdersPageData(orgId: string): Promise<OrdersPageData> {
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoOrdersPageData(orgId);
+    }
+    const mod = await import("@/services/order.service");
+    return mod.getOrdersPageData(orgId);
+  } catch {
+    return EMPTY_ORDERS_PAGE_DATA;
   }
-  const mod = await import("@/services/order.service");
-  return mod.getOrdersPageData(orgId);
 }
 
 export async function listOrders(orgId: string) {
-  if (DEMO_MODE) {
-    const mod = await import("@/lib/demo/demo-engine");
-    return mod.generateDemoOrders(orgId);
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.generateDemoOrders(orgId);
+    }
+    const mod = await import("@/services/order.service");
+    return mod.listOrders(orgId);
+  } catch {
+    return [];
   }
-  const mod = await import("@/services/order.service");
-  return mod.listOrders(orgId);
 }

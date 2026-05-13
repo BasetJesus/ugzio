@@ -43,20 +43,20 @@ export default function RiskAlerts({ orders }: { orders: Order[] }) {
   }
 
   return (
-    <div className="border border-red-900/30 rounded-lg p-4 space-y-3">
-      <h2 className="text-sm font-semibold text-red-400">🔴 High Risk Orders</h2>
+    <div className="border border-[var(--kpi-red-border)] rounded-lg p-4 space-y-3 bg-[var(--kpi-red-bg)]">
+      <h2 className="text-sm font-semibold text-[var(--risk-red)]">🔴 High Risk Orders</h2>
       {orders.map((order) => (
         <div key={order.id} className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-zinc-200">{order.buyerName}</p>
-            <p className="text-xs text-zinc-500">{order.buyerPhone}</p>
-            <p className="mt-1 text-xs text-zinc-400">{Number(order.amount).toFixed(3)} TND · Score {order.trustScore}/100</p>
+            <p className="font-medium text-[var(--text-primary)]">{order.buyerName}</p>
+            <p className="text-xs text-[var(--text-secondary)]">{order.buyerPhone}</p>
+            <p className="mt-1 text-xs text-[var(--text-tertiary)]">{Number(order.amount).toFixed(3)} TND · Score {order.trustScore}/100</p>
           </div>
           <div className="shrink-0">
             <button
               onClick={() => handleSendConfirm(order.id)}
               disabled={sendingId !== null}
-              className="rounded-md bg-green-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-green-500 disabled:opacity-50"
+              className="rounded-md bg-[var(--accent)] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
             >
               {sendingId === order.id ? "..." : "Send WhatsApp Confirm"}
             </button>
@@ -64,7 +64,7 @@ export default function RiskAlerts({ orders }: { orders: Order[] }) {
         </div>
       ))}
       {error && (
-        <div className="rounded-md border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
+        <div className="rounded-md border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
           {error}
         </div>
       )}

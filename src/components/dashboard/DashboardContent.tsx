@@ -73,20 +73,20 @@ const PILLAR_CARDS = [
 ] as const
 
 const ACCENT_TEXT: Record<string, string> = {
-  green: "text-green-500",
-  amber: "text-amber-400",
+  green: "text-[var(--success-green)]",
+  amber: "text-[var(--warning-amber)]",
   orange: "text-orange-400",
 }
 
 const ACCENT_BG: Record<string, string> = {
-  green: "bg-green-500/10",
-  amber: "bg-amber-500/10",
+  green: "bg-[var(--success-green-bg)]",
+  amber: "bg-[var(--warning-amber-bg)]",
   orange: "bg-orange-500/10",
 }
 
 const ACCENT_STAT: Record<string, string> = {
-  green: "text-green-400",
-  amber: "text-amber-400",
+  green: "text-[var(--success-green)]",
+  amber: "text-[var(--warning-amber)]",
   orange: "text-orange-400",
 }
 
@@ -97,12 +97,12 @@ export default function DashboardContent(props: Props) {
     <div className="p-4 sm:p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-zinc-100">{t("nav.dashboard")}</h1>
-          <p className="text-sm text-zinc-500">{t("dash.title")}</p>
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">{t("nav.dashboard")}</h1>
+          <p className="text-sm text-[var(--text-secondary)]">{t("dash.title")}</p>
         </div>
         <Link
           href="/orders/new"
-          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
+          className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)]"
         >
           {t("common.new-order")}
         </Link>
@@ -110,26 +110,26 @@ export default function DashboardContent(props: Props) {
 
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <p className="text-xs text-zinc-600">{t("dash.rts-prevented")}</p>
-          <p className="mt-0.5 text-2xl font-bold text-green-400">{props.rtsPrevented}%</p>
+          <p className="text-xs text-[var(--text-tertiary)]">{t("dash.rts-prevented")}</p>
+          <p className="mt-0.5 text-2xl font-bold text-[var(--success-green)]">{props.rtsPrevented}%</p>
         </div>
         <div>
-          <p className="text-xs text-zinc-600">{t("dash.revenue-saved")}</p>
-          <p className="mt-0.5 text-2xl font-bold text-green-400">{props.revenueSavedAmount} TND</p>
+          <p className="text-xs text-[var(--text-tertiary)]">{t("dash.revenue-saved")}</p>
+          <p className="mt-0.5 text-2xl font-bold text-[var(--success-green)]">{props.revenueSavedAmount} TND</p>
         </div>
         <div>
-          <p className="text-xs text-zinc-600">{t("dash.delivered-rate")}</p>
-          <p className="mt-0.5 text-2xl font-bold text-green-400">{props.deliveredRate}%</p>
+          <p className="text-xs text-[var(--text-tertiary)]">{t("dash.delivered-rate")}</p>
+          <p className="mt-0.5 text-2xl font-bold text-[var(--success-green)]">{props.deliveredRate}%</p>
         </div>
       </div>
 
-      <div className="border-t border-zinc-800/50 pt-6">
+      <div className="border-t border-[var(--nav-border)] pt-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {PILLAR_CARDS.map((pillar) => (
             <Link
               key={pillar.key}
               href={pillar.href}
-              className="group rounded-xl border border-zinc-800/50 p-5 transition hover:border-zinc-700/50"
+              className="group rounded-xl border border-[var(--border)] p-5 transition hover:border-[var(--text-tertiary)] bg-[var(--bg-card)]"
             >
               <div className="flex items-center gap-3 mb-3">
                 <span className={`flex h-9 w-9 items-center justify-center rounded-lg text-base ${ACCENT_BG[pillar.accent]}`}>
@@ -137,7 +137,7 @@ export default function DashboardContent(props: Props) {
                 </span>
                 <div>
                   <h3 className={`font-semibold text-sm ${ACCENT_TEXT[pillar.accent]}`}>{t(pillar.titleKey)}</h3>
-                  <p className="text-xs text-zinc-600">{t(pillar.descKey)}</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">{t(pillar.descKey)}</p>
                 </div>
               </div>
               <div className="flex gap-3">
@@ -145,10 +145,10 @@ export default function DashboardContent(props: Props) {
                   const alert = stat.alert?.(props)
                   return (
                     <div key={stat.key} className="flex-1">
-                      <p className={`text-lg font-bold ${alert ? ACCENT_STAT[pillar.accent] : "text-zinc-300"}`}>
+                      <p className={`text-lg font-bold ${alert ? ACCENT_STAT[pillar.accent] : "text-[var(--text-primary)]"}`}>
                         {stat.get(props)}
                       </p>
-                      <p className="text-[10px] text-zinc-600">{t(stat.labelKey)}</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)]">{t(stat.labelKey)}</p>
                     </div>
                   )
                 })}
@@ -160,26 +160,26 @@ export default function DashboardContent(props: Props) {
 
       <RiskAlerts orders={props.riskAlerts} />
 
-      <div className="border-t border-zinc-800/50 pt-6">
+      <div className="border-t border-[var(--nav-border)] pt-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-zinc-300">{t("dash.recent-orders")}</h3>
-              <Link href="/orders" className="text-xs font-medium text-green-400 hover:underline">{t("dash.view-all")}</Link>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t("dash.recent-orders")}</h3>
+              <Link href="/orders" className="text-xs font-medium text-[var(--accent)] hover:underline">{t("dash.view-all")}</Link>
             </div>
-            <div className="divide-y divide-zinc-800/50">
+            <div className="divide-y divide-[var(--nav-border)]">
               {props.recentOrders.map((o) => (
                 <Link
                   key={o.id}
                   href={`/orders/${o.id}`}
-                  className="flex items-center justify-between px-1 py-2.5 transition hover:bg-zinc-800/20 -mx-1 rounded"
+                  className="flex items-center justify-between px-1 py-2.5 transition hover:bg-[var(--table-row-hover)] -mx-1 rounded"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-zinc-300">{o.buyerName}</p>
-                    <p className="truncate text-xs text-zinc-600">{o.product ?? o.buyerPhone}</p>
+                    <p className="truncate text-sm font-medium text-[var(--text-primary)]">{o.buyerName}</p>
+                    <p className="truncate text-xs text-[var(--text-tertiary)]">{o.product ?? o.buyerPhone}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-zinc-200">{Number(o.amount).toFixed(3)} TND</p>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">{Number(o.amount).toFixed(3)} TND</p>
                   </div>
                 </Link>
               ))}

@@ -24,11 +24,11 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
   const showOnboarding = completedCount < 4
 
   return (
-    <aside className="hidden w-52 border-r border-zinc-800/40 bg-zinc-950/50 p-3 sm:flex sm:flex-col">
+    <aside className="hidden w-52 border-r border-[var(--nav-border)] bg-[var(--nav-bg)] p-3 sm:flex sm:flex-col">
       <div className="mb-5 flex items-center justify-between px-2">
         <Link href="/overview" className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-600 text-[10px] font-bold text-white">U</span>
-          <span className="text-sm font-bold text-zinc-100">UGZIO</span>
+          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--accent)] text-[10px] font-bold text-white">U</span>
+          <span className="text-sm font-bold text-[var(--text-primary)]">UGZIO</span>
         </Link>
         <NotificationBell orgId={orgId} />
       </div>
@@ -41,8 +41,8 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
               href={item.href}
               className={`rounded-md px-2 py-1.5 text-sm transition ${
                 active
-                  ? "bg-purple-600/20 text-purple-400 font-medium"
-                  : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
+                  ? "bg-[var(--accent)]/20 text-[var(--accent)] font-medium"
+                  : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
               }`}
             >
               {item.icon} {t(item.labelKey)}
@@ -51,24 +51,24 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
         })}
       </nav>
       {showOnboarding && (
-        <div className="pt-3 border-t border-zinc-800/40">
+        <div className="pt-3 border-t border-[var(--nav-border)]">
           <Link
             href="/onboarding"
-            className="block rounded-md bg-green-500/10 px-2 py-1.5 text-xs font-medium text-green-400 transition hover:bg-green-500/20"
+            className="block rounded-md bg-[var(--success-green-bg)] px-2 py-1.5 text-xs font-medium text-[var(--success-green)] transition hover:bg-[var(--success-green-bg)]/80"
           >
             {t("nav.onboarding").replace("{n}", String(completedCount))}
           </Link>
         </div>
       )}
-      <div className="pt-3 border-t border-zinc-800/40 mt-3">
-        <p className="truncate px-2 text-xs text-zinc-600">{orgName}</p>
-        <p className="px-2 text-[10px] text-zinc-700">{planName}</p>
+      <div className="pt-3 border-t border-[var(--nav-border)] mt-3">
+        <p className="truncate px-2 text-xs text-[var(--text-tertiary)]">{orgName}</p>
+        <p className="px-2 text-[10px] text-[var(--text-tertiary)] opacity-60">{planName}</p>
         <button
           onClick={async () => {
             await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})
             window.location.href = "/login"
           }}
-          className="mt-2 w-full rounded-md px-2 py-1.5 text-left text-xs text-zinc-600 transition hover:text-red-400"
+          className="mt-2 w-full rounded-md px-2 py-1.5 text-left text-xs text-[var(--text-tertiary)] transition hover:text-[var(--risk-red)]"
         >
           {t("nav.logout")}
         </button>

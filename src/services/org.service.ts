@@ -183,8 +183,59 @@ export function getActivationStatus(orgId: string, events: { eventType: string }
   }
 }
 
-export function ensureOrgAccess(orgId: string): void {
+export function ensureOrgAccess(orgId: string): boolean {
   if (!orgId || typeof orgId !== "string") {
-    throw new Error("Organization access denied")
+    return false
+  }
+  return true
+}
+
+export async function getOrgWithPlan(orgId: string): Promise<{ name: string; planName: string } | null> {
+  try {
+    const org = await prisma.organization.findUnique({
+      where: { id: orgId },
+      include: { subscription: { include: { plan: true } } },
+    });
+    if (!org) return null;
+    return {
+      name: org.name,
+      planName: org.subscription?.plan?.name ?? "free",
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getActivationEventCount(orgId: string): Promise<number> {
+  try {
+    const count = await prisma.activationEvent.count({
+      where: { organizationId: orgId },
+    });
+    return count;
+  } catch {
+    return 0;
+  }
+}
+
+export async function getOrderCount(orgId: string): Promise<number> {
+  try {
+    const count = await prisma.order.count({
+      where: { organizationId: orgId, deletedAt: null },
+    });
+    return count;
+  } catch {
+    return 0;
+  }
+}
+
+export async function getActivationEvents(orgId: string): Promise<{ eventType: string }[]> {
+  try {
+    const events = await prisma.activationEvent.findMany({
+      where: { organizationId: orgId },
+      select: { eventType: true },
+    });
+    return events;
+  } catch {
+    return [];
   }
 }

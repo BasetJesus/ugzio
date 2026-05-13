@@ -7,14 +7,14 @@ interface Props {
   size?: "sm" | "md" | "lg";
 }
 
-const TEXT_COLORS = { low: "text-red-400", medium: "text-orange-400", high: "text-green-400" };
+const TEXT_COLORS = { low: "text-[var(--risk-red)]", medium: "text-orange-400", high: "text-[var(--success-green)]" };
 const heights = { sm: "h-1.5", md: "h-2", lg: "h-3" };
 
 export default function TrustScoreBar({ score, size = "md" }: Props) {
   const level = determineTrustLevel(score);
   return (
     <div className="w-full">
-      <div className={`w-full overflow-hidden rounded-full bg-zinc-800 ${heights[size]}`}>
+      <div className={`w-full overflow-hidden rounded-full bg-[var(--border)] ${heights[size]}`}>
         <div
           className={`${heights[size]} rounded-full transition-all duration-500 ${getTrustBarColor(score)}`}
           style={{ width: `${score}%` }}

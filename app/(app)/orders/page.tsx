@@ -1,17 +1,31 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
+import { redirect } from "next/navigation";
+import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { getOrdersPageData } from "@/services/demo-orchestrator.service"
-import { requireSession } from "@/services/auth.service"
+import type { OrdersPageData } from "@/types/order"
 import OrdersHeader from "@/components/orders/OrdersHeader"
 import OrdersPageClient from "@/components/orders/OrdersPageClient"
 
 export const dynamic = "force-dynamic"
 
 export default async function OrdersPage() {
-  const { orgId } = await requireSession()
-  const data = await getOrdersPageData(orgId)
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) redirect("/login");
+
+  const orgId = await getOrgFromUserId(session.user.id);
+  if (!orgId) redirect("/onboarding");
+
+  let data: OrdersPageData = { stats: { total: 0, atRisk: 0, pendingToday: 0, revenueTotal: 0, deliveredRate: 0 }, orders: [] };
+  try {
+    data = await getOrdersPageData(orgId);
+  } catch (e) {
+    console.error("[orders] service error", e);
+  }
 
   return (
-    <div className="p-4 sm:p-6 space-y-4">
-      <h1 className="text-xl font-bold text-zinc-100">Orders</h1>
+    <div data-state="history" className="space-y-4">
+      <h1 className="text-xl font-bold text-[var(--text-primary)]">Order History</h1>
       <OrdersHeader stats={data.stats} />
       <OrdersPageClient orders={data.orders} />
     </div>

@@ -46,6 +46,7 @@ export interface ConfirmationQueue {
 }
 
 export async function getConfirmationQueue(orgId: string): Promise<ConfirmationQueue> {
+  try {
   const orders = await prisma.order.findMany({
     where: {
       organizationId: orgId,
@@ -94,6 +95,9 @@ export async function getConfirmationQueue(orgId: string): Promise<ConfirmationQ
     total: items.length,
     pendingCount: items.filter((i) => i.confirmStatus === "pending_confirmation").length,
     contactedCount: items.filter((i) => i.confirmStatus === "contacted").length,
+  }
+  } catch {
+    return { items: [], total: 0, pendingCount: 0, contactedCount: 0 };
   }
 }
 
@@ -149,44 +153,49 @@ export async function markConfirmed(
   operator: string,
   method: string = "manual_call",
   notes?: string,
-): Promise<void> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  })
-  if (!order) throw new Error("Order not found")
+): Promise<{ success: boolean }> {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    })
+    if (!order) return { success: false }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { confirmStatus: "confirmed" },
-  })
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { confirmStatus: "confirmed" },
+    })
 
-  await logAttempt(orgId, orderId, method, "confirmed", notes, operator)
+    await logAttempt(orgId, orderId, method, "confirmed", notes, operator)
 
-  emit("ORDER_CONFIRMED", {
-    orderId,
-    orgId,
-    buyerName: order.buyerName,
-    buyerPhone: order.buyerPhone,
-    amount: Number(order.amount),
-    confirmedBy: operator,
-    method,
-  })
+    emit("ORDER_CONFIRMED", {
+      orderId,
+      orgId,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      amount: Number(order.amount),
+      confirmedBy: operator,
+      method,
+    })
 
-  emit("CUSTOMER_VERIFIED", {
-    orderId,
-    orgId,
-    buyerName: order.buyerName,
-    buyerPhone: order.buyerPhone,
-    verified: true,
-    trustDelta: 15,
-  })
+    emit("CUSTOMER_VERIFIED", {
+      orderId,
+      orgId,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      verified: true,
+      trustDelta: 15,
+    })
 
-  if (order.status === "CREATED") {
-    try {
-      await transitionOrderStatus(orgId, orderId, "BUYER_CONFIRMED" as OrderStatus)
-    } catch {
-      // state machine may not allow transition; confirmStatus is already set
+    if (order.status === "CREATED") {
+      const result = await transitionOrderStatus(orgId, orderId, "BUYER_CONFIRMED" as OrderStatus)
+      if (result) {
+        // state machine may not allow transition; confirmStatus is already set
+      }
     }
+
+    return { success: true }
+  } catch {
+    return { success: false }
   }
 }
 
@@ -195,71 +204,89 @@ export async function markUnreachable(
   orderId: string,
   method: string = "manual_call",
   notes?: string,
-): Promise<void> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  })
-  if (!order) throw new Error("Order not found")
+): Promise<{ success: boolean }> {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    })
+    if (!order) return { success: false }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { confirmStatus: "unreachable" },
-  })
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { confirmStatus: "unreachable" },
+    })
 
-  await logAttempt(orgId, orderId, method, "unreachable", notes, undefined)
+    await logAttempt(orgId, orderId, method, "unreachable", notes, undefined)
 
-  emit("ORDER_UNREACHABLE", {
-    orderId,
-    orgId,
-    buyerName: order.buyerName,
-    buyerPhone: order.buyerPhone,
-    attemptMethod: method,
-  })
+    emit("ORDER_UNREACHABLE", {
+      orderId,
+      orgId,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      attemptMethod: method,
+    })
+
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
 }
 
 export async function markSuspicious(
   orgId: string,
   orderId: string,
   notes?: string,
-): Promise<void> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  })
-  if (!order) throw new Error("Order not found")
+): Promise<{ success: boolean }> {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    })
+    if (!order) return { success: false }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { confirmStatus: "suspicious" },
-  })
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { confirmStatus: "suspicious" },
+    })
 
-  await logAttempt(orgId, orderId, "manual_call", "suspicious", notes, undefined)
+    await logAttempt(orgId, orderId, "manual_call", "suspicious", notes, undefined)
 
-  emit("CUSTOMER_VERIFIED", {
-    orderId,
-    orgId,
-    buyerName: order.buyerName,
-    buyerPhone: order.buyerPhone,
-    verified: false,
-    trustDelta: -20,
-  })
+    emit("CUSTOMER_VERIFIED", {
+      orderId,
+      orgId,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      verified: false,
+      trustDelta: -20,
+    })
+
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
 }
 
 export async function scheduleRetry(
   orgId: string,
   orderId: string,
   notes?: string,
-): Promise<void> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  })
-  if (!order) throw new Error("Order not found")
+): Promise<{ success: boolean }> {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    })
+    if (!order) return { success: false }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { confirmStatus: "pending_confirmation" },
-  })
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { confirmStatus: "pending_confirmation" },
+    })
 
-  await logAttempt(orgId, orderId, "manual_call", "no_answer", notes, undefined)
+    await logAttempt(orgId, orderId, "manual_call", "no_answer", notes, undefined)
+
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
 }
 
 export async function cancelOrder(
@@ -267,32 +294,37 @@ export async function cancelOrder(
   orderId: string,
   reason: string,
   operator: string,
-): Promise<void> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  })
-  if (!order) throw new Error("Order not found")
-
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { confirmStatus: "cancelled" },
-  })
-
-  await logAttempt(orgId, orderId, "manual_call", "cancelled", reason, operator)
-
-  emit("ORDER_CANCELLED", {
-    orderId,
-    orgId,
-    buyerName: order.buyerName,
-    buyerPhone: order.buyerPhone,
-    reason,
-    cancelledBy: operator,
-  })
-
+): Promise<{ success: boolean }> {
   try {
-    await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    })
+    if (!order) return { success: false }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { confirmStatus: "cancelled" },
+    })
+
+    await logAttempt(orgId, orderId, "manual_call", "cancelled", reason, operator)
+
+    emit("ORDER_CANCELLED", {
+      orderId,
+      orgId,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      reason,
+      cancelledBy: operator,
+    })
+
+    const result = await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)
+    if (result) {
+      // state machine may reject; confirmStatus is already set
+    }
+
+    return { success: true }
   } catch {
-    // state machine may reject; confirmStatus is already set
+    return { success: false }
   }
 }
 

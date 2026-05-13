@@ -45,23 +45,21 @@ export default function RegisterPage() {
       <div className="text-center">
         <p className="text-2xl font-bold tracking-tight">
           <span className="inline-flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-green-600 text-xs font-bold text-white">U</span>
-            <span className="text-zinc-100">
-              UGZIO
-            </span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--accent)] text-xs font-bold text-white">U</span>
+            <span className="text-[var(--text-primary)]">UGZIO</span>
           </span>
         </p>
-        <p className="mt-1 text-sm text-zinc-500">Create your account</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Create your account</p>
       </div>
 
       {error && (
-        <div className="rounded-md border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
+        <div className="rounded-md border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="mb-1 block text-sm font-medium text-zinc-400">
+        <label htmlFor="name" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
           Name
         </label>
         <input
@@ -70,13 +68,13 @@ export default function RegisterPage() {
           type="text"
           required
           autoComplete="name"
-          className="w-full rounded-md border border-zinc-800/50 bg-zinc-900/30 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-green-500"
+          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
           placeholder="Your name"
         />
       </div>
 
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-zinc-400">
+        <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
           Email
         </label>
         <input
@@ -85,13 +83,13 @@ export default function RegisterPage() {
           type="email"
           required
           autoComplete="email"
-          className="w-full rounded-md border border-zinc-800/50 bg-zinc-900/30 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-green-500"
+          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
           placeholder="you@example.com"
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="mb-1 block text-sm font-medium text-zinc-400">
+        <label htmlFor="password" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
           Password
         </label>
         <input
@@ -100,7 +98,7 @@ export default function RegisterPage() {
           type="password"
           required
           autoComplete="new-password"
-          className="w-full rounded-md border border-zinc-800/50 bg-zinc-900/30 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-green-500"
+          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
           placeholder="••••••••"
         />
       </div>
@@ -108,14 +106,14 @@ export default function RegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 disabled:opacity-50"
+        className="w-full rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
       >
         {loading ? "Creating account..." : "Create account"}
       </button>
 
-      <p className="text-center text-xs text-zinc-600">
+      <p className="text-center text-xs text-[var(--text-tertiary)]">
         Already have an account?{" "}
-        <Link href="/login" className="text-green-400 hover:underline">
+        <Link href="/login" className="text-[var(--accent)] hover:underline">
           Sign in
         </Link>
       </p>

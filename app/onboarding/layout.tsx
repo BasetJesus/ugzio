@@ -1,6 +1,6 @@
 export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black p-4">
+    <div className="flex min-h-dvh items-center justify-center bg-[var(--bg-base)] p-4">
       {children}
     </div>
   )

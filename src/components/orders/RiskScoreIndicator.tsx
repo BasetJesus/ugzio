@@ -17,21 +17,21 @@ export default function RiskScoreIndicator({ riskLevel, trustScore }: Props) {
   const riskScore = 100 - trustScore
 
   return (
-    <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-5">
-      <p className="text-xs text-zinc-500 mb-3 uppercase tracking-wider">Risk Score</p>
+    <div className="rounded-xl bg-[var(--bg-card)] border border-[var(--border)] p-5">
+      <p className="text-xs text-[var(--text-secondary)] mb-3 uppercase tracking-wider">Risk Score</p>
       <div className="flex items-end gap-3">
         <div className={`text-4xl font-bold ${meta.color}`}>{riskScore}</div>
         <div className="pb-1">
           <p className={`text-sm font-semibold ${meta.color}`}>{meta.label}</p>
-          <p className="text-xs text-zinc-600">Trust: {trustScore}/100</p>
+          <p className="text-xs text-[var(--text-tertiary)]">Trust: {trustScore}/100</p>
         </div>
       </div>
-      <div className="mt-4 w-full h-2 rounded-full bg-zinc-800 overflow-hidden flex">
+      <div className="mt-4 w-full h-2 rounded-full bg-[var(--border)] overflow-hidden flex">
         <div className="h-full bg-green-500" style={{ width: `${LOW_PCT}%` }} />
         <div className="h-full bg-orange-500" style={{ width: `${MED_PCT}%` }} />
         <div className="h-full bg-red-500" style={{ width: `${HIGH_PCT}%` }} />
       </div>
-      <div className="flex justify-between text-[10px] text-zinc-600 mt-1">
+      <div className="flex justify-between text-[10px] text-[var(--text-tertiary)] mt-1">
         <span>0</span>
         <span>{RISK_THRESHOLDS.LOW}</span>
         <span>{RISK_THRESHOLDS.MEDIUM}</span>

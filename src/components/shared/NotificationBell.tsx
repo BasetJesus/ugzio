@@ -28,17 +28,17 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
     <div className="relative">
       <button
         onClick={() => setShow(!show)}
-        className="relative rounded-lg px-2 py-1 text-sm text-zinc-400 hover:text-zinc-200"
+        className="relative rounded-lg px-2 py-1 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
       >
         🔔
-        <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--risk-red)] text-[9px] font-bold text-white">
           {count > 9 ? "9+" : count}
         </span>
       </button>
       {show && (
-        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-zinc-800/40 bg-zinc-950 p-3 shadow-xl z-50">
-          <p className="text-xs font-semibold text-red-400">{count} high-risk order{count !== 1 ? "s" : ""}</p>
-          <p className="mt-1 text-[11px] text-zinc-500">Requires your attention</p>
+        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 shadow-lg z-50">
+          <p className="text-xs font-semibold text-[var(--risk-red)]">{count} high-risk order{count !== 1 ? "s" : ""}</p>
+          <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Requires your attention</p>
           <Link
             href="/shield"
             onClick={() => setShow(false)}

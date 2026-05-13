@@ -126,42 +126,47 @@ export async function createOrder(orgId: string, data: {
 }
 
 export async function transitionOrderStatus(orgId: string, orderId: string, newStatus: OrderStatus) {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-  });
-  if (!order) return null;
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    });
+    if (!order) return null;
 
-  const previousStatus = order.status;
+    const previousStatus = order.status;
 
-  if (!canTransition(previousStatus as never, newStatus as never)) {
-    throw new Error(`Invalid transition: ${previousStatus} → ${newStatus}`);
+    if (!canTransition(previousStatus as never, newStatus as never)) {
+      return null;
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: newStatus },
+    });
+
+    emit("ORDER_UPDATED", {
+      orderId,
+      orgId,
+      previousStatus,
+      newStatus,
+      buyerName: order.buyerName,
+    });
+
+    if (newStatus === "DELIVERED") {
+      await scheduleD3UgcAsk(orderId);
+    }
+
+    if (newStatus === "REFUSED") {
+      await alertSeller(orgId, refusedAlert(order.buyerName));
+    }
+
+    return { id: orderId, status: newStatus };
+  } catch {
+    return null;
   }
-
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: newStatus },
-  });
-
-  emit("ORDER_UPDATED", {
-    orderId,
-    orgId,
-    previousStatus,
-    newStatus,
-    buyerName: order.buyerName,
-  });
-
-  if (newStatus === "DELIVERED") {
-    await scheduleD3UgcAsk(orderId);
-  }
-
-  if (newStatus === "REFUSED") {
-    await alertSeller(orgId, refusedAlert(order.buyerName));
-  }
-
-  return { id: orderId, status: newStatus };
 }
 
 export async function getOrdersPageData(orgId: string): Promise<OrdersPageData> {
+  try {
   const orders = await prisma.order.findMany({
     where: { organizationId: orgId, deletedAt: null },
     orderBy: { createdAt: "desc" },
@@ -202,6 +207,12 @@ export async function getOrdersPageData(orgId: string): Promise<OrdersPageData> 
     },
     orders: tableItems,
   };
+  } catch {
+    return {
+      stats: { total: 0, atRisk: 0, pendingToday: 0, revenueTotal: 0, deliveredRate: 0 },
+      orders: [],
+    };
+  }
 }
 
 function paymentFromStatus(status: OrderStatus): PaymentStatus {
@@ -222,6 +233,10 @@ function deliveryFromStatus(status: OrderStatus): DeliveryState {
 }
 
 export async function getOrdersCountByRisk(orgId: string): Promise<{ total: number; highRisk: number; todayOrders: number }> {
-  const { getOrderCountsByRisk } = await import("@/services/risk.service");
-  return getOrderCountsByRisk(orgId);
+  try {
+    const { getOrderCountsByRisk } = await import("@/services/risk.service");
+    return await getOrderCountsByRisk(orgId);
+  } catch {
+    return { total: 0, highRisk: 0, todayOrders: 0 };
+  }
 }

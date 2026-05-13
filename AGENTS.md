@@ -37,3 +37,26 @@ Alternate: `INTELLIGENT_CANCEL`, `PENDING_RESCHEDULE`, `REFUSED`
 - Primary: `bg-purple-600`, Danger: `text-red-400`, Success: `text-green-400`
 - Mobile-first (sellers use phones)
 - Dark/white purple theme, Darija + French
+
+## Architecture Stability Rules (HARD RULES)
+
+### Never allow server component crashes
+All server functions must return `safeFallback` objects. Never throw in UI path.
+
+### All Prisma calls go through service layer only
+No direct `prisma` imports in pages/layouts. Only services.
+
+### Service layer always returns structured data
+Every service wraps in try/catch and returns empty defaults on failure.
+
+### One unified visual system
+All pages use: `KpiCard` component, CSS variables from `globals.css`, same spacing/animation system.
+
+### No complexity increase
+If a feature needs >2 layers → simplify. Never duplicate logic. Never add unnecessary abstractions.
+
+### `transitionStatus()` returns `{ok, status|error}` — never throws
+Use `transitionOrderStatus()` which handles errors internally and returns `null` on failure.
+
+### All services return `{success: boolean}` for mutations — never throw
+`markConfirmed`, `cancelOrder`, `scheduleRetry`, etc. all return `{success: true}` or `{success: false}`.

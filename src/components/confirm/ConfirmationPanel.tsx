@@ -11,60 +11,41 @@ interface Props {
   total: number
 }
 
-type ImpactLabel = { text: string; color: string; bg: string };
-
-function impactLabel(item: ConfirmationQueueItem): ImpactLabel {
-  const cs = item.confirmStatus;
-  const rl = item.riskLevel;
-  if (cs === "confirmed") return { text: "Revenue secured", color: "text-green-400", bg: "bg-green-500/10" };
-  if (cs === "cancelled") return { text: "Loss prevented", color: "text-green-400", bg: "bg-green-500/10" };
-  if (rl === "high") return { text: "High chance of RTS", color: "text-red-400", bg: "bg-red-500/10" };
-  if (cs === "unreachable") return { text: "Risk remains active", color: "text-amber-400", bg: "bg-amber-500/10" };
-  if (cs === "suspicious") return { text: "Flagged — review required", color: "text-red-400", bg: "bg-red-500/10" };
-  if (rl === "medium") return { text: "Needs confirmation", color: "text-amber-400", bg: "bg-amber-500/10" };
-  return { text: "Safe order", color: "text-green-400", bg: "bg-green-500/10" };
-}
-
 function riskPct(item: ConfirmationQueueItem): number {
   if (item.riskLevel === "high") return 65 + Math.round((100 - item.trustScore) * 0.35);
   if (item.riskLevel === "medium") return 35 + Math.round((100 - item.trustScore) * 0.25);
   return Math.round((100 - item.trustScore) * 0.15);
 }
 
-function failureChance(item: ConfirmationQueueItem): string {
-  const pct = riskPct(item);
-  return `${pct}% chance of failed delivery → estimated loss: ${Math.round(item.amount * (pct / 100))} TND`;
+function riskColor(level: string): string {
+  switch (level) {
+    case "high": return "text-[var(--risk-red)]";
+    case "medium": return "text-[var(--warning-amber)]";
+    default: return "text-[var(--success-green)]";
+  }
 }
 
-function riskTimeline(item: ConfirmationQueueItem): { label: string; done: boolean; ts: string }[] {
-  const steps: { label: string; done: boolean; ts: string }[] = [
-    { label: "Order created", done: true, ts: "completed" },
-    { label: "Risk detected", done: item.riskLevel !== "low", ts: item.riskLevel !== "low" ? "completed" : "skipped" },
-  ];
-  if (item.lastAttemptAt) {
-    steps.push({ label: "Contact attempted", done: true, ts: item.lastAttemptAt });
-  } else if (item.confirmStatus === "pending_confirmation") {
-    steps.push({ label: "Contact pending", done: false, ts: "waiting" });
-  } else {
-    steps.push({ label: "Contact needed", done: false, ts: "pending" });
-  }
-  if (item.confirmStatus === "confirmed") {
-    steps.push({ label: "Buyer confirmed", done: true, ts: "completed" });
-  } else if (item.confirmStatus === "cancelled") {
-    steps.push({ label: "Order cancelled — loss prevented", done: true, ts: "completed" });
-  } else if (item.confirmStatus === "unreachable") {
-    steps.push({ label: "Buyer unreachable — risk remains", done: true, ts: "completed" });
-  } else {
-    steps.push({ label: "Awaiting decision", done: false, ts: "pending" });
-  }
-  return steps;
+function riskReason(item: ConfirmationQueueItem): string {
+  if (item.trustScore < 30) return "First-time buyer \u2014 high RTS risk";
+  if (item.trustScore < 50) return "Low trust score \u2014 needs verification";
+  if (item.riskLevel === "high") return "Multiple risk signals detected";
+  if (item.riskLevel === "medium") return "Moderate risk \u2014 verify before shipping";
+  return "Standard risk profile";
 }
 
-function actionFeedback(action: string): string {
+function failureChance(item: ConfirmationQueueItem): number {
+  return riskPct(item);
+}
+
+function estimatedLoss(item: ConfirmationQueueItem): number {
+  return Math.round(item.amount * (failureChance(item) / 100));
+}
+
+function impactMessage(action: string, item: ConfirmationQueueItem): string {
   switch (action) {
-    case "confirm": return "Revenue secured";
-    case "unreachable": return "Risk remains active";
-    case "cancel": return "Prevent potential loss";
+    case "confirm": return `+${item.amount.toFixed(0)} TND secured`;
+    case "retry": return "Risk neutralized";
+    case "cancel": return "Revenue protected";
     default: return "";
   }
 }
@@ -72,117 +53,128 @@ function actionFeedback(action: string): string {
 function DeliveryProviderBadge({ product }: { product: string | null }) {
   const providers = ["Aramex", "Poste Tunisienne", "DHL", "UPS", "Chronopost"];
   const name = providers[Math.floor(((product?.length ?? 0) + 3) % providers.length)];
-  return (
-    <span className="text-[10px] text-zinc-600">{name}</span>
-  );
+  return <span className="text-[10px] text-[var(--text-tertiary)]">{name}</span>;
 }
 
-function RiskDetailDrawer({ item, onClose, onAction }: {
+function RiskInsightPanel({ item, onClose, onAction }: {
   item: ConfirmationQueueItem;
   onClose: () => void;
   onAction: (orderId: string, action: string) => void;
 }) {
-  const tl = riskTimeline(item);
-  const rl = item.riskLevel;
-  const signals: string[] = [];
-  if (rl === "high") {
-    signals.push(item.trustScore < 40 ? "First-time buyer pattern" : "Multiple risk signals detected");
-    if (item.amount > 150) signals.push("High amount threshold exceeded");
-    signals.push("Delivery risk: above average RTS probability");
-  } else if (rl === "medium") {
-    signals.push("Moderate risk indicators");
-    signals.push("Standard delivery profile");
+  const pct = failureChance(item);
+  const loss = estimatedLoss(item);
+  const signals: { label: string; detail: string }[] = [];
+
+  if (item.riskLevel === "high") {
+    signals.push({
+      label: "Risk score",
+      detail: item.trustScore < 40 ? "High \u2014 first-time buyer pattern detected" : "High \u2014 multiple risk signals",
+    });
+    if (item.amount > 150) {
+      signals.push({ label: "Amount threshold", detail: "Order value exceeds 150 TND safe threshold" });
+    }
+    signals.push({ label: "Delivery risk", detail: "Above average RTS probability based on buyer profile" });
+  } else if (item.riskLevel === "medium") {
+    signals.push({ label: "Risk score", detail: "Moderate \u2014 some risk indicators present" });
+    signals.push({ label: "Delivery risk", detail: "Standard delivery profile with moderate concerns" });
   } else {
-    signals.push("No significant risk signals");
+    signals.push({ label: "Risk score", detail: "Low \u2014 no significant risk signals" });
   }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-zinc-900 border-l border-zinc-800 overflow-y-auto shadow-2xl">
-        <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 px-5 py-4 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-zinc-100">Order Risk Simulation</h3>
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300 text-lg leading-none">&times;</button>
+      <div className="absolute inset-0 bg-[var(--overlay)]" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-[var(--bg-card)] border-l border-[var(--border)] overflow-y-auto shadow-2xl animate-slide-in-right">
+        <div className="sticky top-0 bg-[var(--bg-card)] border-b border-[var(--border)] px-5 py-4 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Risk Insight</h3>
+          <button onClick={onClose} className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] text-lg leading-none">&times;</button>
         </div>
 
         <div className="p-5 space-y-5">
           <div>
-            <p className="text-base font-semibold text-zinc-100">{item.buyerName}</p>
-            <p className="text-xs text-zinc-500 mt-0.5">{item.buyerPhone}</p>
-            {item.product && <p className="text-xs text-zinc-600 mt-0.5">{item.product}</p>}
+            <p className="text-base font-semibold text-[var(--text-primary)]">{item.buyerName}</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{item.buyerPhone}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg bg-zinc-800/50 p-3">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Amount</p>
-              <p className="text-base font-bold text-zinc-100">{item.amount.toFixed(0)} TND</p>
+            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Amount</p>
+              <p className="text-base font-bold text-[var(--text-primary)]">{item.amount.toFixed(0)} TND</p>
             </div>
-            <div className="rounded-lg bg-zinc-800/50 p-3">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Risk score</p>
-              <p className={`text-base font-bold ${
-                rl === "high" ? "text-red-400" : rl === "medium" ? "text-amber-400" : "text-green-400"
-              }`}>{riskPct(item)}%</p>
+            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Risk score</p>
+              <p className={`text-base font-bold ${riskColor(item.riskLevel)}`}>{pct}%</p>
             </div>
-            <div className="rounded-lg bg-zinc-800/50 p-3">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Trust score</p>
-              <p className="text-base font-bold text-zinc-100">{item.trustScore}</p>
+            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Trust score</p>
+              <p className="text-base font-bold text-[var(--text-primary)]">{item.trustScore}</p>
             </div>
-            <div className="rounded-lg bg-zinc-800/50 p-3">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Status</p>
-              <p className="text-base font-bold text-zinc-100">{item.confirmStatus}</p>
+            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Failure probability</p>
+              <p className="text-base font-bold text-[var(--risk-red)]">{pct}%</p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
-            <p className="text-xs font-medium text-red-400 uppercase tracking-wider mb-1">If you do nothing</p>
-            <p className="text-sm text-red-400/90">{failureChance(item)}</p>
+          <div className="rounded-xl border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] p-4">
+            <p className="text-xs font-medium text-[var(--risk-red)] uppercase tracking-wider mb-1">If you do nothing</p>
+            <p className="text-sm text-[var(--risk-red)] opacity-90">Estimated loss: {loss} TND</p>
           </div>
 
           <div>
-            <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Risk breakdown</p>
-            <ul className="space-y-1.5">
+            <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Why this order is risky</p>
+            <ul className="space-y-2">
               {signals.map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-zinc-500">
-                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-700" />
-                  {s}
+                <li key={i} className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--border)]" />
+                  <div>
+                    <p className="text-[var(--text-primary)] font-medium">{s.label}</p>
+                    <p className="text-[var(--text-secondary)]">{s.detail}</p>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Order Risk Timeline</p>
+            <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Risk History</p>
             <div className="space-y-0">
-              {tl.map((step, i) => (
+              {[
+                { label: "Created", done: true },
+                { label: "Flagged", done: item.riskLevel !== "low" },
+                { label: "Contacted", done: !!item.lastAttemptAt },
+                { label: "Resolved", done: item.confirmStatus === "confirmed" || item.confirmStatus === "cancelled" },
+              ].map((step, i) => (
                 <div key={i} className="flex gap-3">
                   <div className="flex flex-col items-center">
-                    <div className={`h-2.5 w-2.5 rounded-full ${
-                      step.done ? "bg-green-500" : "bg-zinc-700"
-                    }`} />
-                    {i < tl.length - 1 && <div className="w-px flex-1 bg-zinc-800" />}
+                    <div className={`h-2.5 w-2.5 rounded-full ${step.done ? "bg-[var(--success-green)]" : "bg-[var(--border)]"}`} />
+                    {i < 3 && <div className="w-px flex-1 bg-[var(--border)]" />}
                   </div>
                   <div className="pb-4">
-                    <p className={`text-xs ${step.done ? "text-zinc-300" : "text-zinc-600"}`}>
-                      {step.label}
-                    </p>
+                    <p className={`text-xs ${step.done ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{step.label}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2 border-t border-zinc-800">
+          <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
             <button
               onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
               className="flex-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-500 transition-colors"
             >
-              Confirm — Revenue secured
+              Secure Revenue
+            </button>
+            <button
+              onClick={() => { onAction(item.orderId, "retry"); onClose(); }}
+              className="flex-1 rounded-lg border border-[var(--warning-amber)]/30 px-3 py-2 text-xs font-medium text-[var(--warning-amber)] hover:bg-[var(--warning-amber-bg)] transition-colors"
+            >
+              Re-contact
             </button>
             <button
               onClick={() => { onAction(item.orderId, "cancel"); onClose(); }}
-              className="flex-1 rounded-lg border border-red-500/30 px-3 py-2 text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              className="flex-1 rounded-lg border border-[var(--risk-red)]/30 px-3 py-2 text-xs font-medium text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] transition-colors"
             >
-              Cancel — Prevent loss
+              Prevent Loss
             </button>
           </div>
         </div>
@@ -196,7 +188,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [selected, setSelected] = useState<ConfirmationQueueItem | null>(null);
-  const [feedback, setFeedback] = useState<Record<string, string>>({});
+  const [toast, setToast] = useState<{ message: string; type: "success" | "neutral" | "danger" } | null>(null);
 
   const filtered = filter === "all"
     ? items
@@ -204,24 +196,36 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
   async function performAction(orderId: string, action: string) {
     setSubmitting(`${orderId}_${action}`);
-    setFeedback((prev) => ({ ...prev, [orderId]: actionFeedback(action) }));
+    const item = items.find((i) => i.orderId === orderId);
     try {
       await fetch(`/api/confirm/${orderId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
+      const msg = item ? impactMessage(action, item) : "Action completed";
+      const type = action === "confirm" ? "success" : action === "cancel" ? "danger" : "neutral";
+      setToast({ message: msg, type });
+      setTimeout(() => setToast(null), 2500);
       router.refresh();
     } finally {
       setSubmitting(null);
     }
   }
 
+  function toastColors(type: string): string {
+    switch (type) {
+      case "success": return "bg-green-600 text-white";
+      case "danger": return "bg-red-600 text-white";
+      default: return "bg-[var(--warning-amber)] text-white";
+    }
+  }
+
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-12 text-center">
-        <p className="text-base font-medium text-zinc-400">No revenue at risk right now</p>
-        <p className="text-sm text-zinc-600 mt-2">Your store is stable. UGZIO is still monitoring incoming orders.</p>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
+        <p className="text-base font-medium text-[var(--text-secondary)]">No revenue at risk right now</p>
+        <p className="text-sm text-[var(--text-tertiary)] mt-2">Your store is stable. UGZIO is still monitoring incoming orders.</p>
       </div>
     );
   }
@@ -231,19 +235,19 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         <button
           onClick={() => setFilter("all")}
-          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "all" ? "bg-purple-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-zinc-200"}`}
+          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "all" ? "bg-[var(--accent)] text-white" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           All ({total})
         </button>
         <button
           onClick={() => setFilter("pending_confirmation")}
-          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "pending_confirmation" ? "bg-amber-500/20 text-amber-400" : "bg-zinc-800 text-zinc-400 hover:text-zinc-200"}`}
+          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "pending_confirmation" ? "bg-[var(--warning-amber-bg)] text-[var(--warning-amber)]" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           Pending ({pendingCount})
         </button>
         <button
           onClick={() => setFilter("contacted")}
-          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "contacted" ? "bg-blue-500/20 text-blue-400" : "bg-zinc-800 text-zinc-400 hover:text-zinc-200"}`}
+          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "contacted" ? "bg-blue-500/20 text-blue-500" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           Contacted ({contactedCount})
         </button>
@@ -253,81 +257,82 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
         {filtered.map((item) => {
           const rl = item.riskLevel;
           const isHigh = rl === "high";
-          const lbl = impactLabel(item);
+          const pct = riskPct(item);
           const sub = submitting;
-          const feed = feedback[item.orderId];
 
           return (
             <div
               key={item.orderId}
-              className={`rounded-xl border p-4 transition-all duration-300 cursor-pointer hover:border-zinc-700 ${
+              className={`rounded-xl border p-4 transition-all duration-300 cursor-pointer ${
                 isHigh
-                  ? "border-red-500/20 bg-red-500/[0.04]"
-                  : "border-zinc-800 bg-zinc-900/50"
+                  ? "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]"
+                  : "border-[var(--border)] bg-[var(--bg-card)]"
               }`}
               onClick={() => setSelected(item)}
             >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className={`h-2 w-2 shrink-0 rounded-full ${
-                      isHigh ? "bg-red-500 animate-pulse" : rl === "medium" ? "bg-amber-500" : "bg-green-500"
-                    }`} />
-                    <p className="text-sm font-medium text-zinc-100">{item.buyerName}</p>
-                    <span className="text-[10px] text-zinc-600">{item.buyerPhone}</span>
-                  </div>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className={`text-xs font-bold ${
-                      isHigh ? "text-red-400" : rl === "medium" ? "text-amber-400" : "text-green-400"
-                    }`}>
-                      Risk {riskPct(item)}%
-                    </span>
-                    <span className="text-[10px] text-zinc-600">Trust {item.trustScore}</span>
-                    <span className="text-[10px] text-green-400/70">{item.amount.toFixed(0)} TND</span>
-                    {item.product && (
-                      <span className="text-[10px] text-zinc-600 truncate max-w-[100px]">{item.product}</span>
-                    )}
-                    <DeliveryProviderBadge product={item.product} />
-                  </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className={`h-2 w-2 shrink-0 rounded-full ${
+                    isHigh ? "bg-[var(--risk-red)] animate-pulse" : rl === "medium" ? "bg-[var(--warning-amber)]" : "bg-[var(--success-green)]"
+                  }`} />
+                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.buyerName}</p>
                 </div>
-                <span className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${lbl.color} ${lbl.bg}`}>
-                  {lbl.text}
+                <span className="text-lg font-bold text-[var(--text-primary)] shrink-0 ml-2">
+                  {item.amount.toFixed(0)} <span className="text-xs font-medium text-[var(--text-tertiary)]">TND</span>
                 </span>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="mt-1.5">
+                <span className={`text-3xl font-extrabold tracking-tight ${riskColor(rl)}`}>
+                  {pct}%
+                </span>
+                <span className={`ml-1 text-[11px] font-medium ${riskColor(rl)}`}>risk</span>
+              </div>
+
+              <div className="flex items-center gap-3 mt-0.5">
+                <span className="text-[11px] text-[var(--text-secondary)]">Trust {item.trustScore}</span>
+                <DeliveryProviderBadge product={item.product} />
+                <span className="text-[11px] text-[var(--text-tertiary)] truncate">{riskReason(item)}</span>
+              </div>
+
+              <div className="flex items-center gap-2 mt-3">
                 <button
                   onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "confirm"); }}
                   disabled={sub === `${item.orderId}_confirm`}
                   className="rounded-lg bg-green-600/90 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-green-500 disabled:opacity-50 transition-colors"
                 >
-                  {sub === `${item.orderId}_confirm` ? "..." : "Confirm — Revenue secured"}
+                  {sub === `${item.orderId}_confirm` ? "..." : "Secure Revenue"}
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "unreachable"); }}
-                  disabled={sub === `${item.orderId}_unreachable`}
-                  className="rounded-lg border border-amber-500/30 px-3 py-1.5 text-[11px] font-medium text-amber-400 hover:bg-amber-500/10 disabled:opacity-50 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "retry"); }}
+                  disabled={sub === `${item.orderId}_retry`}
+                  className="rounded-lg border border-[var(--warning-amber)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--warning-amber)] hover:bg-[var(--warning-amber-bg)] disabled:opacity-50 transition-colors"
                 >
-                  {sub === `${item.orderId}_unreachable` ? "..." : "Unreachable — Risk active"}
+                  {sub === `${item.orderId}_retry` ? "..." : "Re-contact"}
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "cancel"); }}
                   disabled={sub === `${item.orderId}_cancel`}
-                  className="rounded-lg border border-red-500/30 px-3 py-1.5 text-[11px] font-medium text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-colors"
+                  className="rounded-lg border border-[var(--risk-red)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-50 transition-colors"
                 >
-                  {sub === `${item.orderId}_cancel` ? "..." : "Cancel — Prevent loss"}
+                  {sub === `${item.orderId}_cancel` ? "..." : "Prevent Loss"}
                 </button>
-                {feed && (
-                  <span className="text-[10px] font-medium text-green-400 animate-pulse">{feed}</span>
-                )}
               </div>
             </div>
           );
         })}
       </div>
 
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 animate-slide-in-top animate-fade-in">
+          <div className={`rounded-lg px-4 py-3 text-sm font-medium shadow-lg ${toastColors(toast.type)}`}>
+            {toast.message}
+          </div>
+        </div>
+      )}
+
       {selected && (
-        <RiskDetailDrawer
+        <RiskInsightPanel
           item={selected}
           onClose={() => setSelected(null)}
           onAction={performAction}

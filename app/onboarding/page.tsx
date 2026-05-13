@@ -1,9 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getActivationStatus } from "@/services/org.service";
+import { getOrderCount, getActivationEvents, getActivationStatus } from "@/services/org.service";
 import OnboardingFlow from "./OnboardingFlow";
 
 export const dynamic = "force-dynamic";
@@ -16,25 +15,23 @@ export default async function OnboardingPage() {
 
   if (!orgId) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-black p-4">
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--bg-base)] p-4">
         <OnboardingFlow />
       </div>
     );
   }
 
-  const orders = await prisma.order.count({
-    where: { organizationId: orgId, deletedAt: null },
-  });
-  const events = await prisma.activationEvent.findMany({
-    where: { organizationId: orgId },
-  });
+  const [orders, events] = await Promise.all([
+    getOrderCount(orgId),
+    getActivationEvents(orgId),
+  ]);
 
   const activation = getActivationStatus(orgId, events);
   const isFreshOrg = orders === 0;
 
   if (isFreshOrg) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-black p-4">
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--bg-base)] p-4">
         <OnboardingFlow existingOrgId={orgId} />
       </div>
     );
@@ -43,15 +40,15 @@ export default async function OnboardingPage() {
   if (activation.completedSteps < activation.totalSteps) {
     return (
       <div className="mx-auto max-w-lg p-4 sm:p-0 mt-12">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-          <h1 className="text-xl font-bold text-zinc-100">Your shop is ready</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">Your shop is ready</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
             {activation.completedSteps} of {activation.totalSteps} steps completed
           </p>
           <div className="mt-4">
             <a
               href="/operations"
-              className="inline-block rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-500 transition-colors"
+              className="inline-block rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
             >
               Go to operations
             </a>

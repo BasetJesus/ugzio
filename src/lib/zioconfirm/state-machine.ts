@@ -27,7 +27,9 @@ export function canTransition(from: OrderStatus, to: OrderStatus): boolean {
   return transitions[from]?.includes(to) ?? false;
 }
 
-export function transitionStatus(from: OrderStatus, to: OrderStatus): OrderStatus {
-  if (!canTransition(from, to)) throw new Error(`Invalid order transition: ${from} → ${to}`);
-  return to;
+export function transitionStatus(from: OrderStatus, to: OrderStatus): { ok: true; status: OrderStatus } | { ok: false; error: string } {
+  if (!canTransition(from, to)) {
+    return { ok: false, error: `Invalid order transition: ${from} → ${to}` };
+  }
+  return { ok: true, status: to };
 }

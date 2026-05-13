@@ -6,18 +6,18 @@ import TrustScoreMeter from "@/components/orders/TrustScoreMeter"
 import { RISK_META } from "@/lib/risk/config"
 
 const PAYMENT_META: Record<string, { label: string; color: string }> = {
-  pending: { label: "Pending", color: "text-yellow-400" },
-  confirmed: { label: "Paid", color: "text-green-400" },
-  failed: { label: "Failed", color: "text-red-400" },
-  refunded: { label: "Refunded", color: "text-zinc-400" },
+  pending: { label: "Pending", color: "text-[var(--warning-amber)]" },
+  confirmed: { label: "Paid", color: "text-[var(--success-green)]" },
+  failed: { label: "Failed", color: "text-[var(--risk-red)]" },
+  refunded: { label: "Refunded", color: "text-[var(--text-tertiary)]" },
 }
 
 const DELIVERY_META: Record<string, { label: string; color: string }> = {
-  on_time: { label: "On Time", color: "text-green-400" },
-  delayed: { label: "Delayed", color: "text-yellow-400" },
-  at_risk: { label: "At Risk", color: "text-red-400" },
-  delivered: { label: "Delivered", color: "text-green-400" },
-  returned: { label: "Returned", color: "text-red-400" },
+  on_time: { label: "On Time", color: "text-[var(--success-green)]" },
+  delayed: { label: "Delayed", color: "text-[var(--warning-amber)]" },
+  at_risk: { label: "At Risk", color: "text-[var(--risk-red)]" },
+  delivered: { label: "Delivered", color: "text-[var(--success-green)]" },
+  returned: { label: "Returned", color: "text-[var(--risk-red)]" },
 }
 
 interface Props {
@@ -30,8 +30,8 @@ export default function OrdersTable({ orders, totalCount }: Props) {
     return (
       <div className="flex flex-col items-center py-16 text-center">
         <span className="text-4xl">📦</span>
-        <h3 className="mt-4 text-lg font-semibold text-zinc-300">No orders yet</h3>
-        <p className="mt-1 text-sm text-zinc-500">Orders will appear here once created.</p>
+        <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">No orders yet</h3>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Orders will appear here once created.</p>
       </div>
     )
   }
@@ -40,7 +40,7 @@ export default function OrdersTable({ orders, totalCount }: Props) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-zinc-800/40 text-left text-xs uppercase text-zinc-500">
+          <tr className="border-b border-[var(--table-border)] text-left text-xs uppercase text-[var(--text-tertiary)]">
             <th className="pb-2 pr-4 font-medium">Customer</th>
             <th className="pb-2 pr-4 font-medium">Product</th>
             <th className="pb-2 pr-4 font-medium text-right">Amount</th>
@@ -55,15 +55,15 @@ export default function OrdersTable({ orders, totalCount }: Props) {
           {orders.map((order) => (
             <tr
               key={order.id}
-              className={`border-b border-zinc-800/20 border-l-2 ${RISK_META[order.riskLevel].border}`}
+              className={`border-b border-[var(--table-border)] border-l-2 hover:bg-[var(--table-row-hover)] transition-colors ${RISK_META[order.riskLevel].border}`}
             >
               <td className="py-3 pr-4">
-                <p className="font-semibold text-zinc-200">{order.customer.name}</p>
-                <p className="text-xs text-zinc-500">{order.customer.phone}</p>
-                <p className="text-xs text-zinc-600">{order.customer.wilaya}</p>
+                <p className="font-semibold text-[var(--text-primary)]">{order.customer.name}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{order.customer.phone}</p>
+                <p className="text-xs text-[var(--text-tertiary)]">{order.customer.wilaya}</p>
               </td>
-              <td className="py-3 pr-4 text-zinc-300 max-w-[160px] truncate">{order.product}</td>
-              <td className="py-3 pr-4 text-right font-medium text-green-400 whitespace-nowrap">{order.amount.toFixed(3)} TND</td>
+              <td className="py-3 pr-4 text-[var(--text-primary)] max-w-[160px] truncate">{order.product}</td>
+              <td className="py-3 pr-4 text-right font-medium text-[var(--success-green)] whitespace-nowrap">{order.amount.toFixed(3)} TND</td>
               <td className="py-3 pr-4"><OrderStatusBadge status={order.status} /></td>
               <td className="py-3 pr-4">
                 <span className={`text-xs font-semibold ${RISK_META[order.riskLevel].color}`}>
@@ -72,12 +72,12 @@ export default function OrdersTable({ orders, totalCount }: Props) {
               </td>
               <td className="py-3 pr-4"><TrustScoreMeter score={order.trustScore} /></td>
               <td className="py-3 pr-4">
-                <span className={`text-xs font-semibold ${PAYMENT_META[order.paymentStatus]?.color ?? "text-zinc-500"}`}>
+                <span className={`text-xs font-semibold ${PAYMENT_META[order.paymentStatus]?.color ?? "text-[var(--text-tertiary)]"}`}>
                   {PAYMENT_META[order.paymentStatus]?.label ?? order.paymentStatus}
                 </span>
               </td>
               <td className="py-3">
-                <span className={`text-xs font-semibold ${DELIVERY_META[order.deliveryState]?.color ?? "text-zinc-500"}`}>
+                <span className={`text-xs font-semibold ${DELIVERY_META[order.deliveryState]?.color ?? "text-[var(--text-tertiary)]"}`}>
                   {DELIVERY_META[order.deliveryState]?.label ?? order.deliveryState}
                 </span>
               </td>
