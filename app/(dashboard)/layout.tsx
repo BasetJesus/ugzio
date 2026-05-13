@@ -3,9 +3,12 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { registerCoreSubscribers } from "@/lib/events/subscribers";
 import SidebarNav from "@/components/shared/SidebarNav";
 import MobileBottomNav from "@/components/shared/MobileBottomNav";
 import LanguageToggle from "@/components/shared/LanguageToggle";
+
+registerCoreSubscribers();
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);

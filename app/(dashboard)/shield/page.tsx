@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { getShieldData } from "@/services/shield.service";
 import RiskBadge from "@/components/dashboard/RiskBadge";
 
 export const dynamic = "force-dynamic";
@@ -14,21 +14,7 @@ export default async function ShieldPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
-  const today = new Date();
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-  const totalOrders = await prisma.order.count({ where: { organizationId: orgId, deletedAt: null } });
-  const todayOrders = await prisma.order.count({ where: { organizationId: orgId, deletedAt: null, createdAt: { gte: todayStart } } });
-  const highRiskOrders = await prisma.order.findMany({ where: { organizationId: orgId, deletedAt: null, riskLevel: "high" }, orderBy: { createdAt: "desc" }, take: 50 });
-  const averageScore = totalOrders > 0
-    ? (await prisma.order.aggregate({ where: { organizationId: orgId, deletedAt: null }, _avg: { trustScore: true } }))._avg.trustScore ?? 50
-    : 50;
-
-  const allOrders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    take: 100,
-  });
+  const data = await getShieldData(orgId);
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
@@ -43,27 +29,27 @@ export default async function ShieldPage() {
       <div className="flex gap-6">
         <div>
           <p className="text-xs text-zinc-600">Avg Trust Score</p>
-          <p className="text-xl font-bold text-orange-400">{Math.round(averageScore)}/100</p>
+          <p className="text-xl font-bold text-orange-400">{Math.round(data.averageScore)}/100</p>
         </div>
         <div>
           <p className="text-xs text-zinc-600">High Risk Orders</p>
-          <p className={`text-xl font-bold ${highRiskOrders.length > 0 ? "text-red-400" : "text-zinc-500"}`}>{highRiskOrders.length}</p>
+          <p className={`text-xl font-bold ${data.highRiskCount > 0 ? "text-red-400" : "text-zinc-500"}`}>{data.highRiskCount}</p>
         </div>
         <div>
           <p className="text-xs text-zinc-600">Orders Today</p>
-          <p className="text-xl font-bold text-orange-400">{todayOrders}</p>
+          <p className="text-xl font-bold text-orange-400">{data.todayOrders}</p>
         </div>
       </div>
 
       <div className="border-t border-zinc-800/40 pt-6">
         <h2 className="mb-3 text-sm font-semibold text-zinc-300">Score Breakdown</h2>
-        {allOrders.length === 0 ? (
+        {data.allOrders.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-zinc-500">No orders to score yet</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800/40">
-            {allOrders.map((order) => (
+            {data.allOrders.map((order) => (
               <div key={order.id} className="flex items-center justify-between px-1 py-3">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-zinc-200">{order.buyerName}</p>

@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { computeScore } from "@/lib/zioshield/scoring";
-import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { requireSession, AuthError } from "@/services/auth.service";
+import { scorePhone } from "@/services/risk.service";
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { orgId } = await requireSession();
+    const { phone, excludeOrderId } = await request.json();
+
+    if (!phone) {
+      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    }
+
+    const result = await scorePhone(orgId, phone, excludeOrderId);
+    return NextResponse.json(result);
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
   }
-  const sessionOrgId = await getOrgFromUserId(session.user.id);
-  if (!sessionOrgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
-  const { phone, excludeOrderId } = await request.json();
-  if (!phone) {
-    return NextResponse.json({ error: "phone required" }, { status: 400 });
-  }
-  const result = await computeScore(phone, sessionOrgId, excludeOrderId);
-  return NextResponse.json(result);
 }

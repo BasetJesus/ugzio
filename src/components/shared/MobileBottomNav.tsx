@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useLanguage } from "../../../app/context/LanguageContext"
+import { useLanguage } from "@/context/LanguageContext"
 
 const ITEMS = [
   { href: "/", labelKey: "nav.dashboard", icon: "📊" },

@@ -1,70 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { prisma } from "@/lib/db";
-import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { addToBlacklist, removeFromBlacklist } from "@/lib/zioshield/blacklist";
+import { requireSession, AuthError } from "@/services/auth.service";
+import { getBlacklistedPhones, blacklistPhone, unblacklistPhone } from "@/services/risk.service";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { orgId } = await requireSession();
+    const blacklisted = await getBlacklistedPhones(orgId);
+    return NextResponse.json(blacklisted);
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
   }
-  const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
-
-  const blacklisted = await prisma.order.findMany({
-    where: { organizationId: orgId, riskLevel: "high", deletedAt: null },
-    select: { buyerPhone: true, buyerName: true, createdAt: true },
-    distinct: ["buyerPhone"],
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(blacklisted);
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
-  const { phone } = await request.json();
-  if (!phone) {
-    return NextResponse.json({ error: "phone required" }, { status: 400 });
-  }
-  await addToBlacklist(orgId, phone);
+  try {
+    const { orgId } = await requireSession();
+    const { phone } = await request.json();
 
-  const existing = await prisma.activationEvent.findFirst({
-    where: { organizationId: orgId, eventType: "FIRST_HIGH_RISK_BLOCKED" },
-  });
-  if (!existing) {
-    await prisma.activationEvent.create({
-      data: { organizationId: orgId, eventType: "FIRST_HIGH_RISK_BLOCKED" },
-    });
-  }
+    if (!phone) {
+      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    }
 
-  return NextResponse.json({ success: true });
+    await blacklistPhone(orgId, phone);
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
+  }
 }
 
 export async function DELETE(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { orgId } = await requireSession();
+    const { phone } = await request.json();
+
+    if (!phone) {
+      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    }
+
+    await unblacklistPhone(orgId, phone);
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
   }
-  const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
-  const { phone } = await request.json();
-  if (!phone) {
-    return NextResponse.json({ error: "phone required" }, { status: 400 });
-  }
-  await removeFromBlacklist(orgId, phone);
-  return NextResponse.json({ success: true });
 }

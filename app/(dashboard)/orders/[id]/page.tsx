@@ -2,8 +2,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { getOrderDetail } from "@/services/order.service";
 import TrustScoreBar from "@/components/dashboard/TrustScoreBar";
 import RiskBadge from "@/components/dashboard/RiskBadge";
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
@@ -25,15 +25,7 @@ export default async function OrderDetailPage({
 
   const { id } = await params;
 
-  const order = await prisma.order.findFirst({
-    where: { id, organizationId: orgId, deletedAt: null },
-    include: {
-      conversations: { include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } }, take: 1 },
-      ugcItems: true,
-      timeline: { orderBy: { scheduledFor: "asc" } },
-    },
-  });
-
+  const order = await getOrderDetail(orgId, id);
   if (!order) notFound();
 
   return (

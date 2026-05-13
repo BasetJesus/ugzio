@@ -1,121 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
-import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib/zioconfirm/service";
-import { computeAndAlert } from "@/lib/zioshield/scoring";
-import { emitCritical } from "@/lib/events/queues";
+import { requireSession, AuthError } from "@/services/auth.service";
+import { listOrders, createOrder, checkFreePlanLimit } from "@/services/order.service";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { orgId } = await requireSession();
+    const orders = await listOrders(orgId);
+    return NextResponse.json(orders);
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
   }
-
-  const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
-
-  const orders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
-
-  return NextResponse.json(
-    orders.map((o) => ({
-      id: o.id,
-      buyerName: o.buyerName,
-      buyerPhone: o.buyerPhone,
-      buyerWilaya: o.buyerWilaya,
-      product: o.product,
-      amount: Number(o.amount),
-      riskLevel: o.riskLevel,
-      trustScore: o.trustScore,
-      status: o.status,
-      createdAt: o.createdAt.toISOString(),
-    })),
-  );
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  try {
+    const { orgId } = await requireSession();
 
-  const orgId = await getOrgFromUserId(session.user.id);
-  if (!orgId) {
-    return NextResponse.json({ error: "No organization" }, { status: 400 });
-  }
+    const org = await prisma.organization.findUnique({ where: { id: orgId } });
+    if (!org) {
+      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+    }
 
-  const org = await prisma.organization.findUnique({ where: { id: orgId } });
-  if (!org) {
-    return NextResponse.json({ error: "Organization not found" }, { status: 404 });
-  }
+    const body = await request.json();
+    const { buyerName, buyerPhone, product, amount, buyerWilaya } = body;
 
-  const body = await request.json();
-  const { buyerName, buyerPhone, product, amount, buyerWilaya } = body;
+    if (!buyerName || !buyerPhone || amount == null) {
+      return NextResponse.json(
+        { error: "buyerName, buyerPhone, and amount are required" },
+        { status: 400 },
+      );
+    }
 
-  if (!buyerName || !buyerPhone || amount == null) {
-    return NextResponse.json(
-      { error: "buyerName, buyerPhone, and amount are required" },
-      { status: 400 },
-    );
-  }
-
-  if (org.subscriptionStatus === "free") {
-    const monthlyCount = await prisma.order.count({
-      where: {
-        organizationId: orgId,
-        createdAt: {
-          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        },
-      },
-    });
-    if (monthlyCount >= org.maxOrdersPerMonth) {
+    const limitReached = await checkFreePlanLimit(orgId, org.subscriptionStatus, org.maxOrdersPerMonth);
+    if (limitReached) {
       return NextResponse.json(
         { error: "Limite mensuelle atteinte. Passe à Croissance (129 TND/mois)." },
         { status: 403 },
       );
     }
+
+    const order = await createOrder(orgId, { buyerName, buyerPhone, product, amount, buyerWilaya });
+
+    return NextResponse.json({
+      id: order.id,
+      status: order.status,
+      createdAt: order.createdAt.toISOString(),
+    }, { status: 201 });
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    throw e;
   }
-
-  const order = await prisma.order.create({
-    data: {
-      organizationId: orgId,
-      buyerName,
-      buyerPhone,
-      product: product ?? null,
-      buyerWilaya: buyerWilaya ?? null,
-      amount: Number(amount),
-      status: "CREATED",
-    },
-  });
-
-  await computeAndAlert(buyerPhone, orgId, buyerName, order.id);
-
-  await schedulePsychologicalSequence(order.id);
-
-  const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-  await schedulePreDeliveryConfirm(order.id, estimatedDelivery);
-
-  await emitCritical("ORDER_CREATED", { orderId: order.id, orgId });
-
-  const existingEvent = await prisma.activationEvent.findFirst({
-    where: { organizationId: orgId, eventType: "FIRST_ORDER_CREATED" },
-  });
-  if (!existingEvent) {
-    await prisma.activationEvent.create({
-      data: { organizationId: orgId, eventType: "FIRST_ORDER_CREATED" },
-    });
-  }
-
-  return NextResponse.json({
-    id: order.id,
-    status: order.status,
-    createdAt: order.createdAt.toISOString(),
-  }, { status: 201 });
 }

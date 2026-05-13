@@ -1,6 +1,6 @@
 "use client"
 
-import { useLanguage } from "../../../app/context/LanguageContext"
+import { useLanguage } from "@/context/LanguageContext"
 
 const LANGS = [
   { code: "tun" as const, label: "العربية" },

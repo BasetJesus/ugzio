@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useLanguage } from "../../../app/context/LanguageContext"
+import { useLanguage } from "@/context/LanguageContext"
 import RiskAlerts from "./RiskAlerts"
 import RTSChart from "./RTSChart"
 

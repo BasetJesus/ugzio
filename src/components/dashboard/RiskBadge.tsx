@@ -1,20 +1,17 @@
 "use client";
 
+import type { RiskLevel } from "@/types/order";
+import { RISK_META } from "@/lib/risk/config";
+
 interface Props {
-  risk: "low" | "medium" | "high";
+  risk: RiskLevel;
 }
 
-const META = {
-  low: { bg: "bg-green-500/15", text: "text-green-400", label: "LOW RISK" },
-  medium: { bg: "bg-orange-500/15", text: "text-orange-400", label: "MEDIUM RISK" },
-  high: { bg: "bg-red-500/15", text: "text-red-400", label: "HIGH RISK" },
-};
-
 export default function RiskBadge({ risk }: Props) {
-  const m = META[risk];
+  const m = RISK_META[risk];
   return (
-    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${m.bg} ${m.text}`}>
-      {m.label}
+    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${m.bg} ${m.color}`}>
+      {m.label.toUpperCase()}
     </span>
   );
 }

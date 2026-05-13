@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { getBlacklistedPhones } from "@/services/risk.service";
 import BlacklistTable from "./BlacklistTable";
 
 export const dynamic = "force-dynamic";
@@ -14,12 +14,7 @@ export default async function BlacklistPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
-  const blacklisted = await prisma.order.findMany({
-    where: { organizationId: orgId, riskLevel: "high", deletedAt: null },
-    select: { buyerPhone: true, buyerName: true, createdAt: true },
-    distinct: ["buyerPhone"],
-    orderBy: { createdAt: "desc" },
-  });
+  const blacklisted = await getBlacklistedPhones(orgId);
 
   return (
     <div className="p-4 sm:p-6 space-y-6">

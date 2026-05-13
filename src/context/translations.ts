@@ -124,6 +124,7 @@ const dict: Dict = {
   "nav.zioshield": { tun: "ZioShield", fr: "ZioShield", en: "ZioShield" },
   "nav.success": { tun: "النجاح", fr: "Succès", en: "Success" },
   "nav.blacklist": { tun: "القائمة السودا", fr: "Liste noire", en: "Blacklist" },
+  "nav.overview": { tun: "نظرة عامة", fr: "Aperçu", en: "Overview" },
   "nav.onboarding": { tun: "البداية ({n}/4)", fr: "Onboarding ({n}/4)", en: "Setup ({n}/4)" },
 
   /* ── Dashboard ── */

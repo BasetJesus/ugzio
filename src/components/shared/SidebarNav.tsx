@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useLanguage } from "../../../app/context/LanguageContext"
+import { useLanguage } from "@/context/LanguageContext"
 import NotificationBell from "./NotificationBell"
 
 const PILLARS = [
@@ -75,12 +75,22 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
         <Link
           href="/"
           className={`rounded-md px-2 py-1.5 text-sm transition ${
-            pathname === "/"
+            pathname === "/" && !pathname.startsWith("/overview")
               ? "bg-zinc-800/40 text-zinc-100 font-medium"
               : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
           }`}
         >
           {t("nav.dashboard")}
+        </Link>
+        <Link
+          href="/overview"
+          className={`rounded-md px-2 py-1.5 text-sm transition ${
+            pathname.startsWith("/overview")
+              ? "bg-purple-600/20 text-purple-400 font-medium"
+              : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
+          }`}
+        >
+          ⌘ {t("nav.overview")}
         </Link>
         {PILLARS.map((pillar) => {
           const hasActive = pillar.items.some((i) => isActive(i.href))

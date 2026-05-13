@@ -148,9 +148,11 @@ model Order {
   mlScore            Float?
   status             String               @default("CREATED")
   verificationStatus String               @default("none")     // deprecated, use status
+  confirmStatus      String               @default("pending_confirmation")
   deletedAt          DateTime?
   createdAt          DateTime             @default(now())
   conversations      Conversation[]
+  confirmationAttempts ConfirmationAttempt[]
   rawFeatures        RawOrderFeatures?
   outcome            OrderOutcome?
   workflowExecutions WorkflowExecution[]
@@ -178,6 +180,19 @@ model UgcItem {
   buyerPhone String
   status     String   @default("received") // received|approved|rejected
   createdAt  DateTime @default(now())
+}
+
+// ─── CONFIRMATION WORKFLOW (v4) ───────────────────────────────────────────────
+
+model ConfirmationAttempt {
+  id             String   @id @default(cuid())
+  orderId        String
+  order          Order    @relation(fields: [orderId], references: [id])
+  method         String   // manual_call|whatsapp|sms
+  outcome        String   // confirmed|unreachable|suspicious|no_answer
+  notes          String?
+  attemptedBy    String?
+  createdAt      DateTime @default(now())
 }
 
 // ─── WEBHOOK IDEMPOTENCY (v3) ─────────────────────────────────────────────────
