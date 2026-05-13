@@ -25,7 +25,6 @@ export {
   getRevenueAtRisk,
   getNeedsConfirmCount,
   getHighRiskCreatedOrders,
-  generateMockRisk,
   determineRiskLevel,
 } from "./risk.service";
 

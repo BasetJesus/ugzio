@@ -103,14 +103,14 @@ async function loadStats(orgId: string, dayStart: Date, weekStart: Date): Promis
     };
   } catch {
     return {
-      ordersToday: 24,
-      ordersThisWeek: 142,
-      revenueToday: 1847.5,
-      revenueThisWeek: 12630.0,
-      atRiskOrders: 8,
-      pendingVerifications: 12,
-      ugcReceived: 31,
-      deliveredRate: 76,
+      ordersToday: 0,
+      ordersThisWeek: 0,
+      revenueToday: 0,
+      revenueThisWeek: 0,
+      atRiskOrders: 0,
+      pendingVerifications: 0,
+      ugcReceived: 0,
+      deliveredRate: 0,
     };
   }
 }
@@ -134,7 +134,7 @@ async function loadLiveOrders(orgId: string): Promise<LiveOrder[]> {
       createdAt: o.createdAt.toISOString(),
     }));
   } catch {
-    return generateMockLiveOrders(8);
+    return [];
   }
 }
 
@@ -155,46 +155,8 @@ async function loadUGCOpportunities(orgId: string): Promise<UGCOpportunity[]> {
       orderId: item.order.id,
     }));
   } catch {
-    return generateMockUGCOpportunities(4);
+    return [];
   }
 }
 
-const MOCK_BUYERS = [
-  { name: "Amine Letaief", phone: "+216 50 123 401" },
-  { name: "Sarra Mhenni", phone: "+216 50 123 402" },
-  { name: "Karim Jaziri", phone: "+216 50 123 403" },
-];
 
-const MOCK_PRODUCTS = ["Sac à main en cuir", "Montre connectée", "Parfum Oud Royal"];
-
-function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
-function randomAmount(): number { return Math.round((Math.random() * 200 + 20) * 1000) / 1000; }
-
-function generateMockLiveOrders(count: number): LiveOrder[] {
-  return Array.from({ length: count }, () => {
-    const buyer = pick(MOCK_BUYERS);
-    const amount = randomAmount();
-    return {
-      id: `ord_${Math.random().toString(36).slice(2, 10)}`,
-      buyerName: buyer.name,
-      buyerPhone: buyer.phone,
-      amount,
-      product: pick(MOCK_PRODUCTS),
-      status: "CREATED",
-      riskLevel: amount > 150 ? "high" : "medium",
-      trustScore: amount > 150 ? 30 : 70,
-      createdAt: new Date().toISOString(),
-    };
-  });
-}
-
-function generateMockUGCOpportunities(count: number): UGCOpportunity[] {
-  return Array.from({ length: count }, () => ({
-    id: `ugc_${Math.random().toString(36).slice(2, 10)}`,
-    buyerName: pick(MOCK_BUYERS).name,
-    product: pick(MOCK_PRODUCTS),
-    daysSinceDelivery: 3 + Math.floor(Math.random() * 10),
-    estimatedValue: "medium",
-    orderId: `ord_${Math.random().toString(36).slice(2, 10)}`,
-  }));
-}

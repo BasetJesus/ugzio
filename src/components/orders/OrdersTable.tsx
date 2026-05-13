@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type { OrderTableItem } from "@/types/order"
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge"
 import TrustScoreMeter from "@/components/orders/TrustScoreMeter"
@@ -22,14 +23,30 @@ const DELIVERY_META: Record<string, { label: string; color: string }> = {
 
 interface Props {
   orders: OrderTableItem[]
+  totalCount: number
   onSelectOrder: (order: OrderTableItem) => void
 }
 
-export default function OrdersTable({ orders, onSelectOrder }: Props) {
+export default function OrdersTable({ orders, totalCount, onSelectOrder }: Props) {
   if (orders.length === 0) {
+    if (totalCount === 0) {
+      return (
+        <div className="flex flex-col items-center py-16 text-center">
+          <span className="text-4xl">📦</span>
+          <h3 className="mt-4 text-lg font-semibold text-zinc-300">No orders yet</h3>
+          <p className="mt-1 mb-6 text-sm text-zinc-500">Create your first order to get started.</p>
+          <Link
+            href="/orders/new"
+            className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-500"
+          >
+            + Create first order
+          </Link>
+        </div>
+      )
+    }
     return (
       <div className="flex flex-col items-center py-16 text-center">
-        <span className="text-4xl">📦</span>
+        <span className="text-4xl">🔍</span>
         <h3 className="mt-4 text-lg font-semibold text-zinc-300">No orders match your filters</h3>
         <p className="mt-1 text-sm text-zinc-500">Try adjusting your search or filters.</p>
       </div>

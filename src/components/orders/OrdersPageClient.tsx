@@ -41,7 +41,7 @@ export default function OrdersPageClient({ orders }: Props) {
         riskFilter={riskFilter}
         onRiskFilterChange={setRiskFilter}
       />
-      <OrdersTable orders={filtered} onSelectOrder={setSelectedOrder} />
+      <OrdersTable orders={filtered} totalCount={orders.length} onSelectOrder={setSelectedOrder} />
       <OrderDetailsDrawer order={selectedOrder} onClose={() => setSelectedOrder(null)} />
     </>
   )

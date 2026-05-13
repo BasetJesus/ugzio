@@ -7,8 +7,7 @@ import { emit } from "@/lib/events/event-bus";
 import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
-import type { OrderStatus, OrderSummary } from "@/types/order";
-import { generateMockRisk } from "@/services/risk.service";
+import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
 
 async function ensureActivationEvent(orgId: string, eventType: string) {
   const existing = await prisma.activationEvent.findFirst({
@@ -162,57 +161,57 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
   return { id: orderId, status: newStatus };
 }
 
-const MOCK_BUYERS = [
-  { name: "Amine Letaief", phone: "+216 50 123 401", wilaya: "Tunis" },
-  { name: "Sarra Mhenni", phone: "+216 50 123 402", wilaya: "Sfax" },
-  { name: "Karim Jaziri", phone: "+216 50 123 403", wilaya: "Sousse" },
-  { name: "Mariem Ben Ali", phone: "+216 50 123 404", wilaya: "Nabeul" },
-  { name: "Mehdi Khedher", phone: "+216 50 123 405", wilaya: "Monastir" },
-  { name: "Nadia Trabelsi", phone: "+216 50 123 406", wilaya: "Gabès" },
-  { name: "Hichem Gharbi", phone: "+216 50 123 407", wilaya: "Kairouan" },
-  { name: "Ines Bouazizi", phone: "+216 50 123 408", wilaya: "Bizerte" },
-  { name: "Mohamed Salah", phone: "+216 50 123 409", wilaya: "Ariana" },
-  { name: "Rania Ferchichi", phone: "+216 50 123 410", wilaya: "Ben Arous" },
-  { name: "Oussema Khelil", phone: "+216 50 123 411", wilaya: "Tunis" },
-  { name: "Fatma Ghannouchi", phone: "+216 50 123 412", wilaya: "Sfax" },
-  { name: "Walid Jebali", phone: "+216 50 123 413", wilaya: "Sousse" },
-  { name: "Ahlem Boufares", phone: "+216 50 123 414", wilaya: "Nabeul" },
-  { name: "Skander Hakim", phone: "+216 50 123 415", wilaya: "Monastir" },
-  { name: "Leila Chaouch", phone: "+216 50 123 416", wilaya: "Gabès" },
-  { name: "Cyrine Kefi", phone: "+216 50 123 417", wilaya: "Bizerte" },
-  { name: "Mohsen Sliti", phone: "+216 50 123 418", wilaya: "Kairouan" },
-  { name: "Arij Mami", phone: "+216 50 123 419", wilaya: "Ariana" },
-  { name: "Haythem Borgi", phone: "+216 50 123 420", wilaya: "Ben Arous" },
-];
+export async function getOrdersPageData(orgId: string): Promise<OrdersPageData> {
+  const orders = await prisma.order.findMany({
+    where: { organizationId: orgId, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
 
-const MOCK_PRODUCTS = [
-  "Sac à main en cuir", "Montre connectée Pro", "Parfum Oud Royal",
-  "Ensemble été femme", "Casque Bluetooth Pro", "Lunettes de soleil design",
-  "Tapis de prière luxe", "Crème visage bio", "Smartwatch Sport",
-  "Veste en jean", "Robte tunisienne", "Bague argent 925",
-  "Sac à dos urbain", "Chaussures running", "Théière traditionnelle",
-];
+  const tableItems: OrderTableItem[] = orders.map((o) => ({
+    id: o.id,
+    customer: { name: o.buyerName, phone: o.buyerPhone, wilaya: o.buyerWilaya },
+    product: o.product,
+    amount: Number(o.amount),
+    status: o.status as OrderStatus,
+    riskLevel: o.riskLevel as RiskLevel,
+    trustScore: o.trustScore,
+    paymentStatus: paymentFromStatus(o.status as OrderStatus),
+    deliveryState: deliveryFromStatus(o.status as OrderStatus),
+    createdAt: o.createdAt.toISOString(),
+    updatedAt: o.createdAt.toISOString(),
+  }));
 
-const ALL_STATUSES: OrderStatus[] = [
-  "CREATED", "PRE_SHIPPING_CONFIRM_SENT", "BUYER_CONFIRMED",
-  "SHIPPED", "DELIVERED", "UGC_REQUESTED", "UGC_RECEIVED",
-  "INTELLIGENT_CANCEL", "PENDING_RESCHEDULE", "REFUSED",
-];
+  const now = new Date();
+  const today = tableItems.filter((o) => {
+    const d = new Date(o.createdAt);
+    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
 
-function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
+  const atRisk = tableItems.filter((o) => o.riskLevel === "high" || o.deliveryState === "at_risk").length;
+  const totalAmount = tableItems.reduce((s, o) => s + o.amount, 0);
+  const delivered = tableItems.filter((o) => o.deliveryState === "delivered").length;
 
-function randomAmount(): number { return Math.round((Math.random() * 250 + 15) * 1000) / 1000; }
+  return {
+    stats: {
+      total: tableItems.length,
+      atRisk,
+      pendingToday: today,
+      revenueTotal: Math.round(totalAmount * 100) / 100,
+      deliveredRate: tableItems.length > 0 ? Math.round((delivered / tableItems.length) * 100) : 0,
+    },
+    orders: tableItems,
+  };
+}
 
-function randomScore(): number { return Math.floor(Math.random() * 100); }
-
-function paymentFromStatus(status: OrderStatus): "pending" | "confirmed" | "failed" | "refunded" {
+function paymentFromStatus(status: OrderStatus): PaymentStatus {
   if (status === "DELIVERED" || status === "BUYER_CONFIRMED") return "confirmed";
   if (status === "REFUSED" || status === "INTELLIGENT_CANCEL") return "failed";
   if (status === "CREATED" || status === "PRE_SHIPPING_CONFIRM_SENT") return "pending";
   return "confirmed";
 }
 
-function deliveryFromStatus(status: OrderStatus): import("@/types/order").DeliveryState {
+function deliveryFromStatus(status: OrderStatus): DeliveryState {
   switch (status) {
     case "DELIVERED": case "UGC_REQUESTED": case "UGC_RECEIVED": return "delivered";
     case "SHIPPED": return "on_time";
@@ -220,60 +219,6 @@ function deliveryFromStatus(status: OrderStatus): import("@/types/order").Delive
     case "INTELLIGENT_CANCEL": case "PENDING_RESCHEDULE": return "at_risk";
     default: return "delayed";
   }
-}
-
-export function getMockOrdersPageData(): import("@/types/order").OrdersPageData {
-  const orders: import("@/types/order").OrderTableItem[] = [];
-  const now = Date.now();
-
-  for (let i = 0; i < 28; i++) {
-    const buyer = pick(MOCK_BUYERS);
-    const status = pick(ALL_STATUSES);
-    const amount = randomAmount();
-    const mockRisk = generateMockRisk({
-      amount,
-      buyerWilaya: buyer.wilaya,
-      status: status,
-      isFirstTime: Math.random() > 0.5,
-    });
-    const createdAt = new Date(now - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000));
-
-    orders.push({
-      id: `ord_${Math.random().toString(36).slice(2, 10)}`,
-      customer: { name: buyer.name, phone: buyer.phone, wilaya: buyer.wilaya },
-      product: pick(MOCK_PRODUCTS),
-      amount,
-      status,
-      riskLevel: mockRisk.riskLevel,
-      trustScore: mockRisk.trustScore,
-      paymentStatus: paymentFromStatus(status),
-      deliveryState: deliveryFromStatus(status),
-      createdAt: createdAt.toISOString(),
-      updatedAt: createdAt.toISOString(),
-    });
-  }
-
-  orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-  const atRisk = orders.filter((o) => o.riskLevel === "high" || o.deliveryState === "at_risk").length;
-  const today = orders.filter((o) => {
-    const d = new Date(o.createdAt);
-    const now = new Date();
-    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }).length;
-  const totalAmount = orders.reduce((s, o) => s + o.amount, 0);
-  const delivered = orders.filter((o) => o.deliveryState === "delivered").length;
-
-  return {
-    stats: {
-      total: orders.length,
-      atRisk,
-      pendingToday: today,
-      revenueTotal: Math.round(totalAmount * 100) / 100,
-      deliveredRate: orders.length > 0 ? Math.round((delivered / orders.length) * 100) : 0,
-    },
-    orders,
-  };
 }
 
 export async function getOrdersCountByRisk(orgId: string): Promise<{ total: number; highRisk: number; todayOrders: number }> {

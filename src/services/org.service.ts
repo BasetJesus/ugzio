@@ -65,6 +65,11 @@ export async function createOrganization(
 }
 
 export async function generateSampleData(orgId: string): Promise<{ ordersCreated: number; highRiskCount: number }> {
+  const existing = await prisma.order.count({ where: { organizationId: orgId, deletedAt: null } });
+  if (existing > 0) {
+    return { ordersCreated: 0, highRiskCount: 0 };
+  }
+
   let highRiskCount = 0
 
   for (const buyer of SAMPLE_BUYERS) {

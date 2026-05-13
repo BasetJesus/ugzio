@@ -1,10 +1,14 @@
 import Link from "next/link"
-import { getMockOrdersPageData } from "@/services/order.service"
+import { getOrdersPageData } from "@/services/order.service"
+import { requireSession } from "@/services/auth.service"
 import OrdersHeader from "@/components/orders/OrdersHeader"
 import OrdersPageClient from "@/components/orders/OrdersPageClient"
 
-export default function OrdersPage() {
-  const data = getMockOrdersPageData()
+export const dynamic = "force-dynamic"
+
+export default async function OrdersPage() {
+  const { orgId } = await requireSession()
+  const data = await getOrdersPageData(orgId)
 
   return (
     <div className="p-4 sm:p-6 space-y-4">

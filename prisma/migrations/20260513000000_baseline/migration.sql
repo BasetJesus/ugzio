@@ -132,6 +132,7 @@ CREATE TABLE "Order" (
     "mlScore" DOUBLE PRECISION,
     "status" TEXT NOT NULL DEFAULT 'CREATED',
     "verificationStatus" TEXT NOT NULL DEFAULT 'none',
+    "confirmStatus" TEXT NOT NULL DEFAULT 'pending_confirmation',
     "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -162,6 +163,19 @@ CREATE TABLE "UgcItem" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "UgcItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ConfirmationAttempt" (
+    "id" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
+    "method" TEXT NOT NULL,
+    "outcome" TEXT NOT NULL,
+    "notes" TEXT,
+    "attemptedBy" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ConfirmationAttempt_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -447,6 +461,9 @@ ALTER TABLE "MessageTimelineEntry" ADD CONSTRAINT "MessageTimelineEntry_orderId_
 
 -- AddForeignKey
 ALTER TABLE "UgcItem" ADD CONSTRAINT "UgcItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ConfirmationAttempt" ADD CONSTRAINT "ConfirmationAttempt_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WebhookLog" ADD CONSTRAINT "WebhookLog_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
