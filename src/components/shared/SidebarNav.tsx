@@ -135,6 +135,15 @@ export default function SidebarNav({ orgName, planName, orgId, completedCount }:
       <div className="pt-3 border-t border-zinc-800/40 mt-3">
         <p className="truncate px-2 text-xs text-zinc-600">{orgName}</p>
         <p className="px-2 text-[10px] text-zinc-700">{planName}</p>
+        <button
+          onClick={async () => {
+            await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})
+            window.location.href = "/auth/login"
+          }}
+          className="mt-2 w-full rounded-md px-2 py-1.5 text-left text-xs text-zinc-600 transition hover:text-red-400"
+        >
+          {t("nav.logout")}
+        </button>
       </div>
     </aside>
   )
