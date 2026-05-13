@@ -7,6 +7,7 @@ import { getPsychologyPreview } from "@/services/whatsapp-sequence.service";
 import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
 import type { PsychologyPreview } from "@/types/whatsapp";
 import { MiniKpiCard } from "@/components/shared/KpiCard";
+import SystemNarrative from "@/components/shared/SystemNarrative";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
 
 export const dynamic = "force-dynamic";
@@ -50,20 +51,25 @@ export default async function ConfirmPage() {
     });
   }
 
+  const needsAttention = queue.pendingCount > 0;
+
   return (
     <div data-state="decision" className="space-y-section">
-      <div>
-        <h1 className="text-display-lg text-[var(--text-primary)]">Decision Queue</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">
-          What needs action right now
-        </p>
-      </div>
+      <SystemNarrative
+        title={needsAttention ? "Orders need you" : "Decision Queue"}
+        narrative={
+          needsAttention
+            ? `${queue.pendingCount} orders pending — ${highRiskItems.length} at high risk, ${revenueAtRisk.toFixed(0)} TND exposed`
+            : "All orders have been reviewed — no pending decisions"
+        }
+        emotion={needsAttention ? "tense" : "calm"}
+      />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label="Revenue at risk" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" />
+        <MiniKpiCard label="Revenue at risk" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" emotion="tense" />
         <MiniKpiCard label="High risk orders" value={highRiskItems.length} tier="medium" />
         <MiniKpiCard label="Pending confirmation" value={queue.pendingCount} tier="neutral" />
-        <MiniKpiCard label="Loss prevented" value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" />
+        <MiniKpiCard label="Loss prevented" value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
       </div>
 
       <ConfirmationPanel

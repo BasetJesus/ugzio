@@ -56,6 +56,25 @@
   --btn-green-hover: #22c55e;
   --btn-red: #dc2626;
   --btn-red-hover: #ef4444;
+
+  --emotion-protection: rgba(74, 222, 128, 0.15);
+  --emotion-tension: rgba(248, 113, 113, 0.12);
+  --emotion-calm: rgba(99, 102, 241, 0.1);
+  --emotion-achievement: rgba(251, 191, 36, 0.15);
+  --emotion-celebration-glow: 0 0 20px rgba(74, 222, 128, 0.08);
+
+  --psych-trust: #6366F1;
+  --psych-trust-bg: rgba(99, 102, 241, 0.1);
+  --psych-urgency: #f59e0b;
+  --psych-urgency-bg: rgba(245, 158, 11, 0.1);
+  --psych-reassurance: #34d399;
+  --psych-reassurance-bg: rgba(52, 211, 153, 0.1);
+  --psych-reminder: #60a5fa;
+  --psych-reminder-bg: rgba(96, 165, 250, 0.1);
+
+  --glow-red: 0 0 16px rgba(248, 113, 113, 0.06);
+  --glow-green: 0 0 16px rgba(74, 222, 128, 0.06);
+  --glow-amber: 0 0 16px rgba(251, 191, 36, 0.06);
 }
 
 .theme-light {
@@ -95,6 +114,25 @@
   --overlay: rgba(0, 0, 0, 0.3);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  --emotion-protection: rgba(5, 150, 105, 0.08);
+  --emotion-tension: rgba(220, 38, 38, 0.06);
+  --emotion-calm: rgba(79, 70, 229, 0.06);
+  --emotion-achievement: rgba(217, 119, 6, 0.08);
+  --emotion-celebration-glow: 0 0 20px rgba(5, 150, 105, 0.08);
+
+  --psych-trust: #4F46E5;
+  --psych-trust-bg: rgba(79, 70, 229, 0.08);
+  --psych-urgency: #d97706;
+  --psych-urgency-bg: rgba(217, 119, 6, 0.08);
+  --psych-reassurance: #059669;
+  --psych-reassurance-bg: rgba(5, 150, 105, 0.08);
+  --psych-reminder: #2563eb;
+  --psych-reminder-bg: rgba(37, 99, 235, 0.08);
+
+  --glow-red: 0 0 12px rgba(220, 38, 38, 0.04);
+  --glow-green: 0 0 12px rgba(5, 150, 105, 0.04);
+  --glow-amber: 0 0 12px rgba(217, 119, 6, 0.04);
 }
 
 /* ── Transitions ── */
@@ -108,7 +146,7 @@ body {
 *,
 *::before,
 *::after {
-  transition-property: background-color, border-color, color, opacity, transform;
+  transition-property: background-color, border-color, color, opacity, transform, box-shadow;
   transition-duration: 0.15s;
   transition-timing-function: ease;
 }
@@ -128,6 +166,32 @@ body {
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes revenue-increment {
+  from { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  to { transform: scale(1); }
+}
+
+@keyframes emotion-transition {
+  from { opacity: 0.5; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes psychology-reveal {
+  from { opacity: 0; transform: translateY(6px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes shield-fill {
+  from { width: 0%; }
+  to { width: var(--shield-pct, 100%); }
 }
 
 @keyframes view-fade-in {
@@ -150,6 +214,26 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.15s ease-out;
+}
+
+.animate-revenue-increment {
+  animation: revenue-increment 0.4s ease-out;
+}
+
+.animate-emotion-transition {
+  animation: emotion-transition 0.3s ease-out;
+}
+
+.animate-psychology-reveal {
+  animation: psychology-reveal 0.35s ease-out;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-shield-fill {
+  animation: shield-fill 0.6s ease-out forwards;
 }
 
 .animate-view-fade-in {
@@ -186,6 +270,172 @@ body {
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
+
+  .text-emotion {
+    font-family: var(--font-fraunces);
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .text-narrative {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+}
+
+/* ── Landing Page — Glassmorphism & Gradients ── */
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gradient-behavioral {
+  background: linear-gradient(135deg, #6366F1, #8B5CF6, #D946EF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-live {
+  background: linear-gradient(135deg, #06B6D4, #6366F1, #D946EF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-protection {
+  background: linear-gradient(135deg, #10B981, #34D399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-accent-bg {
+  background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.1) 50%, rgba(236,72,153,0.05) 100%);
+}
+
+.gradient-live-bg {
+  background: linear-gradient(135deg, rgba(6,182,212,0.08) 0%, rgba(99,102,241,0.12) 50%, rgba(217,70,239,0.06) 100%);
+}
+
+.hero-glow {
+  position: relative;
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1), transparent, rgba(236,72,153,0.1));
+  z-index: -1;
+  opacity: 0.6;
+  animation: liquid-shimmer 6s ease-in-out infinite;
+  background-size: 300% 300%;
+}
+
+.hero-glow::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: var(--bg-card);
+  z-index: -1;
+}
+
+/* ── Landing Page — Animations ── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes liquid-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer-in {
+  from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes hero-card-enter {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-liquid-shimmer {
+  animation: liquid-shimmer 6s ease-in-out infinite;
+  background-size: 300% 300%;
+}
+
+.animate-shimmer-in {
+  animation: shimmer-in 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out forwards;
+}
+
+.animate-hero-card-enter {
+  animation: hero-card-enter 0.7s ease-out forwards;
+}
+
+/* ── Landing Page — Section dividers ── */
+
+.section-gradient-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.15), rgba(236,72,153,0.1), transparent);
 }
 
 /* ── Scrollbar ── */

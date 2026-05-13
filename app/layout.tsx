@@ -20,9 +20,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "UGZIO — See the money you are about to lose, before it happens",
+  title: "UGZIO — Behavioral Revenue Protection for COD Commerce",
   description:
-    "UGZIO simulates your store in real time and shows risky orders before delivery fails.",
+    "UGZIO predicts delivery failure before it costs you money. Behavioral intelligence for modern DTC operations.",
 };
 
 export default function RootLayout({

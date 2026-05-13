@@ -8,15 +8,17 @@ No page-specific styles. No experimental UI. No color wars.
 
 ## Design Philosophy
 
-UGZIO is an **operational system**, not a marketing website.
+UGZIO is a **Behavioral Revenue Protection Operating System**, not a marketing website.
 
 Design priorities:
-1. **Clarity first** — Operators make fast decisions
-2. **Consistency always** — Same patterns everywhere
-3. **Mobile-first** — Sellers use phones
-4. **Low cognitive load** — No visual noise
+1. **Emotional clarity** — Operators must feel the system state, not just read it
+2. **Consistency always** — Same emotional language everywhere
+3. **Mobile-first** — Thumb-operated, swipe-native, glanceable
+4. **Low cognitive load** — One emotional state per view
+5. **Psychology visibility** — The behavioral intelligence must be seen and understood
+6. **Revenue celebration** — Protected revenue should feel like winning
 
-**Forbidden:** Gradients, shadows, animations that don't serve a purpose.
+**Forbidden:** Gradients, random shadows, animations that don't serve an emotional purpose.
 
 ---
 
@@ -48,6 +50,14 @@ All colors live in CSS variables in `app/globals.css`.
 | `--warning-amber-border` | Medium risk border | KPI card border |
 | `--success-green-bg` | Low risk KPI | `KpiCard tier="low"` |
 | `--success-green-border` | Low risk border | KPI card border |
+| `--emotion-protection` | Revenue protected glow | `RevenueShield`, `KpiCard emotion="protective"` |
+| `--emotion-tension` | Revenue at risk glow | `KpiCard emotion="tense"` |
+| `--emotion-calm` | System stable glow | `KpiCard emotion="calm"`, `StatePulse state="calm"` |
+| `--emotion-achievement` | Goal met glow | `KpiCard emotion="achievement"` |
+| `--psych-trust` | Trust sequence accent | `PsychologyCard sequenceType="trust"` |
+| `--psych-urgency` | Urgency sequence accent | `PsychologyCard sequenceType="urgency"` |
+| `--psych-reassurance` | Reassurance sequence accent | `PsychologyCard sequenceType="reassurance"` |
+| `--psych-reminder` | Reminder sequence accent | `PsychologyCard sequenceType="reminder"` |
 
 ### Theme Support
 
@@ -73,14 +83,14 @@ These are the ONLY UI building blocks.
 The most important component. Used everywhere.
 
 ```tsx
-import KpiCard, { MiniKpiCard } from "@/components/shared/KpiCard"
+import KpiCard, { MiniKpiCard, EmotionBadge } from "@/components/shared/KpiCard"
 
 // Full KPI Card
 <KpiCard
   label="Revenue at risk"
   value={`${amount} TND`}
-  icon="⚠️"
-  tier="high"  // "high" | "medium" | "low" | "neutral"
+  tier="high"        // "high" | "medium" | "low" | "neutral"
+  emotion="tense"    // optional: "protective" | "tense" | "calm" | "achievement" | "neutral"
 />
 
 // Mini variant (for grids)
@@ -88,7 +98,11 @@ import KpiCard, { MiniKpiCard } from "@/components/shared/KpiCard"
   label="Confirmation rate"
   value={`${rate}%`}
   tier="low"
+  emotion="protective"
 />
+
+// Emotion badge (for inline emotional context)
+<EmotionBadge emotion="protective" label="Protected" />
 ```
 
 **Tier mapping:**
@@ -97,17 +111,119 @@ import KpiCard, { MiniKpiCard } from "@/components/shared/KpiCard"
 - `low` → Green (success, positive)
 - `neutral` → Default (no semantic meaning)
 
+**Emotion tier mapping (adds emotional context layer):**
+- `protective` → Green glow, shield icon (revenue saved)
+- `tense` → Red glow, lightning icon (revenue at risk)
+- `calm` → Purple glow, circle icon (system stable)
+- `achievement` → Amber glow, star icon (goal met)
+- `neutral` → No glow (default)
+
+### PsychologyCard (`src/components/shared/PsychologyCard.tsx`)
+
+Shows the psychological sequencing decision. This is the most unique component — it makes the psychology layer visible.
+
+```tsx
+import PsychologyCard from "@/components/shared/PsychologyCard"
+
+<PsychologyCard
+  sequenceType="urgency"         // "trust" | "reminder" | "urgency" | "reassurance"
+  psychologicalReason="High value at risk — reservation framing to prompt timely decision"
+  expectedGoal="Secure confirmation before shipping window closes"
+  previewMessage="Hi {name}, your order of {amount} TND is reserved..."
+  messageCount={3}
+/>
+```
+
+Colors are driven by `--psych-trust`, `--psych-reminder`, `--psych-urgency`, `--psych-reassurance` CSS variables.
+
+### RevenueShield (`src/components/shared/RevenueShield.tsx`)
+
+Animated revenue protection display. Shows cumulative protected amount with celebration animation.
+
+```tsx
+import RevenueShield from "@/components/shared/RevenueShield"
+
+// Full variant (for overview page)
+<RevenueShield protectedAmount={2450} />
+
+// Compact variant (for inline display)
+<RevenueShield protectedAmount={2450} compact />
+```
+
+When `protectedAmount` changes, the component animates with a scale + glow effect.
+
+### StatePulse (`src/components/shared/StatePulse.tsx`)
+
+Live emotional system state indicator. Replaces manual dot indicators.
+
+```tsx
+import StatePulse from "@/components/shared/StatePulse"
+
+<StatePulse
+  state="urgent"     // "calm" | "focused" | "urgent" | "celebration"
+  label="Attention"  // optional: overrides default label
+  size="sm"          // "sm" | "md"
+/>
+```
+
+**State mapping:**
+- `calm` → Green dot, no animation (system stable)
+- `focused` → Purple dot, soft pulse (action needed)
+- `urgent` → Red dot, fast pulse (attention required)
+- `celebration` → Amber dot, soft pulse (revenue protected)
+
+### SystemNarrative (`src/components/shared/SystemNarrative.tsx`)
+
+Top-of-page contextual narrative. Answers "What is happening right now?" with emotional tone.
+
+```tsx
+import SystemNarrative from "@/components/shared/SystemNarrative"
+
+<SystemNarrative
+  title="Revenue at risk"
+  narrative="2,450 TND exposed — 3 orders need your attention"
+  emotion="tense"    // optional: "protective" | "tense" | "calm" | "achievement"
+/>
+```
+
+Every page should use SystemNarrative as its first component to set the emotional context.
+
+### DecisionCard (`src/components/shared/DecisionCard.tsx`)
+
+Evolved queue item. Integrates risk + psychology + revenue into a single decision surface.
+
+```tsx
+import DecisionCard from "@/components/shared/DecisionCard"
+
+<DecisionCard
+  item={queueItem}
+  psychology={psychologyPreview}
+  onAction={(orderId, action) => performAction(orderId, action)}
+  onSelect={() => openDetail(item)}
+  submitting={submittingId}
+  showActions={true}
+/>
+```
+
+The card auto-colors based on risk level and shows the psychology preview inline.
+
 ### CoreShell (`src/components/core/CoreShell.tsx`)
 
 The authenticated app layout. **All `(app)` pages use this.**
 
 Provides:
-- LiveSystemHeader (top bar with revenue at risk)
-- SystemFlowNavigator (desktop sidebar)
-- MobileBottomNav (mobile bottom navigation)
-- Animation system
+- LiveSystemHeader (top bar with StatePulse + revenue at risk)
+- SystemFlowNavigator (desktop sidebar with emotional indicators)
+- MobileBottomNav (mobile bottom navigation with animated state icons)
+- Emotional transition system (animate-emotion-transition)
 
 **Never create a custom layout for `(app)` pages.**
+
+### Legacy Components (Keep)
+
+These components remain unchanged but may be deprecated over time:
+
+- `MessagePreviewCard` — Use `PsychologyCard` instead for new development
 
 ### EmptyState (`src/components/shared/EmptyState.tsx`)
 
@@ -378,14 +494,38 @@ Most content is single column on mobile, still single column on desktop.
 
 From `app/globals.css`:
 
-| Class | Purpose | Use Case |
-|-------|---------|----------|
-| `animate-view-fade-in` | Page transition | Content entering |
-| `animate-view-fade-out` | Page transition | Content leaving |
-| `animate-slide-in-right` | Side drawer | RiskInsightPanel |
-| `animate-slide-in-top` | Toast/notification | Action feedback |
-| `animate-fade-in` | Simple fade | Elements appearing |
-| `animate-pulse` | Attention | High-risk indicator |
+| Class | Duration | Purpose | Use Case |
+|-------|----------|---------|----------|
+| `animate-view-fade-in` | 250ms | Page transition | Content entering |
+| `animate-view-fade-out` | 200ms | Page transition | Content leaving |
+| `animate-slide-in-right` | 250ms | Side drawer | RiskInsightPanel |
+| `animate-slide-in-top` | 200ms | Toast/notification | Action feedback |
+| `animate-fade-in` | 150ms | Simple fade | Elements appearing |
+| `animate-pulse` | 2s | Attention | High-risk indicator |
+| `animate-revenue-increment` | 400ms | Scale celebration | Revenue amount change |
+| `animate-emotion-transition` | 300ms | Emotional state change | Page emotional shift |
+| `animate-psychology-reveal` | 350ms | Blur-in reveal | Psychology card content |
+| `animate-pulse-soft` | 2s | Gentle heartbeat | System state indicator |
+| `animate-shield-fill` | 600ms | Progress fill | RevenueShield bar |
+
+### Animation Philosophy
+
+Animations serve emotional purpose, not decoration:
+
+- **Revenue increment** (400ms scale) — Celebrates money saved. Brief, satisfying.
+- **Emotion transition** (300ms opacity+translate) — Shifts the operator's emotional context between states.
+- **Psychology reveal** (350ms blur-in) — Reveals behavioral intelligence like reading a message. Slow, deliberate.
+- **Soft pulse** (2s gentle) — System is alive and monitoring. Calm presence.
+- **Fast pulse** (1s) — Something needs IMMEDIATE attention. Tension.
+- **Shield fill** (600ms) — Progress toward a protection goal. Graphical satisfaction.
+
+### Emotional State Transitions
+
+When page state changes (LIVE → DECISION → HISTORY), CoreShell applies:
+1. Brief opacity dip (150ms) — emotional reset
+2. New content slides in (300ms) — emotional context shift
+
+This prevents jarring cuts and gives the operator time to reorient emotionally.
 
 ### Forbidden: Custom Animations
 
@@ -393,7 +533,7 @@ From `app/globals.css`:
 // ❌ NEVER do this
 <div className="transition-all duration-500 ease-in-out hover:scale-105">...</div>
 
-// ❌ NEVER add custom keyframes
+// ❌ NEVER add custom keyframes (add to globals.css instead)
 // @keyframes custom-bounce { ... }
 ```
 
@@ -474,15 +614,30 @@ function riskTier(level: string): "high" | "medium" | "low" {
 
 If a component isn't in this list, it shouldn't exist:
 
-- KpiCard / MiniKpiCard
+- KpiCard / MiniKpiCard / EmotionBadge
+- PsychologyCard
+- RevenueShield
+- StatePulse
+- SystemNarrative
+- DecisionCard
 - CoreShell
 - EmptyState
 - LoadingSkeleton
 - Basic HTML elements styled with CSS variables
 
-**No fancy charts.**
-**No complex data tables.**
-**No interactive widgets.**
+**No fancy charts.** Use KpiCard for metrics.
+**No complex data tables.** Use DecisionCard for decisions, simple tables for history.
+**No interactive widgets.** One action per card.
+
+### ❌ No Raw Psychology Badges
+
+```tsx
+// ❌ BAD — inline sequence badge
+<span className="text-[--psych-urgency] bg-[--psych-urgency-bg]">Urgency</span>
+
+// ✅ GOOD — use PsychologyCard
+<PsychologyCard sequenceType="urgency" ... />
+```
 
 ---
 

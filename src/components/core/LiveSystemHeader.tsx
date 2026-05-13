@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { configFromPath } from "@/lib/core/system-state"
+import StatePulse from "@/components/shared/StatePulse"
 import NotificationBell from "@/components/shared/NotificationBell"
 import ThemeToggle from "@/components/shared/ThemeToggle"
 
@@ -16,8 +17,7 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
   const pathname = usePathname()
   const state = configFromPath(pathname)
 
-  const indicator = revenueAtRisk > 500 ? "critical" : revenueAtRisk > 100 ? "medium" : "low"
-  const dotColor = indicator === "critical" ? "var(--risk-red)" : indicator === "medium" ? "var(--warning-amber)" : "var(--success-green)"
+  const pulseState = revenueAtRisk > 500 ? "urgent" : revenueAtRisk > 100 ? "focused" : "calm"
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--nav-border)] bg-[var(--nav-bg)] backdrop-blur-sm">
@@ -28,12 +28,7 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
             <span className="text-sm font-semibold text-[var(--text-primary)] hidden sm:inline">UGZIO</span>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-full border border-[var(--nav-border)] px-2.5 py-0.5">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: dotColor }} />
-            <span className="text-[10px] font-medium text-[var(--text-secondary)]">
-              {indicator === "critical" ? "Critical" : indicator === "medium" ? "Elevated" : "Stable"}
-            </span>
-          </div>
+          <StatePulse state={pulseState} />
 
           <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-[var(--text-tertiary)]">
             <span className="text-xs" style={{ color: state.color }}>{state.icon}</span>

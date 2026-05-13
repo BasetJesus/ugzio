@@ -42,10 +42,32 @@ export const SEMANTIC = {
     green: "bg-[var(--success-green-bg)] border-[var(--success-green-border)]",
     neutral: "bg-[var(--bg-card)] border-[var(--border)]",
   },
+  emotion: {
+    protective: "bg-[var(--emotion-protection)]",
+    tense: "bg-[var(--emotion-tension)]",
+    calm: "bg-[var(--emotion-calm)]",
+    achievement: "bg-[var(--emotion-achievement)]",
+  },
+  psych: {
+    trust: "text-[var(--psych-trust)] bg-[var(--psych-trust-bg)] border-[var(--psych-trust)]/30",
+    urgency: "text-[var(--psych-urgency)] bg-[var(--psych-urgency-bg)] border-[var(--psych-urgency)]/30",
+    reassurance: "text-[var(--psych-reassurance)] bg-[var(--psych-reassurance-bg)] border-[var(--psych-reassurance)]/30",
+    reminder: "text-[var(--psych-reminder)] bg-[var(--psych-reminder-bg)] border-[var(--psych-reminder)]/30",
+  },
 } as const
 
 export function cardBorder(level: string): string {
   if (level === "high") return "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]"
   if (level === "medium") return "border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]"
   return "border-[var(--border)] bg-[var(--bg-card)]"
+}
+
+export function emotionStyle(emotion: string): string {
+  const map: Record<string, string> = {
+    protective: "border-[var(--success-green-border)] bg-[var(--emotion-protection)]",
+    tense: "border-[var(--kpi-red-border)] bg-[var(--emotion-tension)]",
+    calm: "border-[var(--accent)]/20 bg-[var(--emotion-calm)]",
+    achievement: "border-[var(--warning-amber-border)] bg-[var(--emotion-achievement)]",
+  }
+  return map[emotion] ?? ""
 }

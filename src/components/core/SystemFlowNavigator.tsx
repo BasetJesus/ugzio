@@ -14,6 +14,12 @@ interface Props {
 
 const STATE_KEYS: SystemState[] = ["LIVE", "DECISION", "HISTORY"]
 
+const STATE_EMOTION: Record<string, string> = {
+  LIVE: "\u25CF",
+  DECISION: "\u25C6",
+  HISTORY: "\u25B8",
+}
+
 export default function SystemFlowNavigator({ orgName, planName, completedCount }: Props) {
   const pathname = usePathname()
   const { t } = useLanguage()
@@ -38,14 +44,19 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
             <Link
               key={key}
               href={cfg.route}
-              className={`group rounded-lg px-3 py-2 text-sm transition ${
+              className={`group rounded-lg px-3 py-2.5 text-sm transition ${
                 active
                   ? "bg-[var(--accent)]/10 text-[var(--accent)] font-medium"
                   : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="w-4 text-center text-sm" style={{ color: active ? cfg.color : undefined }}>{cfg.icon}</span>
+                <span
+                  className={`w-4 text-center text-sm ${active && key === "LIVE" ? "animate-pulse-soft" : ""}`}
+                  style={{ color: active ? cfg.color : undefined }}
+                >
+                  {STATE_EMOTION[key]}
+                </span>
                 <div className="flex flex-col">
                   <span>{cfg.label}</span>
                   <span className="text-[9px] text-[var(--text-tertiary)]">{cfg.description}</span>
@@ -57,7 +68,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         <div className="mt-panel pt-panel border-t border-[var(--nav-border)]">
           <Link
             href="/intelligence"
-            className={`group rounded-lg px-3 py-2 text-sm transition flex items-center gap-3 ${
+            className={`group rounded-lg px-3 py-2.5 text-sm transition flex items-center gap-3 ${
               pathname.startsWith("/intelligence")
                 ? "bg-[var(--accent)]/10 text-[var(--accent)] font-medium"
                 : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"

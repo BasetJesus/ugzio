@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
-import type { PsychologyPreview, SequenceType } from "@/types/whatsapp";
+import type { PsychologyPreview } from "@/types/whatsapp";
 import type { JourneyTimeline as JourneyTimelineData } from "@/services/buyer-journey.service";
-import MessagePreviewCard from "@/components/confirm/MessagePreviewCard";
+import DecisionCard from "@/components/shared/DecisionCard";
+import PsychologyCard from "@/components/shared/PsychologyCard";
 import JourneyTimelineComponent from "@/components/shared/JourneyTimeline";
 
 interface Props {
@@ -17,43 +18,6 @@ interface Props {
   pendingOutcomes?: PendingOutcomeOrder[]
 }
 
-const SEQUENCE_BADGE: Record<SequenceType, { label: string; style: string }> = {
-  trust: { label: "Trust", style: "text-[var(--accent)] border-[var(--accent)]/20 bg-[var(--accent)]/10" },
-  reminder: { label: "Reminder", style: "text-[var(--warning-amber)] border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]" },
-  urgency: { label: "Urgency", style: "text-[var(--risk-red)] border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]" },
-  reassurance: { label: "Reassure", style: "text-[var(--success-green)] border-[var(--success-green-border)] bg-[var(--success-green-bg)]" },
-};
-
-function riskPct(item: ConfirmationQueueItem): number {
-  if (item.riskLevel === "high") return 65 + Math.round((100 - item.trustScore) * 0.35);
-  if (item.riskLevel === "medium") return 35 + Math.round((100 - item.trustScore) * 0.25);
-  return Math.round((100 - item.trustScore) * 0.15);
-}
-
-function riskColor(level: string): string {
-  switch (level) {
-    case "high": return "text-[var(--risk-red)]";
-    case "medium": return "text-[var(--warning-amber)]";
-    default: return "text-[var(--success-green)]";
-  }
-}
-
-function riskReason(item: ConfirmationQueueItem): string {
-  if (item.trustScore < 30) return "First-time buyer \u2014 high RTS risk";
-  if (item.trustScore < 50) return "Low trust score \u2014 needs verification";
-  if (item.riskLevel === "high") return "Multiple risk signals detected";
-  if (item.riskLevel === "medium") return "Moderate risk \u2014 verify before shipping";
-  return "Standard risk profile";
-}
-
-function failureChance(item: ConfirmationQueueItem): number {
-  return riskPct(item);
-}
-
-function estimatedLoss(item: ConfirmationQueueItem): number {
-  return Math.round(item.amount * (failureChance(item) / 100));
-}
-
 function impactMessage(action: string, item: ConfirmationQueueItem): string {
   switch (action) {
     case "confirm": return `+${item.amount.toFixed(0)} TND secured`;
@@ -61,12 +25,6 @@ function impactMessage(action: string, item: ConfirmationQueueItem): string {
     case "cancel": return "Revenue protected";
     default: return "";
   }
-}
-
-function DeliveryProviderBadge({ product }: { product: string | null }) {
-  const providers = ["Aramex", "Poste Tunisienne", "DHL", "UPS", "Chronopost"];
-  const name = providers[Math.floor(((product?.length ?? 0) + 3) % providers.length)];
-  return <span className="text-[10px] text-[var(--text-tertiary)]">{name}</span>;
 }
 
 function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline, timelineLoading }: {
@@ -77,24 +35,22 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
   timeline?: JourneyTimelineData | null;
   timelineLoading?: boolean;
 }) {
-  const pct = failureChance(item);
-  const loss = estimatedLoss(item);
   const signals: { label: string; detail: string }[] = [];
 
   if (item.riskLevel === "high") {
     signals.push({
       label: "Risk score",
-      detail: item.trustScore < 40 ? "High \u2014 first-time buyer pattern detected" : "High \u2014 multiple risk signals",
+      detail: item.trustScore < 40 ? "High — first-time buyer pattern detected" : "High — multiple risk signals",
     });
     if (item.amount > 150) {
       signals.push({ label: "Amount threshold", detail: "Order value exceeds 150 TND safe threshold" });
     }
     signals.push({ label: "Delivery risk", detail: "Above average RTS probability based on buyer profile" });
   } else if (item.riskLevel === "medium") {
-    signals.push({ label: "Risk score", detail: "Moderate \u2014 some risk indicators present" });
+    signals.push({ label: "Risk score", detail: "Moderate — some risk indicators present" });
     signals.push({ label: "Delivery risk", detail: "Standard delivery profile with moderate concerns" });
   } else {
-    signals.push({ label: "Risk score", detail: "Low \u2014 no significant risk signals" });
+    signals.push({ label: "Risk score", detail: "Low — no significant risk signals" });
   }
 
   return (
@@ -118,22 +74,24 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
               <p className="text-base font-bold text-[var(--text-primary)]">{item.amount.toFixed(0)} TND</p>
             </div>
             <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Risk score</p>
-              <p className={`text-base font-bold ${riskColor(item.riskLevel)}`}>{pct}%</p>
-            </div>
-            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Trust score</p>
-              <p className="text-base font-bold text-[var(--text-primary)]">{item.trustScore}</p>
-            </div>
-            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Failure probability</p>
-              <p className="text-base font-bold text-[var(--risk-red)]">{pct}%</p>
+              <p className={`text-base font-bold ${item.trustScore < 40 ? "text-[var(--risk-red)]" : item.trustScore < 70 ? "text-[var(--warning-amber)]" : "text-[var(--success-green)]"}`}>{item.trustScore}</p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] p-4">
-            <p className="text-xs font-medium text-[var(--risk-red)] uppercase tracking-wider mb-1">If you do nothing</p>
-            <p className="text-sm text-[var(--risk-red)] opacity-90">Estimated loss: {loss} TND</p>
+          <div
+            className="rounded-xl border p-4"
+            style={{
+              borderColor: item.riskLevel === "high" ? "var(--kpi-red-border)" : "var(--warning-amber-border)",
+              backgroundColor: item.riskLevel === "high" ? "var(--kpi-red-bg)" : "var(--warning-amber-bg)",
+            }}
+          >
+            <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: item.riskLevel === "high" ? "var(--risk-red)" : "var(--warning-amber)" }}>
+              If you do nothing
+            </p>
+            <p className="text-sm opacity-90" style={{ color: item.riskLevel === "high" ? "var(--risk-red)" : "var(--warning-amber)" }}>
+              Estimated loss: {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
+            </p>
           </div>
 
           <div>
@@ -173,7 +131,12 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
           </div>
 
           {psychologyPreview && (
-            <MessagePreviewCard preview={psychologyPreview} />
+            <PsychologyCard
+              sequenceType={psychologyPreview.sequenceType}
+              psychologicalReason={psychologyPreview.psychologicalReason}
+              expectedGoal={psychologyPreview.expectedGoal}
+              previewMessage={psychologyPreview.previewMessage}
+            />
           )}
 
           <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
@@ -307,7 +270,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
                     disabled={submitting === o.orderId + "_refused"}
-                    className="rounded-lg border border-[var(--risk-red)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--risk-red)] hover:bg-[var(--kpi-red-bg)] disabled:opacity-50 transition-colors"
+                    className="rounded-lg border border-[var(--risk-red)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-50 transition-colors"
                   >
                     {submitting === o.orderId + "_refused" ? "..." : "Refused"}
                   </button>
@@ -319,89 +282,22 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       )}
 
       <div className="space-y-3">
-        {filtered.map((item) => {
-          const rl = item.riskLevel;
-          const isHigh = rl === "high";
-          const pct = riskPct(item);
-          const sub = submitting;
-
-          return (
-            <div
-              key={item.orderId}
-              className={`rounded-xl border p-4 transition-all duration-300 cursor-pointer ${
-                isHigh
-                  ? "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]"
-                  : "border-[var(--border)] bg-[var(--bg-card)]"
-              }`}
-              onClick={() => {
-                setSelected({ item, psychology: psychologyMap?.[item.orderId], timeline: null, timelineLoading: true })
-                fetch("/api/journey/timeline/" + item.orderId)
-                  .then((r) => r.json())
-                  .then((data) => setSelected((prev) => prev ? { ...prev, timeline: data, timelineLoading: false } : null))
-                  .catch(() => setSelected((prev) => prev ? { ...prev, timeline: null, timelineLoading: false } : null))
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className={`h-2 w-2 shrink-0 rounded-full ${
-                    isHigh ? "bg-[var(--risk-red)] animate-pulse" : rl === "medium" ? "bg-[var(--warning-amber)]" : "bg-[var(--success-green)]"
-                  }`} />
-                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.buyerName}</p>
-                  {(() => {
-                    const p = psychologyMap?.[item.orderId];
-                    if (!p) return null;
-                    const badge = SEQUENCE_BADGE[p.sequenceType];
-                    return (
-                      <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full border ${badge.style} shrink-0`}>
-                        {badge.label}
-                      </span>
-                    );
-                  })()}
-                </div>
-                <span className="text-lg font-bold text-[var(--text-primary)] shrink-0 ml-2">
-                  {item.amount.toFixed(0)} <span className="text-xs font-medium text-[var(--text-tertiary)]">TND</span>
-                </span>
-              </div>
-
-              <div className="mt-1.5">
-                <span className={`text-3xl font-extrabold tracking-tight ${riskColor(rl)}`}>
-                  {pct}%
-                </span>
-                <span className={`ml-1 text-[11px] font-medium ${riskColor(rl)}`}>risk</span>
-              </div>
-
-              <div className="flex items-center gap-3 mt-0.5">
-                <span className="text-[11px] text-[var(--text-secondary)]">Trust {item.trustScore}</span>
-                <DeliveryProviderBadge product={item.product} />
-                <span className="text-[11px] text-[var(--text-tertiary)] truncate">{riskReason(item)}</span>
-              </div>
-
-              <div className="flex items-center gap-2 mt-3">
-                <button
-                  onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "confirm"); }}
-                  disabled={sub === `${item.orderId}_confirm`}
-                  className="rounded-lg bg-[var(--btn-green)]/90 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-50 transition-colors"
-                >
-                  {sub === `${item.orderId}_confirm` ? "..." : "Secure Revenue"}
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "retry"); }}
-                  disabled={sub === `${item.orderId}_retry`}
-                  className="rounded-lg border border-[var(--warning-amber)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--warning-amber)] hover:bg-[var(--warning-amber-bg)] disabled:opacity-50 transition-colors"
-                >
-                  {sub === `${item.orderId}_retry` ? "..." : "Re-contact"}
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "cancel"); }}
-                  disabled={sub === `${item.orderId}_cancel`}
-                  className="rounded-lg border border-[var(--risk-red)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-50 transition-colors"
-                >
-                  {sub === `${item.orderId}_cancel` ? "..." : "Prevent Loss"}
-                </button>
-              </div>
-            </div>
-          );
-        })}
+        {filtered.map((item) => (
+          <DecisionCard
+            key={item.orderId}
+            item={item}
+            psychology={psychologyMap?.[item.orderId]}
+            onAction={performAction}
+            submitting={submitting}
+            onSelect={() => {
+              setSelected({ item, psychology: psychologyMap?.[item.orderId], timeline: null, timelineLoading: true })
+              fetch("/api/journey/timeline/" + item.orderId)
+                .then((r) => r.json())
+                .then((data) => setSelected((prev) => prev ? { ...prev, timeline: data, timelineLoading: false } : null))
+                .catch(() => setSelected((prev) => prev ? { ...prev, timeline: null, timelineLoading: false } : null))
+            }}
+          />
+        ))}
       </div>
 
       {toast && (

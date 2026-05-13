@@ -57,7 +57,11 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
         />
         <main className="flex-1 overflow-y-auto">
           <div
-            className={`p-4 sm:p-6 ${animating ? "animate-view-fade-out opacity-0" : "animate-view-fade-in"}`}
+            className={`p-4 sm:p-6 ${
+              animating
+                ? "animate-view-fade-out opacity-0"
+                : "animate-emotion-transition"
+            }`}
             key={displayState}
           >
             {children}
