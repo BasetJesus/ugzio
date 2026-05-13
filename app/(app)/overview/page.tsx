@@ -3,8 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getRiskDashboard } from "@/services/risk.service";
-import { getNeedsConfirmCount, getRevenueAtRisk } from "@/services/risk.service";
+import { getRevenueAtRisk, getNeedsConfirmCount } from "@/services/demo-orchestrator.service";
 
 export const dynamic = "force-dynamic";
 

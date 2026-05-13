@@ -1,4 +1,4 @@
-import { getOrdersPageData } from "@/services/order.service"
+import { getOrdersPageData } from "@/services/demo-orchestrator.service"
 import { requireSession } from "@/services/auth.service"
 import OrdersHeader from "@/components/orders/OrdersHeader"
 import OrdersPageClient from "@/components/orders/OrdersPageClient"

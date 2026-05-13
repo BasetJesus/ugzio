@@ -1,5 +1,4 @@
 export {
-  listOrders,
   getOrderDetail,
   createOrder,
   transitionOrderStatus,
@@ -22,8 +21,6 @@ export {
   getHighRiskAlerts,
   getAggregateRiskStats,
   getOrderCountsByRisk,
-  getRevenueAtRisk,
-  getNeedsConfirmCount,
   getHighRiskCreatedOrders,
   determineRiskLevel,
 } from "./risk.service";
@@ -45,3 +42,18 @@ export {
   addNote,
   getConversationCount,
 } from "./conversation.service";
+
+export {
+  getOverviewData,
+  getRevenueAtRisk,
+  getNeedsConfirmCount,
+  getConfirmationQueue,
+  getConfirmationDetail,
+  markConfirmed,
+  markUnreachable,
+  markSuspicious,
+  scheduleRetry,
+  cancelOrder,
+  getOrdersPageData,
+  listOrders,
+} from "./demo-orchestrator.service";

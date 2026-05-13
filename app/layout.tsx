@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UGZIO — Social Commerce OS for Tunisian Sellers",
+  title: "UGZIO — See the money you are about to lose, before it happens",
   description:
-    "Activate buyers post-delivery, collect authentic UGC with rights cleared, and track what converts.",
+    "UGZIO simulates your store in real time and shows risky orders before delivery fails.",
 };
 
 export default function RootLayout({

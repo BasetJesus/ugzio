@@ -12,10 +12,10 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <span className="text-sm font-bold tracking-tight text-zinc-100">UGZIO</span>
           <a
-            href="/onboarding"
+            href="/overview?demo=true"
             className="rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-500 transition-colors"
           >
-            Start protecting orders
+            Try live simulation
           </a>
         </div>
       </nav>
@@ -29,7 +29,7 @@ export default function LandingPage() {
       </main>
       <footer className="border-t border-zinc-800/50 py-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <p className="text-center text-xs text-zinc-600">UGZIO &mdash; commerce operations intelligence</p>
+          <p className="text-center text-xs text-zinc-600">UGZIO &mdash; live risk simulation for DTC sellers</p>
         </div>
       </footer>
     </div>
