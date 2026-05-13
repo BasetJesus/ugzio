@@ -60,3 +60,203 @@ Use `transitionOrderStatus()` which handles errors internally and returns `null`
 
 ### All services return `{success: boolean}` for mutations — never throw
 `markConfirmed`, `cancelOrder`, `scheduleRetry`, etc. all return `{success: true}` or `{success: false}`.
+
+---
+
+# 🏗️ PERMANENT ENGINEERING PRINCIPLES
+
+These are non-negotiable. They define how UGZIO evolves.
+
+---
+
+## 🧱 Architecture Law
+
+**UI → Service → Prisma. ONLY.**
+
+- No additional layers
+- No managers, coordinators, orchestrators
+- No repository pattern (Prisma IS your repository)
+- No DDD, CQRS, Event Sourcing
+
+If a feature needs more than 2 layers → simplify it.
+
+---
+
+## 🚫 Product Firewall
+
+### What UGZIO IS:
+- Revenue protection operating system
+- Failed delivery prevention layer
+- Operator decision system
+- Risk-based confirmation workflow
+
+### What UGZIO IS NOT:
+- ❌ Inventory management
+- ❌ Customer support CRM
+- ❌ Ad management
+- ❌ Generic analytics dashboards
+- ❌ Accounting
+- ❌ Marketing automation
+- ❌ Multi-product expansion platform
+
+### Feature Admission Rule
+Every future feature must answer YES to at least ONE:
+1. Does this reduce failed deliveries?
+2. Does this protect revenue?
+3. Does this accelerate operator decisions?
+4. Does this improve trust/risk intelligence?
+5. Does this strengthen the core operational loop?
+
+**If NO → REJECT THE FEATURE.**
+
+---
+
+## 🔄 The Core Loop
+
+```
+Order enters → Risk evaluated → Operator action → Customer outcome → Revenue outcome → Learning signal
+```
+
+Every feature must connect to this loop.
+
+---
+
+## 🎨 Design System Governance
+
+**ONE visual system. Forever.**
+
+- All pages use CSS variables from `globals.css`
+- All cards use `rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4`
+- All KPIs use `KpiCard` / `MiniKpiCard`
+- No raw hex colors in components
+- No custom gradients, shadows, animations
+
+Forbidden:
+- ❌ Random gradients
+- ❌ Random colors
+- ❌ Custom page styles
+- ❌ Competing card systems
+
+---
+
+## 🛡️ Safe Render Rules
+
+**NEVER throw in the UI render path.**
+
+- All server functions wrap in try/catch
+- All services return empty defaults on failure
+- Never return `undefined` for arrays/collections
+- Mutations return `{ success: boolean }`
+- Use `safeAsync`, `safeSync`, `safeFallback` from `@/lib/core/safe-render.ts`
+
+---
+
+## 📁 Routing Architecture
+
+### Approved route groups ONLY:
+- `(app)` → Authenticated operational system
+- `(auth)` → Login/register
+- `(marketing)` → Landing page
+
+### Approved operational states ONLY:
+- `/overview` → LIVE (what's happening now)
+- `/confirm` → DECISION (what needs attention)
+- `/orders` → HISTORY (what happened)
+- `/orders/import` → INGESTION (bring data in)
+- `/settings/delivery` → ECONOMICS (configure costs)
+
+All other routes in `(app)` redirect to `/overview`.
+
+**No orphaned pages. No experimental routes. No duplicate trees.**
+
+---
+
+## 📝 Complexity Budget
+
+### Hard Limits:
+- Maximum 2 architecture layers
+- No parallel state systems
+- No duplicated logic
+- No orchestration layer beyond demo-orchestrator (which is just a router)
+
+### Complexity Budget Formula:
+```
+Complexity Cost = (New Files) + (New Services) × 2 + (New Models) × 3
+Operational Value = (Revenue Protected) + (Failed Deliveries Prevented) + (Faster Decisions)
+
+If Cost > Value → REJECT.
+```
+
+---
+
+## 🔌 Integration Rules
+
+### Approved Integration Order:
+1. Shopify / ecommerce
+2. WhatsApp Cloud API
+3. SMS
+4. Delivery Provider APIs
+
+### Integration Must:
+- Feed the core loop
+- Not create new product categories
+- Stay isolated in services
+- Fail safely
+
+### Integration Must NOT:
+- WhatsApp is NOT a chat app → it's a confirmation channel
+- Shopify is NOT an ecommerce platform → it's an order source
+- Delivery APIs are NOT a shipping system → they're an outcome source
+
+---
+
+## 🧠 Decision Framework
+
+When unsure about anything:
+
+### Step 1: Check the Product Firewall
+- Does this fit what UGZIO IS?
+- Does this serve the core loop?
+
+### Step 2: Check the Architecture Law
+- Does this fit UI → Service → Prisma?
+- No extra layers?
+
+### Step 3: Check the Complexity Budget
+- Cost < Value?
+
+### Step 4: When in Doubt
+- **Simplify**
+- **Delete code**
+- **Ask: Does this make operators faster at protecting revenue?**
+
+**If not → STOP.**
+
+---
+
+## 📚 Governing Documents
+
+Before making ANY changes, read these:
+
+1. **`docs/product-firewall.md`** — What UGZIO is and is NOT
+2. **`docs/core-loop.md`** — The central product truth
+3. **`docs/service-architecture.md`** — UI → Service → Prisma only
+4. **`docs/render-safety.md`** — Never throw in UI path
+5. **`docs/routing-rules.md`** — Approved routes only
+6. **`docs/design-system.md`** — One visual system
+7. **`docs/complexity-limiter.md`** — Max 2 layers
+8. **`docs/integration-strategy.md`** — Integrations feed the loop
+9. **`docs/architecture-rules.md`** — Stability rules
+10. **`docs/schema-change-checklist.md`** — Prisma migrations
+11. **`docs/prisma-migration-rules.md`** — Database safety
+
+---
+
+## ⚡ Success Principles Summary
+
+1. **Simplicity over abstraction** — Direct function calls > patterns
+2. **Explicit over magic** — No clever metaprogramming
+3. **Operational clarity over feature count** — More features = more bloat
+4. **Stable systems over clever systems** — Predictable > impressive
+5. **Core loop first** — Everything else is secondary
+6. **Revenue impact first** — If it doesn't protect revenue, why build it?
