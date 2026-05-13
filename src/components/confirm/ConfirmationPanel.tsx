@@ -3,13 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ConfirmationQueueItem } from "@/services/confirmation.service";
+import type { PsychologyPreview, SequenceType } from "@/types/whatsapp";
+import MessagePreviewCard from "@/components/confirm/MessagePreviewCard";
 
 interface Props {
   items: ConfirmationQueueItem[]
   pendingCount: number
   contactedCount: number
   total: number
+  psychologyMap?: Record<string, PsychologyPreview>
 }
+
+const SEQUENCE_BADGE: Record<SequenceType, { label: string; style: string }> = {
+  trust: { label: "Trust", style: "text-blue-400 border-blue-500/20 bg-blue-500/10" },
+  reminder: { label: "Reminder", style: "text-[var(--warning-amber)] border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]" },
+  urgency: { label: "Urgency", style: "text-[var(--risk-red)] border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]" },
+  reassurance: { label: "Reassure", style: "text-[var(--success-green)] border-[var(--success-green-border)] bg-[var(--success-green-bg)]" },
+};
 
 function riskPct(item: ConfirmationQueueItem): number {
   if (item.riskLevel === "high") return 65 + Math.round((100 - item.trustScore) * 0.35);
@@ -56,10 +66,11 @@ function DeliveryProviderBadge({ product }: { product: string | null }) {
   return <span className="text-[10px] text-[var(--text-tertiary)]">{name}</span>;
 }
 
-function RiskInsightPanel({ item, onClose, onAction }: {
+function RiskInsightPanel({ item, onClose, onAction, psychologyPreview }: {
   item: ConfirmationQueueItem;
   onClose: () => void;
   onAction: (orderId: string, action: string) => void;
+  psychologyPreview?: PsychologyPreview;
 }) {
   const pct = failureChance(item);
   const loss = estimatedLoss(item);
@@ -157,6 +168,10 @@ function RiskInsightPanel({ item, onClose, onAction }: {
             </div>
           </div>
 
+          {psychologyPreview && (
+            <MessagePreviewCard preview={psychologyPreview} />
+          )}
+
           <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
             <button
               onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
@@ -183,11 +198,11 @@ function RiskInsightPanel({ item, onClose, onAction }: {
   );
 }
 
-export default function ConfirmationPanel({ items, pendingCount, contactedCount, total }: Props) {
+export default function ConfirmationPanel({ items, pendingCount, contactedCount, total, psychologyMap }: Props) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
-  const [selected, setSelected] = useState<ConfirmationQueueItem | null>(null);
+  const [selected, setSelected] = useState<{ item: ConfirmationQueueItem; psychology?: PsychologyPreview } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "neutral" | "danger" } | null>(null);
 
   const filtered = filter === "all"
@@ -268,7 +283,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                   ? "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]"
                   : "border-[var(--border)] bg-[var(--bg-card)]"
               }`}
-              onClick={() => setSelected(item)}
+              onClick={() => setSelected({ item, psychology: psychologyMap?.[item.orderId] })}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
@@ -276,6 +291,16 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                     isHigh ? "bg-[var(--risk-red)] animate-pulse" : rl === "medium" ? "bg-[var(--warning-amber)]" : "bg-[var(--success-green)]"
                   }`} />
                   <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.buyerName}</p>
+                  {(() => {
+                    const p = psychologyMap?.[item.orderId];
+                    if (!p) return null;
+                    const badge = SEQUENCE_BADGE[p.sequenceType];
+                    return (
+                      <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full border ${badge.style} shrink-0`}>
+                        {badge.label}
+                      </span>
+                    );
+                  })()}
                 </div>
                 <span className="text-lg font-bold text-[var(--text-primary)] shrink-0 ml-2">
                   {item.amount.toFixed(0)} <span className="text-xs font-medium text-[var(--text-tertiary)]">TND</span>
@@ -333,9 +358,10 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
       {selected && (
         <RiskInsightPanel
-          item={selected}
+          item={selected.item}
           onClose={() => setSelected(null)}
           onAction={performAction}
+          psychologyPreview={selected.psychology}
         />
       )}
     </div>

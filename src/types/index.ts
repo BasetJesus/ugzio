@@ -21,3 +21,14 @@ export type {
   BuyerIdentity,
   ConversationSummary,
 } from "./customer";
+
+export type {
+  SequenceType,
+  ChannelType,
+  MessageTone,
+  MessageTemplate,
+  SequenceInput,
+  SequenceDecision,
+  PsychologyPreview,
+  ContactChannel,
+} from "./whatsapp";

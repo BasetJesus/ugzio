@@ -99,3 +99,16 @@ export {
   mockSendSMS,
   mockLogManualCall,
 } from "./contact-attempt.service";
+
+export {
+  decideSequence,
+  getPsychologyPreview,
+} from "./whatsapp-sequence.service";
+
+export {
+  getAvailableChannels,
+  getChannel,
+  isChannelEnabled,
+  getRecommendedChannel,
+  mockSendViaChannel,
+} from "./contact-channel.service";

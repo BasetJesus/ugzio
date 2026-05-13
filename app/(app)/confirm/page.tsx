@@ -3,7 +3,9 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { getConfirmationQueue } from "@/services/demo-orchestrator.service";
+import { getPsychologyPreview } from "@/services/whatsapp-sequence.service";
 import type { ConfirmationQueueItem } from "@/services/confirmation.service";
+import type { PsychologyPreview } from "@/types/whatsapp";
 import { MiniKpiCard } from "@/components/shared/KpiCard";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
 
@@ -31,6 +33,19 @@ export default async function ConfirmPage() {
     .filter((i) => i.confirmStatus === "confirmed")
     .reduce((s, i) => s + i.amount, 0);
 
+  const psychologyMap: Record<string, PsychologyPreview> = {};
+  for (const item of queue.items) {
+    psychologyMap[item.orderId] = getPsychologyPreview({
+      riskLevel: item.riskLevel,
+      trustScore: item.trustScore,
+      orderAmount: item.amount,
+      buyerName: item.buyerName,
+      firstTimeBuyer: item.trustScore < 40,
+      noResponseCount: item.lastAttemptOutcome === "no_answer" ? 1 : 0,
+      previousConfirmationAttempts: item.lastAttemptAt ? 1 : 0,
+    });
+  }
+
   return (
     <div data-state="decision">
       <div className="mb-6">
@@ -52,6 +67,7 @@ export default async function ConfirmPage() {
         pendingCount={queue.pendingCount}
         contactedCount={queue.contactedCount}
         total={queue.total}
+        psychologyMap={psychologyMap}
       />
     </div>
   );
