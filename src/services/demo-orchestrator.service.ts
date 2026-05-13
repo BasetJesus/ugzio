@@ -221,3 +221,67 @@ export async function listOrders(orgId: string) {
     return [];
   }
 }
+
+export interface RevenueProtectionStats {
+  totalRevenueAtRisk: number;
+  estimatedPreventableLoss: number;
+  ordersAtRisk: number;
+  highRiskOrders: number;
+  avgRiskScore: number;
+  todayStats: {
+    totalActions: number;
+    revenueSaved: number;
+    lossPrevented: number;
+    confirmations: number;
+    cancellations: number;
+    unreachable: number;
+    confirmationRate: number;
+  };
+}
+
+const EMPTY_REVENUE_STATS: RevenueProtectionStats = {
+  totalRevenueAtRisk: 0,
+  estimatedPreventableLoss: 0,
+  ordersAtRisk: 0,
+  highRiskOrders: 0,
+  avgRiskScore: 50,
+  todayStats: {
+    totalActions: 0,
+    revenueSaved: 0,
+    lossPrevented: 0,
+    confirmations: 0,
+    cancellations: 0,
+    unreachable: 0,
+    confirmationRate: 0,
+  },
+};
+
+export async function getRevenueProtectionStats(orgId: string): Promise<RevenueProtectionStats> {
+  try {
+    if (DEMO_MODE) {
+      const riskMod = await import("@/services/risk.service");
+      const atRisk = await riskMod.getRevenueAtRisk(orgId);
+      const needsConfirm = await riskMod.getNeedsConfirmCount(orgId);
+      return {
+        totalRevenueAtRisk: atRisk,
+        estimatedPreventableLoss: atRisk > 0 ? atRisk * 0.15 : 0,
+        ordersAtRisk: needsConfirm,
+        highRiskOrders: Math.round(needsConfirm * 0.4),
+        avgRiskScore: 55,
+        todayStats: {
+          totalActions: 3,
+          revenueSaved: atRisk > 0 ? atRisk * 0.2 : 0,
+          lossPrevented: atRisk > 0 ? atRisk * 0.03 : 0,
+          confirmations: 2,
+          cancellations: 1,
+          unreachable: 0,
+          confirmationRate: 67,
+        },
+      };
+    }
+    const mod = await import("@/services/revenue-protection.service");
+    return mod.getRevenueProtectionStats(orgId);
+  } catch {
+    return EMPTY_REVENUE_STATS;
+  }
+}

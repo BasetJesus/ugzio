@@ -1,0 +1,55 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireSession, AuthError } from "@/services/auth.service";
+import { validateCSV, importOrdersFromCSV, ImportResult } from "@/services/order-import.service";
+import { prisma } from "@/lib/db";
+import { checkFreePlanLimit } from "@/services/order.service";
+
+export async function POST(request: NextRequest) {
+  try {
+    const { orgId } = await requireSession();
+
+    const org = await prisma.organization.findUnique({ where: { id: orgId } });
+    if (!org) {
+      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get("file") as File | null;
+
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    const content = await file.text();
+
+    const validation = await validateCSV(content);
+    if (!validation.valid) {
+      return NextResponse.json({
+        error: "Validation failed",
+        validation: {
+          valid: false,
+          rowCount: validation.rowCount,
+          errors: validation.errors,
+        },
+      }, { status: 400 });
+    }
+
+    const limitReached = await checkFreePlanLimit(orgId, org.subscriptionStatus, org.maxOrdersPerMonth);
+    if (limitReached) {
+      return NextResponse.json(
+        { error: "Limite mensuelle atteinte. Passe à Croissance (129 TND/mois)." },
+        { status: 403 },
+      );
+    }
+
+    const result: ImportResult = await importOrdersFromCSV(orgId, content);
+
+    return NextResponse.json(result);
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
+    }
+    console.error("[import API] error:", e);
+    return NextResponse.json({ error: "Import failed" }, { status: 500 });
+  }
+}

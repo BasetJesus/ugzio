@@ -56,4 +56,46 @@ export {
   cancelOrder,
   getOrdersPageData,
   listOrders,
+  getRevenueProtectionStats,
 } from "./demo-orchestrator.service";
+
+export {
+  validateCSV,
+  importOrdersFromCSV,
+  REQUIRED_COLUMNS,
+} from "./order-import.service";
+
+export {
+  getDeliveryProviders,
+  getDeliveryProvider,
+  getDefaultDeliveryProvider,
+  createDeliveryProvider,
+  updateDeliveryProvider,
+  deleteDeliveryProvider,
+  getProviderRtsCost,
+} from "./delivery-provider.service";
+
+export {
+  recordOutcome,
+  getOutcomesForOrder,
+  getTodayOutcomeStats,
+  getOutcomeStats,
+} from "./operation-outcome.service";
+
+export {
+  getRiskOrderMetrics,
+  getRevenueProtectionStats as getRevenueProtectionStatsDirect,
+  getTodayProtectedRevenue,
+  calculateFailureProbability,
+  calculateEstimatedRtsLoss,
+  calculateActionOutcome,
+  getPreventableLossPercent,
+} from "./revenue-protection.service";
+
+export {
+  attemptContact,
+  getContactHistory,
+  mockSendWhatsApp,
+  mockSendSMS,
+  mockLogManualCall,
+} from "./contact-attempt.service";

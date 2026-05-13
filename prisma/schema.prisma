@@ -77,6 +77,8 @@ model Organization {
   subscription      Subscription?
   usageMeters       UsageMeter[]
   orders            Order[]
+  deliveryProviders DeliveryProvider[]
+  operationOutcomes OperationOutcome[]
   automationRules   AutomationRule[]
   workflowExecutions WorkflowExecution[]
   conversations     Conversation[]
@@ -115,6 +117,46 @@ model User {
   createdAt     DateTime             @default(now())
 }
 
+// ─── DELIVERY PROVIDERS ──────────────────────────────────────────────────────
+
+model DeliveryProvider {
+  id                  String        @id @default(cuid())
+  organizationId      String
+  organization        Organization  @relation(fields: [organizationId], references: [id])
+  name                String
+  rtsCostPerFailure   Float         @default(15.0)
+  avgDeliveryDays     Int           @default(3)
+  contactSuccessRate  Float?
+  isDefault           Boolean       @default(false)
+  orders              Order[]
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@unique([organizationId, name])
+}
+
+// ─── OPERATION OUTCOMES (Revenue Protection Tracking) ─────────────────────────
+
+model OperationOutcome {
+  id                    String        @id @default(cuid())
+  organizationId        String
+  organization          Organization  @relation(fields: [organizationId], references: [id])
+  orderId               String
+  order                 Order         @relation(fields: [orderId], references: [id])
+  actionTaken           String        // confirm | cancel | unreachable | suspicious | retry
+  estimatedRevenueSaved Float         @default(0)
+  estimatedLossPrevented Float        @default(0)
+  riskLevelBefore       String?       // low | medium | high
+  orderAmount           Float
+  trustScoreBefore      Int?
+  attemptedBy           String?
+  notes                 String?
+  createdAt             DateTime      @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([orderId])
+}
+
 // ─── ORDERS & BUYERS ─────────────────────────────────────────────────────────
 
 model BuyerIdentity {
@@ -136,6 +178,8 @@ model Order {
   id                 String               @id @default(cuid())
   organizationId     String
   organization       Organization         @relation(fields: [organizationId], references: [id])
+  deliveryProviderId String?
+  deliveryProvider   DeliveryProvider?    @relation(fields: [deliveryProviderId], references: [id])
   buyerName          String
   buyerPhone         String
   product            String?
@@ -155,6 +199,7 @@ model Order {
   confirmationAttempts ConfirmationAttempt[]
   rawFeatures        RawOrderFeatures?
   outcome            OrderOutcome?
+  operationOutcomes  OperationOutcome[]
   workflowExecutions WorkflowExecution[]
   timeline           MessageTimelineEntry[]
   ugcItems           UgcItem[]

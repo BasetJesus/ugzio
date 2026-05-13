@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/db";
 import { emit } from "@/lib/events/event-bus";
 import { transitionOrderStatus } from "./order.service";
+import { calculateActionOutcome } from "@/services/revenue-protection.service";
+import { recordOutcome } from "@/services/operation-outcome.service";
+import { getProviderRtsCost } from "@/services/delivery-provider.service";
 import type { OrderStatus } from "@/types/order";
 
 export type ConfirmStatus = "pending_confirmation" | "contacted" | "confirmed" | "unreachable" | "suspicious" | "cancelled"
@@ -160,12 +163,31 @@ export async function markConfirmed(
     })
     if (!order) return { success: false }
 
+    const rtsCost = await getProviderRtsCost(orgId, order.deliveryProviderId ?? undefined)
+    const outcome = calculateActionOutcome(
+      "confirm",
+      Number(order.amount),
+      order.riskLevel,
+      order.trustScore,
+      rtsCost
+    )
+
     await prisma.order.update({
       where: { id: orderId },
       data: { confirmStatus: "confirmed" },
     })
 
     await logAttempt(orgId, orderId, method, "confirmed", notes, operator)
+
+    await recordOutcome(orgId, orderId, "confirm", {
+      revenueSaved: outcome.revenueSaved,
+      lossPrevented: outcome.lossPrevented,
+      riskLevelBefore: order.riskLevel,
+      orderAmount: Number(order.amount),
+      trustScoreBefore: order.trustScore,
+      attemptedBy: operator,
+      notes,
+    })
 
     emit("ORDER_CONFIRMED", {
       orderId,
@@ -175,6 +197,7 @@ export async function markConfirmed(
       amount: Number(order.amount),
       confirmedBy: operator,
       method,
+      revenueSaved: outcome.revenueSaved,
     })
 
     emit("CUSTOMER_VERIFIED", {
@@ -211,12 +234,30 @@ export async function markUnreachable(
     })
     if (!order) return { success: false }
 
+    const rtsCost = await getProviderRtsCost(orgId, order.deliveryProviderId ?? undefined)
+    const outcome = calculateActionOutcome(
+      "unreachable",
+      Number(order.amount),
+      order.riskLevel,
+      order.trustScore,
+      rtsCost
+    )
+
     await prisma.order.update({
       where: { id: orderId },
       data: { confirmStatus: "unreachable" },
     })
 
     await logAttempt(orgId, orderId, method, "unreachable", notes, undefined)
+
+    await recordOutcome(orgId, orderId, "unreachable", {
+      revenueSaved: outcome.revenueSaved,
+      lossPrevented: outcome.lossPrevented,
+      riskLevelBefore: order.riskLevel,
+      orderAmount: Number(order.amount),
+      trustScoreBefore: order.trustScore,
+      notes,
+    })
 
     emit("ORDER_UNREACHABLE", {
       orderId,
@@ -243,12 +284,30 @@ export async function markSuspicious(
     })
     if (!order) return { success: false }
 
+    const rtsCost = await getProviderRtsCost(orgId, order.deliveryProviderId ?? undefined)
+    const outcome = calculateActionOutcome(
+      "suspicious",
+      Number(order.amount),
+      order.riskLevel,
+      order.trustScore,
+      rtsCost
+    )
+
     await prisma.order.update({
       where: { id: orderId },
       data: { confirmStatus: "suspicious" },
     })
 
     await logAttempt(orgId, orderId, "manual_call", "suspicious", notes, undefined)
+
+    await recordOutcome(orgId, orderId, "suspicious", {
+      revenueSaved: outcome.revenueSaved,
+      lossPrevented: outcome.lossPrevented,
+      riskLevelBefore: order.riskLevel,
+      orderAmount: Number(order.amount),
+      trustScoreBefore: order.trustScore,
+      notes,
+    })
 
     emit("CUSTOMER_VERIFIED", {
       orderId,
@@ -276,12 +335,30 @@ export async function scheduleRetry(
     })
     if (!order) return { success: false }
 
+    const rtsCost = await getProviderRtsCost(orgId, order.deliveryProviderId ?? undefined)
+    const outcome = calculateActionOutcome(
+      "retry",
+      Number(order.amount),
+      order.riskLevel,
+      order.trustScore,
+      rtsCost
+    )
+
     await prisma.order.update({
       where: { id: orderId },
       data: { confirmStatus: "pending_confirmation" },
     })
 
     await logAttempt(orgId, orderId, "manual_call", "no_answer", notes, undefined)
+
+    await recordOutcome(orgId, orderId, "retry", {
+      revenueSaved: outcome.revenueSaved,
+      lossPrevented: outcome.lossPrevented,
+      riskLevelBefore: order.riskLevel,
+      orderAmount: Number(order.amount),
+      trustScoreBefore: order.trustScore,
+      notes,
+    })
 
     return { success: true }
   } catch {
@@ -301,12 +378,31 @@ export async function cancelOrder(
     })
     if (!order) return { success: false }
 
+    const rtsCost = await getProviderRtsCost(orgId, order.deliveryProviderId ?? undefined)
+    const outcome = calculateActionOutcome(
+      "cancel",
+      Number(order.amount),
+      order.riskLevel,
+      order.trustScore,
+      rtsCost
+    )
+
     await prisma.order.update({
       where: { id: orderId },
       data: { confirmStatus: "cancelled" },
     })
 
     await logAttempt(orgId, orderId, "manual_call", "cancelled", reason, operator)
+
+    await recordOutcome(orgId, orderId, "cancel", {
+      revenueSaved: outcome.revenueSaved,
+      lossPrevented: outcome.lossPrevented,
+      riskLevelBefore: order.riskLevel,
+      orderAmount: Number(order.amount),
+      trustScoreBefore: order.trustScore,
+      attemptedBy: operator,
+      notes: reason,
+    })
 
     emit("ORDER_CANCELLED", {
       orderId,
@@ -315,6 +411,7 @@ export async function cancelOrder(
       buyerPhone: order.buyerPhone,
       reason,
       cancelledBy: operator,
+      lossPrevented: outcome.lossPrevented,
     })
 
     const result = await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)

@@ -4,6 +4,7 @@ import { appendEvent } from "./event-store"
 export const ORDER_EVENTS = {
   ORDER_CREATED: "ORDER_CREATED",
   ORDER_UPDATED: "ORDER_UPDATED",
+  BATCH_ORDERS_IMPORTED: "BATCH_ORDERS_IMPORTED",
 } as const
 
 export const RISK_EVENTS = {
@@ -73,6 +74,7 @@ export interface OrderConfirmedPayload {
   amount: number
   confirmedBy: string
   method: string
+  revenueSaved?: number
 }
 
 export interface OrderUnreachablePayload {
@@ -90,6 +92,13 @@ export interface OrderCancelledPayload {
   buyerPhone: string
   reason: string
   cancelledBy: string
+  lossPrevented?: number
+}
+
+export interface BatchOrdersImportedPayload {
+  orgId: string
+  count: number
+  orderIds: string[]
 }
 
 export interface CustomerVerifiedPayload {
@@ -110,6 +119,7 @@ export interface OverviewRefreshedPayload {
 export interface EventPayloadMap {
   ORDER_CREATED: OrderCreatedPayload
   ORDER_UPDATED: OrderUpdatedPayload
+  BATCH_ORDERS_IMPORTED: BatchOrdersImportedPayload
   RISK_CALCULATED: RiskCalculatedPayload
   ORDER_FLAGGED: OrderFlaggedPayload
   ORDER_CONFIRMED: OrderConfirmedPayload
