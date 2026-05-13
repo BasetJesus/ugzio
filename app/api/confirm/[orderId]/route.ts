@@ -10,6 +10,7 @@ import {
   scheduleRetry,
   cancelOrder,
 } from "@/services/demo-orchestrator.service";
+import { transitionOrderStatus } from "@/services/order.service";
 
 export async function GET(
   _request: Request,
@@ -58,6 +59,12 @@ export async function POST(
         break;
       case "cancel":
         await cancelOrder(orgId, orderId, notes || "Cancelled by operator", session.user.name ?? "operator");
+        break;
+      case "delivered":
+        await transitionOrderStatus(orgId, orderId, "DELIVERED");
+        break;
+      case "refused":
+        await transitionOrderStatus(orgId, orderId, "REFUSED");
         break;
       default:
         return NextResponse.json({ error: "Unknown action" }, { status: 400 });

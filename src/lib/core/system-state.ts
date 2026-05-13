@@ -15,7 +15,7 @@ export const SYSTEM_STATES: Record<SystemState, SystemStateConfig> = {
     label: "Live",
     description: "What is happening now",
     route: "/overview",
-    icon: "⌘",
+    icon: "\u25CF",
     color: "var(--accent)",
   },
   DECISION: {
@@ -23,7 +23,7 @@ export const SYSTEM_STATES: Record<SystemState, SystemStateConfig> = {
     label: "Decision",
     description: "What needs action",
     route: "/confirm",
-    icon: "✅",
+    icon: "\u25C6",
     color: "var(--success-green)",
   },
   HISTORY: {
@@ -31,7 +31,7 @@ export const SYSTEM_STATES: Record<SystemState, SystemStateConfig> = {
     label: "History",
     description: "What happened",
     route: "/orders",
-    icon: "📦",
+    icon: "\u25B8",
     color: "var(--warning-amber)",
   },
   ACTIVATION: {
@@ -39,7 +39,7 @@ export const SYSTEM_STATES: Record<SystemState, SystemStateConfig> = {
     label: "Setup",
     description: "How system starts",
     route: "/onboarding",
-    icon: "⚡",
+    icon: "\u25CB",
     color: "var(--risk-red)",
   },
 }

@@ -12,7 +12,7 @@ export default function LanguageToggle() {
   const { lang, setLang } = useLanguage()
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-[var(--nav-border)] bg-[var(--nav-bg)] p-0.5 shadow-lg backdrop-blur">
+    <div className="flex items-center gap-0.5 rounded-lg border border-[var(--nav-border)] bg-[var(--nav-bg)] p-0.5 shadow-[var(--shadow-lg)] backdrop-blur">
       {LANGS.map((l) => (
         <button
           key={l.code}

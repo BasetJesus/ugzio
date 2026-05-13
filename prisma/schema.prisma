@@ -347,8 +347,19 @@ model ActionOutcomeAttribution {
   organizationId        String
   orderId               String
   actionId              String    @unique
-  actionTaken           String    // confirm|cancel|unreachable|suspicious|retry
+  actionTaken           String    // confirm|cancel|unreachable|suspicious|retry|NO_ACTION
   sequenceType          String?   // trust|reassurance|urgency|reminder|null (manual)
+  sequenceVersion       Int?      // 1 = current generation
+
+  // ── Context snapshots (immutable, captured at action time) ──
+  riskScoreSnapshot       Int?     // trustScore at action time
+  orderValueSnapshot      Float?   // amount at action time
+  buyerOrderCountSnapshot Int?     // BuyerIdentity.totalOrders at action time
+  isFirstOrderSnapshot    Boolean? // true if this was buyer's first order
+  citySnapshot            String?  // buyerWilaya at action time
+  paymentMethodSnapshot   String?  // COD|ONLINE
+  confirmationStateSnapshot String? // confirmStatus at action time
+
   finalDeliveryOutcome  String?   // DELIVERED|REFUSED|RETURNED|PENDING
   daysToOutcome         Int?
   estimatedRevenueSaved Float
@@ -356,7 +367,11 @@ model ActionOutcomeAttribution {
   resolvedAt            DateTime?
 
   @@index([organizationId, sequenceType])
+  @@index([organizationId, actionTaken])
   @@index([organizationId, finalDeliveryOutcome])
+  @@index([organizationId, isFirstOrderSnapshot])
+  @@index([organizationId, citySnapshot])
+  @@index([organizationId, riskScoreSnapshot])
   @@index([orderId])
 }
 
@@ -372,6 +387,22 @@ model AIEvaluation {
   sellerRating        Int?
   outcomeAfter14d     String?
   evaluatedAt         DateTime     @default(now())
+}
+
+// ─── BUYER JOURNEY EVENTS (v2) ────────────────────────────────────────────────
+
+model BuyerJourneyEvent {
+  id           String   @id @default(cuid())
+  organizationId String
+  orderId      String
+  eventType    String
+  metadata     String?  // JSON blob, never queried by value
+  createdByUserId String?
+  occurredAt   DateTime @default(now())
+
+  @@index([organizationId, orderId])
+  @@index([eventType, occurredAt])
+  @@index([occurredAt])
 }
 
 // ─── COMPLIANCE (v3) ─────────────────────────────────────────────────────────

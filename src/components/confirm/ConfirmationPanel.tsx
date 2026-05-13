@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import type { ConfirmationQueueItem } from "@/services/confirmation.service";
+import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
 import type { PsychologyPreview, SequenceType } from "@/types/whatsapp";
+import type { JourneyTimeline as JourneyTimelineData } from "@/services/buyer-journey.service";
 import MessagePreviewCard from "@/components/confirm/MessagePreviewCard";
+import JourneyTimelineComponent from "@/components/shared/JourneyTimeline";
 
 interface Props {
   items: ConfirmationQueueItem[]
@@ -12,10 +14,11 @@ interface Props {
   contactedCount: number
   total: number
   psychologyMap?: Record<string, PsychologyPreview>
+  pendingOutcomes?: PendingOutcomeOrder[]
 }
 
 const SEQUENCE_BADGE: Record<SequenceType, { label: string; style: string }> = {
-  trust: { label: "Trust", style: "text-blue-400 border-blue-500/20 bg-blue-500/10" },
+  trust: { label: "Trust", style: "text-[var(--accent)] border-[var(--accent)]/20 bg-[var(--accent)]/10" },
   reminder: { label: "Reminder", style: "text-[var(--warning-amber)] border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]" },
   urgency: { label: "Urgency", style: "text-[var(--risk-red)] border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]" },
   reassurance: { label: "Reassure", style: "text-[var(--success-green)] border-[var(--success-green-border)] bg-[var(--success-green-bg)]" },
@@ -66,11 +69,13 @@ function DeliveryProviderBadge({ product }: { product: string | null }) {
   return <span className="text-[10px] text-[var(--text-tertiary)]">{name}</span>;
 }
 
-function RiskInsightPanel({ item, onClose, onAction, psychologyPreview }: {
+function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline, timelineLoading }: {
   item: ConfirmationQueueItem;
   onClose: () => void;
   onAction: (orderId: string, action: string) => void;
   psychologyPreview?: PsychologyPreview;
+  timeline?: JourneyTimelineData | null;
+  timelineLoading?: boolean;
 }) {
   const pct = failureChance(item);
   const loss = estimatedLoss(item);
@@ -147,25 +152,24 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview }: {
           </div>
 
           <div>
-            <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Risk History</p>
-            <div className="space-y-0">
-              {[
-                { label: "Created", done: true },
-                { label: "Flagged", done: item.riskLevel !== "low" },
-                { label: "Contacted", done: !!item.lastAttemptAt },
-                { label: "Resolved", done: item.confirmStatus === "confirmed" || item.confirmStatus === "cancelled" },
-              ].map((step, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className="flex flex-col items-center">
-                    <div className={`h-2.5 w-2.5 rounded-full ${step.done ? "bg-[var(--success-green)]" : "bg-[var(--border)]"}`} />
-                    {i < 3 && <div className="w-px flex-1 bg-[var(--border)]" />}
+            <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Buyer Journey</p>
+            {timelineLoading ? (
+              <div className="space-y-3">
+                {[1,2,3].map((i) => (
+                  <div key={i} className="flex gap-3 animate-pulse">
+                    <div className="h-2 w-2 rounded-full bg-[var(--border)] mt-1.5" />
+                    <div className="flex-1 space-y-1 pb-2">
+                      <div className="h-3 w-24 bg-[var(--border)] rounded" />
+                      <div className="h-2 w-16 bg-[var(--border)] rounded" />
+                    </div>
                   </div>
-                  <div className="pb-4">
-                    <p className={`text-xs ${step.done ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{step.label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : timeline && timeline.events.length > 0 ? (
+              <JourneyTimelineComponent events={timeline.events} behaviorTags={timeline.behaviorTags} />
+            ) : (
+              <p className="text-xs text-[var(--text-tertiary)]">No journey data recorded yet</p>
+            )}
           </div>
 
           {psychologyPreview && (
@@ -175,7 +179,7 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview }: {
           <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
             <button
               onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
-              className="flex-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-500 transition-colors"
+              className="flex-1 rounded-lg bg-[var(--btn-green)] px-3 py-2 text-xs font-medium text-white hover:bg-[var(--btn-green-hover)] transition-colors"
             >
               Secure Revenue
             </button>
@@ -198,11 +202,16 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview }: {
   );
 }
 
-export default function ConfirmationPanel({ items, pendingCount, contactedCount, total, psychologyMap }: Props) {
+export default function ConfirmationPanel({ items, pendingCount, contactedCount, total, psychologyMap, pendingOutcomes }: Props) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
-  const [selected, setSelected] = useState<{ item: ConfirmationQueueItem; psychology?: PsychologyPreview } | null>(null);
+  const [selected, setSelected] = useState<{
+    item: ConfirmationQueueItem
+    psychology?: PsychologyPreview
+    timeline?: JourneyTimelineData | null
+    timelineLoading?: boolean
+  } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "neutral" | "danger" } | null>(null);
 
   const filtered = filter === "all"
@@ -218,8 +227,8 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
-      const msg = item ? impactMessage(action, item) : "Action completed";
-      const type = action === "confirm" ? "success" : action === "cancel" ? "danger" : "neutral";
+      const msg = item ? impactMessage(action, item) : action === "delivered" ? "Order delivered" : action === "refused" ? "Order refused" : "Action completed";
+      const type = action === "confirm" || action === "delivered" ? "success" : action === "cancel" || action === "refused" ? "danger" : "neutral";
       setToast({ message: msg, type });
       setTimeout(() => setToast(null), 2500);
       router.refresh();
@@ -230,8 +239,8 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
   function toastColors(type: string): string {
     switch (type) {
-      case "success": return "bg-green-600 text-white";
-      case "danger": return "bg-red-600 text-white";
+      case "success": return "bg-[var(--btn-green)] text-white";
+      case "danger": return "bg-[var(--btn-red)] text-white";
       default: return "bg-[var(--warning-amber)] text-white";
     }
   }
@@ -262,11 +271,52 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
         </button>
         <button
           onClick={() => setFilter("contacted")}
-          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "contacted" ? "bg-blue-500/20 text-blue-500" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
+          className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${filter === "contacted" ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           Contacted ({contactedCount})
         </button>
       </div>
+
+      {pendingOutcomes && pendingOutcomes.length > 0 && (
+        <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--success-green-bg)] p-4 mb-4">
+          <p className="text-xs font-semibold text-[var(--success-green)] uppercase tracking-wider mb-3">
+            Mark delivery outcome ({pendingOutcomes.length})
+          </p>
+          <div className="space-y-2">
+            {pendingOutcomes.map((o) => (
+              <div
+                key={o.orderId}
+                className="flex items-center justify-between rounded-lg bg-[var(--bg-card)] px-4 py-3 border border-[var(--border)]"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{o.buyerName}</p>
+                  <p className="text-[10px] text-[var(--text-tertiary)]">
+                    {o.amount.toFixed(0)} TND
+                    {o.product ? " — " + o.product : ""}
+                    {" — " + (o.orderStatus === "BUYER_CONFIRMED" ? "Confirmed" : "Shipped")}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "delivered"); }}
+                    disabled={submitting === o.orderId + "_delivered"}
+                    className="rounded-lg bg-[var(--btn-green)] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-50 transition-colors"
+                  >
+                    {submitting === o.orderId + "_delivered" ? "..." : "Delivered"}
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
+                    disabled={submitting === o.orderId + "_refused"}
+                    className="rounded-lg border border-[var(--risk-red)]/30 px-3 py-1.5 text-[11px] font-medium text-[var(--risk-red)] hover:bg-[var(--kpi-red-bg)] disabled:opacity-50 transition-colors"
+                  >
+                    {submitting === o.orderId + "_refused" ? "..." : "Refused"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         {filtered.map((item) => {
@@ -283,7 +333,13 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                   ? "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]"
                   : "border-[var(--border)] bg-[var(--bg-card)]"
               }`}
-              onClick={() => setSelected({ item, psychology: psychologyMap?.[item.orderId] })}
+              onClick={() => {
+                setSelected({ item, psychology: psychologyMap?.[item.orderId], timeline: null, timelineLoading: true })
+                fetch("/api/journey/timeline/" + item.orderId)
+                  .then((r) => r.json())
+                  .then((data) => setSelected((prev) => prev ? { ...prev, timeline: data, timelineLoading: false } : null))
+                  .catch(() => setSelected((prev) => prev ? { ...prev, timeline: null, timelineLoading: false } : null))
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
@@ -324,7 +380,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                 <button
                   onClick={(e) => { e.stopPropagation(); performAction(item.orderId, "confirm"); }}
                   disabled={sub === `${item.orderId}_confirm`}
-                  className="rounded-lg bg-green-600/90 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-green-500 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-[var(--btn-green)]/90 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-50 transition-colors"
                 >
                   {sub === `${item.orderId}_confirm` ? "..." : "Secure Revenue"}
                 </button>
@@ -350,7 +406,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
       {toast && (
         <div className="fixed top-4 right-4 z-50 animate-slide-in-top animate-fade-in">
-          <div className={`rounded-lg px-4 py-3 text-sm font-medium shadow-lg ${toastColors(toast.type)}`}>
+          <div className={`rounded-lg px-4 py-3 text-sm font-medium shadow-[var(--shadow-lg)] ${toastColors(toast.type)}`}>
             {toast.message}
           </div>
         </div>
@@ -362,6 +418,8 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           onClose={() => setSelected(null)}
           onAction={performAction}
           psychologyPreview={selected.psychology}
+          timeline={selected.timeline}
+          timelineLoading={selected.timelineLoading}
         />
       )}
     </div>

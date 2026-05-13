@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono, Fraunces } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
 });
 
@@ -28,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased theme-dark`}
+      className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased theme-dark`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh bg-[var(--bg-base)] text-[var(--text-primary)]">

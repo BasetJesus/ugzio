@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db";
 import { scheduleMessage } from "@/lib/events/queues";
 import { sendText, sendButtons } from "@/lib/whatsapp/client";
 import { alertSeller, cancelAlert } from "@/lib/alerts/seller";
+import { recordJourneyEvent } from "@/services/buyer-journey.service";
+import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 
 const CONFIRM_WINDOW_H = 20;
 
@@ -138,6 +140,10 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
         data: { status: "BUYER_CONFIRMED" },
       });
       await sendText(order.buyerPhone, "Merci! Ta commande est confirmée ✅");
+      await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
+        channel: "whatsapp",
+        source: "button_reply",
+      });
       break;
 
     case "cancel":
@@ -147,6 +153,10 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
       });
       await sendText(order.buyerPhone, "Pas de problème. Commande annulée.");
       await alertSeller(order.organizationId, cancelAlert(order.buyerName, order.product ?? "produit"));
+      await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.ORDER_CANCELLED, {
+        channel: "whatsapp",
+        source: "button_reply",
+      });
       break;
 
     case "reschedule":
@@ -155,6 +165,10 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
         data: { status: "PENDING_RESCHEDULE" },
       });
       await sendText(order.buyerPhone, "Pas de souci! On te renvoie un message plus tard.");
+      await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_REQUESTED_DELAY, {
+        channel: "whatsapp",
+        source: "button_reply",
+      });
       break;
   }
 }

@@ -5,6 +5,8 @@ import { calculateActionOutcome } from "@/services/revenue-protection.service";
 import { recordOutcome } from "@/services/operation-outcome.service";
 import { getProviderRtsCost } from "@/services/delivery-provider.service";
 import { recordAction } from "@/services/attribution.service";
+import { recordJourneyEvent } from "@/services/buyer-journey.service";
+import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import type { OrderStatus } from "@/types/order";
 
 export type ConfirmStatus = "pending_confirmation" | "contacted" | "confirmed" | "unreachable" | "suspicious" | "cancelled"
@@ -194,6 +196,11 @@ export async function markConfirmed(
       await recordAction(orgId, orderId, outcomeRecord.id, "confirm", outcome.revenueSaved)
     }
 
+    await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
+      method,
+      operator,
+    })
+
     emit("ORDER_CONFIRMED", {
       orderId,
       orgId,
@@ -266,6 +273,10 @@ export async function markUnreachable(
 
     if (outcomeRecord.success && outcomeRecord.id) {
       await recordAction(orgId, orderId, outcomeRecord.id, "unreachable", outcome.revenueSaved)
+
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_STOPPED_RESPONDING, {
+        method,
+      })
     }
 
     emit("ORDER_UNREACHABLE", {
@@ -320,6 +331,10 @@ export async function markSuspicious(
 
     if (outcomeRecord.success && outcomeRecord.id) {
       await recordAction(orgId, orderId, outcomeRecord.id, "suspicious", outcome.revenueSaved)
+
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_EXPRESSED_HESITATION, {
+        notes: notes ?? null,
+      })
     }
 
     emit("CUSTOMER_VERIFIED", {
@@ -375,6 +390,10 @@ export async function scheduleRetry(
 
     if (outcomeRecord.success && outcomeRecord.id) {
       await recordAction(orgId, orderId, outcomeRecord.id, "retry", outcome.revenueSaved)
+
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_RETRY_SCHEDULED, {
+        notes: notes ?? null,
+      })
     }
 
     return { success: true }
@@ -423,6 +442,11 @@ export async function cancelOrder(
 
     if (outcomeRecord.success && outcomeRecord.id) {
       await recordAction(orgId, orderId, outcomeRecord.id, "cancel", outcome.revenueSaved)
+
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.ORDER_CANCELLED, {
+        reason,
+        operator,
+      })
     }
 
     emit("ORDER_CANCELLED", {
@@ -463,6 +487,55 @@ export async function logAttempt(
       attemptedBy: attemptedBy ?? null,
     },
   })
+
+  const eventType =
+    outcome === "no_answer"
+      ? JOURNEY_EVENT_TYPES.BUYER_NO_RESPONSE
+      : outcome === "confirmed"
+        ? JOURNEY_EVENT_TYPES.BUYER_RESPONDED
+        : JOURNEY_EVENT_TYPES.BUYER_CONTACT_ATTEMPTED
+
+  await recordJourneyEvent(orgId, orderId, eventType, {
+    method,
+    outcome,
+    attemptedBy: attemptedBy ?? null,
+  })
+}
+
+// ─── OUTCOME MARKING ────────────────────────────────────────────────
+
+export interface PendingOutcomeOrder {
+  orderId: string
+  buyerName: string
+  buyerPhone: string
+  amount: number
+  product: string | null
+  orderStatus: string
+}
+
+export async function getPendingOutcomeOrders(orgId: string): Promise<PendingOutcomeOrder[]> {
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        organizationId: orgId,
+        deletedAt: null,
+        status: { in: ["BUYER_CONFIRMED", "SHIPPED"] },
+      },
+      orderBy: { createdAt: "asc" },
+      take: 20,
+    })
+
+    return orders.map((o) => ({
+      orderId: o.id,
+      buyerName: o.buyerName,
+      buyerPhone: o.buyerPhone,
+      amount: Number(o.amount),
+      product: o.product,
+      orderStatus: o.status,
+    }))
+  } catch {
+    return []
+  }
 }
 
 function buildRiskSignals(riskLevel: string, trustScore: number, status: string): string[] {

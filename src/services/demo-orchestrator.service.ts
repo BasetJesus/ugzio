@@ -222,6 +222,15 @@ export async function listOrders(orgId: string) {
   }
 }
 
+export async function getPendingOutcomeOrders(orgId: string) {
+  try {
+    const mod = await import("@/services/confirmation.service");
+    return mod.getPendingOutcomeOrders(orgId);
+  } catch {
+    return [];
+  }
+}
+
 export interface RevenueProtectionStats {
   totalRevenueAtRisk: number;
   estimatedPreventableLoss: number;

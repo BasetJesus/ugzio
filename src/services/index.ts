@@ -117,4 +117,12 @@ export {
   recordAction,
   resolveDeliveryOutcome,
   getActionEffectiveness,
+  getAvailableCities,
+  getCohortSummary,
 } from "./attribution.service";
+export type { ActionEffectivenessRow, EffectivenessFilters } from "./attribution.service";
+
+export {
+  getPendingOutcomeOrders,
+} from "./demo-orchestrator.service";
+export type { PendingOutcomeOrder } from "./confirmation.service";

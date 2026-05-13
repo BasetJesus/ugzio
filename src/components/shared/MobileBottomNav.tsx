@@ -6,10 +6,10 @@ import { useLanguage } from "@/context/LanguageContext"
 import { SYSTEM_STATES, stateFromPath } from "@/lib/core/system-state"
 
 const ITEMS = [
-  { href: "/overview", labelKey: "nav.overview", icon: "⌘", key: "LIVE" as const },
-  { href: "/confirm", labelKey: "nav.confirm", icon: "✅", key: "DECISION" as const },
-  { href: "/orders", labelKey: "nav.orders", icon: "📦", key: "HISTORY" as const },
-  { href: "#logout", labelKey: "nav.logout", icon: "🚪", key: null },
+  { href: "/overview", labelKey: "nav.overview", icon: "\u25CF", key: "LIVE" as const },
+  { href: "/confirm", labelKey: "nav.confirm", icon: "\u25C6", key: "DECISION" as const },
+  { href: "/orders", labelKey: "nav.orders", icon: "\u25B8", key: "HISTORY" as const },
+  { href: "#logout", labelKey: "nav.logout", icon: "\u2190", key: null },
 ] as const
 
 export default function MobileBottomNav() {
@@ -34,10 +34,10 @@ export default function MobileBottomNav() {
               <button
                 key={item.href}
                 onClick={handleLogout}
-                className={`flex flex-col items-center gap-0.5 py-2 px-3 text-[10px] font-medium transition`}
+                className="flex flex-col items-center gap-0.5 py-3 px-3 text-[10px] font-medium transition"
                 style={{ color: isActive ? accent : "var(--text-tertiary)" }}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span className="text-sm">{item.icon}</span>
                 <span>{t(item.labelKey)}</span>
               </button>
             )
@@ -47,10 +47,10 @@ export default function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 py-2 px-3 text-[10px] font-medium transition`}
+              className="flex flex-col items-center gap-0.5 py-3 px-3 text-[10px] font-medium transition"
               style={{ color: isActive ? accent : "var(--text-tertiary)" }}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-sm">{item.icon}</span>
               <span>{t(item.labelKey)}</span>
             </Link>
           )

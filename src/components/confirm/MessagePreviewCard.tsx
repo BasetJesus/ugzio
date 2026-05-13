@@ -10,7 +10,7 @@ const TONE_LABELS: Record<string, string> = {
 };
 
 const TONE_COLORS: Record<string, string> = {
-  calm: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  calm: "text-[var(--accent)] bg-[var(--accent)]/10 border-[var(--accent)]/20",
   operational: "text-[var(--warning-amber)] bg-[var(--warning-amber-bg)] border-[var(--warning-amber-border)]",
   soft_urgency: "text-[var(--risk-red)] bg-[var(--kpi-red-bg)] border-[var(--kpi-red-border)]",
   reassuring: "text-[var(--success-green)] bg-[var(--success-green-bg)] border-[var(--success-green-border)]",

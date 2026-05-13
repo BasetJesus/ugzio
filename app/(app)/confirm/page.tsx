@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getConfirmationQueue } from "@/services/demo-orchestrator.service";
+import { getConfirmationQueue, getPendingOutcomeOrders } from "@/services/demo-orchestrator.service";
 import { getPsychologyPreview } from "@/services/whatsapp-sequence.service";
-import type { ConfirmationQueueItem } from "@/services/confirmation.service";
+import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
 import type { PsychologyPreview } from "@/types/whatsapp";
 import { MiniKpiCard } from "@/components/shared/KpiCard";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
@@ -19,8 +19,12 @@ export default async function ConfirmPage() {
   if (!orgId) redirect("/onboarding");
 
   let queue: { items: ConfirmationQueueItem[]; total: number; pendingCount: number; contactedCount: number } = { items: [], total: 0, pendingCount: 0, contactedCount: 0 };
+  let pendingOutcomes: PendingOutcomeOrder[] = [];
   try {
-    queue = await getConfirmationQueue(orgId);
+    [queue, pendingOutcomes] = await Promise.all([
+      getConfirmationQueue(orgId),
+      getPendingOutcomeOrders(orgId),
+    ]);
   } catch (e) {
     console.error("[confirm] service error", e);
   }
@@ -47,15 +51,15 @@ export default async function ConfirmPage() {
   }
 
   return (
-    <div data-state="decision">
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">Decision Queue</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+    <div data-state="decision" className="space-y-section">
+      <div>
+        <h1 className="text-display-lg text-[var(--text-primary)]">Decision Queue</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           What needs action right now
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
         <MiniKpiCard label="Revenue at risk" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" />
         <MiniKpiCard label="High risk orders" value={highRiskItems.length} tier="medium" />
         <MiniKpiCard label="Pending confirmation" value={queue.pendingCount} tier="neutral" />
@@ -68,6 +72,7 @@ export default async function ConfirmPage() {
         contactedCount={queue.contactedCount}
         total={queue.total}
         psychologyMap={psychologyMap}
+        pendingOutcomes={pendingOutcomes}
       />
     </div>
   );

@@ -179,13 +179,13 @@ export default function OrderImportPanel() {
             onChange={handleInputChange}
             className="hidden"
           />
-          <div className="text-4xl mb-3">📄</div>
+          <div className="text-4xl mb-3">▣</div>
           <p className="text-sm font-medium text-[var(--text-primary)]">Drop your CSV file here, or click to browse</p>
           <p className="text-xs text-[var(--text-tertiary)] mt-1">Supports: .csv</p>
         </div>
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-400">
+          <div className="mt-4 rounded-lg border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
             {error}
           </div>
         )}
@@ -210,7 +210,7 @@ export default function OrderImportPanel() {
   if (step === "validating" || step === "importing") {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
-        <div className="animate-pulse text-4xl mb-4">{step === "importing" ? "📦" : "🔍"}</div>
+        <div className="animate-pulse text-4xl mb-4">{step === "importing" ? "▣" : "◎"}</div>
         <p className="text-base font-medium text-[var(--text-primary)]">
           {step === "importing" ? "Importing orders..." : "Validating CSV..."}
         </p>
@@ -223,7 +223,7 @@ export default function OrderImportPanel() {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
         <div className="flex items-start gap-3 mb-6">
-          <div className="text-2xl">✅</div>
+          <div className="text-2xl text-[var(--success-green)]">●</div>
           <div>
             <h2 className="text-lg font-semibold text-[var(--text-primary)]">Ready to Import</h2>
             <p className="text-sm text-[var(--text-secondary)] mt-0.5">{fileName}</p>
@@ -237,7 +237,7 @@ export default function OrderImportPanel() {
           </div>
           <div className="rounded-lg bg-[var(--bg-surface)] p-4">
             <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Validation</p>
-            <p className="text-2xl font-bold text-green-400">OK</p>
+            <p className="text-2xl font-bold text-[var(--success-green)]">OK</p>
           </div>
         </div>
 
@@ -250,7 +250,7 @@ export default function OrderImportPanel() {
           </button>
           <button
             onClick={handleImport}
-            className="flex-1 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-500 transition-colors"
+            className="flex-1 rounded-lg bg-[var(--btn-green)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--btn-green-hover)] transition-colors"
           >
             Import {validation?.rowCount ?? 0} Orders
           </button>
@@ -261,11 +261,11 @@ export default function OrderImportPanel() {
 
   if (step === "success") {
     return (
-      <div className="rounded-xl border border-green-800/50 bg-green-950/20 p-6">
+      <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--success-green-bg)] p-6">
         <div className="flex items-start gap-3 mb-6">
-          <div className="text-2xl">🎉</div>
+          <div className="text-2xl text-[var(--success-green)]">◆</div>
           <div>
-            <h2 className="text-lg font-semibold text-green-400">Import Complete</h2>
+            <h2 className="text-lg font-semibold text-[var(--success-green)]">Import Complete</h2>
             <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               {result?.importedCount ?? 0} orders added to your operations
             </p>
@@ -275,19 +275,19 @@ export default function OrderImportPanel() {
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="rounded-lg bg-[var(--bg-surface)] p-4">
             <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Imported</p>
-            <p className="text-2xl font-bold text-green-400">{result?.importedCount ?? 0}</p>
+            <p className="text-2xl font-bold text-[var(--success-green)]">{result?.importedCount ?? 0}</p>
           </div>
           <div className="rounded-lg bg-[var(--bg-surface)] p-4">
             <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Failed</p>
-            <p className={`text-2xl font-bold ${(result?.failedCount ?? 0) > 0 ? "text-red-400" : "text-[var(--text-tertiary)]"}`}>
+            <p className={`text-2xl font-bold ${(result?.failedCount ?? 0) > 0 ? "text-[var(--risk-red)]" : "text-[var(--text-tertiary)]"}`}>
               {result?.failedCount ?? 0}
             </p>
           </div>
         </div>
 
         {result?.errors && result.errors.length > 0 && (
-          <div className="mb-6 rounded-lg border border-amber-800/50 bg-amber-950/20 p-4">
-            <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-2">Warnings</p>
+          <div className="mb-6 rounded-lg border border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)] p-4">
+            <p className="text-xs font-medium text-[var(--warning-amber)] uppercase tracking-wider mb-2">Warnings</p>
             <ul className="space-y-1">
               {result.errors.slice(0, 5).map((err, i) => (
                 <li key={i} className="text-xs text-[var(--text-secondary)]">
@@ -320,11 +320,11 @@ export default function OrderImportPanel() {
   }
 
   return (
-    <div className="rounded-xl border border-red-800/50 bg-red-950/20 p-6">
+    <div className="rounded-xl border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] p-6">
       <div className="flex items-start gap-3 mb-6">
-        <div className="text-2xl">⚠️</div>
+        <div className="text-2xl text-[var(--risk-red)]">△</div>
         <div>
-          <h2 className="text-lg font-semibold text-red-400">Validation Failed</h2>
+          <h2 className="text-lg font-semibold text-[var(--risk-red)]">Validation Failed</h2>
           <p className="text-sm text-[var(--text-secondary)] mt-0.5">{error || "Please fix the issues below"}</p>
         </div>
       </div>
@@ -334,7 +334,7 @@ export default function OrderImportPanel() {
           <ul className="space-y-2">
             {validation.errors.map((err, i) => (
               <li key={i} className="rounded bg-[var(--bg-surface)] p-3">
-                <span className="text-xs font-medium text-red-400">Row {err.row}</span>
+                  <span className="text-xs font-medium text-[var(--risk-red)]">Row {err.row}</span>
                 <span className="text-xs text-[var(--text-tertiary)] mx-2">•</span>
                 <span className="text-xs text-[var(--text-secondary)]">{err.field}: {err.message}</span>
               </li>

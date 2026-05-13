@@ -33,11 +33,11 @@ export default async function OverviewPage() {
   const confirmationRate = today?.confirmationRate ?? 0;
 
   return (
-    <div className="space-y-6" data-state="live">
+    <div className="space-y-section" data-state="live">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-[var(--text-primary)]">Live Revenue Stream</h1>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">What is happening now</p>
+          <h1 className="text-display-lg text-[var(--text-primary)]">Live Revenue Stream</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">What is happening now</p>
         </div>
         <Link
           href="/orders/import"
@@ -47,31 +47,28 @@ export default async function OverviewPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-panel">
         <KpiCard
           label="Revenue at risk"
           value={`${revenueAtRisk.toFixed(0)} TND`}
-          icon="⚠️"
           tier="high"
         />
         <KpiCard
           label="Orders needing action"
           value={needsAction}
-          icon="📦"
           tier="medium"
         />
         <KpiCard
           label="Protection status"
           value={revenueAtRisk > 0 ? "Active" : "Stable"}
-          icon="🛡️"
           tier={revenueAtRisk > 0 ? "low" : "neutral"}
         />
       </div>
 
       {today && today.totalActions > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Today&apos;s Outcomes</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <p className="text-caption text-[var(--text-tertiary)] mb-card">Today&apos;s Outcomes</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
             <MiniKpiCard
               label="Revenue Protected"
               value={`${protectedToday.toFixed(0)} TND`}
@@ -97,8 +94,10 @@ export default async function OverviewPage() {
       )}
 
       {today && today.totalActions === 0 && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
-          <div className="text-3xl mb-2">🎯</div>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-panel text-center">
+          <div className="h-10 w-10 rounded-full bg-[var(--border)] flex items-center justify-center mx-auto mb-4">
+            <span className="text-sm text-[var(--text-tertiary)]">\u2014</span>
+          </div>
           <p className="text-sm font-medium text-[var(--text-primary)]">No actions taken yet today</p>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
             <Link href="/confirm" className="text-[var(--accent)] hover:underline">

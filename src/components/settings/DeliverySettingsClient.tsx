@@ -192,7 +192,7 @@ export default function DeliverySettingsClient() {
         </div>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-red-800/50 bg-red-950/20 px-4 py-2 text-sm text-red-400">
+          <div className="mb-4 rounded-lg border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
             {error}
           </div>
         )}
@@ -297,19 +297,19 @@ export default function DeliverySettingsClient() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-800/50 bg-red-950/20 px-4 py-2 text-sm text-red-400">
+        <div className="rounded-lg border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
           {error}
         </div>
       )}
 
       {loading ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
-          <div className="animate-pulse text-xl">⏳</div>
+          <div className="animate-pulse text-xl text-[var(--text-tertiary)]">◎</div>
           <p className="text-sm text-[var(--text-tertiary)] mt-2">Loading...</p>
         </div>
       ) : providers.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
-          <div className="text-4xl mb-3">📦</div>
+          <div className="text-4xl mb-3 text-[var(--text-tertiary)]">◇</div>
           <h3 className="text-base font-semibold text-[var(--text-primary)]">No delivery providers configured</h3>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
             Add your delivery providers to calculate accurate RTS costs
@@ -376,7 +376,7 @@ export default function DeliverySettingsClient() {
                   {p.orderCount === 0 && (
                     <button
                       onClick={() => handleDelete(p.id)}
-                      className="rounded px-3 py-1 text-xs text-red-400 hover:bg-red-950/30 transition-colors"
+                      className="rounded px-3 py-1 text-xs text-[var(--risk-red)] hover:bg-[var(--kpi-red-bg)] transition-colors"
                     >
                       Delete
                     </button>

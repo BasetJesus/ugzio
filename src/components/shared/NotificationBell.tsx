@@ -30,19 +30,19 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
         onClick={() => setShow(!show)}
         className="relative rounded-lg px-2 py-1 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
       >
-        🔔
+        ◈
         <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--risk-red)] text-[9px] font-bold text-white">
           {count > 9 ? "9+" : count}
         </span>
       </button>
       {show && (
-        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 shadow-lg z-50">
+        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 shadow-[var(--shadow-lg)] z-50">
           <p className="text-xs font-semibold text-[var(--risk-red)]">{count} high-risk order{count !== 1 ? "s" : ""}</p>
           <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Requires your attention</p>
           <Link
             href="/shield"
             onClick={() => setShow(false)}
-            className="mt-2 block rounded-md bg-orange-500 px-3 py-1.5 text-center text-xs font-semibold text-white"
+            className="mt-2 block rounded-md bg-[var(--accent)] px-3 py-1.5 text-center text-xs font-semibold text-white"
           >
             View in ZioShield
           </Link>

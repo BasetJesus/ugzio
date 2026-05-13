@@ -7,6 +7,8 @@ import { emit } from "@/lib/events/event-bus";
 import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
 import { resolveDeliveryOutcome } from "@/services/attribution.service";
+import { recordJourneyEvent } from "@/services/buyer-journey.service";
+import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
 import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
 
@@ -153,14 +155,16 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
     });
 
     if (newStatus === "DELIVERED" || newStatus === "REFUSED") {
-      await resolveDeliveryOutcome(orderId, newStatus)
+      await resolveDeliveryOutcome(orgId, orderId, newStatus)
     }
 
     if (newStatus === "DELIVERED") {
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.ORDER_DELIVERED)
       await scheduleD3UgcAsk(orderId);
     }
 
     if (newStatus === "REFUSED") {
+      await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_REFUSED)
       await alertSeller(orgId, refusedAlert(order.buyerName));
     }
 
