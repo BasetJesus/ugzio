@@ -56,6 +56,24 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
             </Link>
           )
         })}
+        <div className="mt-2 pt-2 border-t border-[var(--nav-border)]">
+          <Link
+            href="/intelligence"
+            className={`group rounded-md px-2 py-1.5 text-sm transition ${
+              pathname.startsWith("/intelligence")
+                ? "bg-[var(--accent)]/20 font-medium"
+                : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span>🧠</span>
+              <div className="flex flex-col">
+                <span>Intelligence</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">What works</span>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
 
       {showOnboarding && (

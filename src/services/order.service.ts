@@ -6,6 +6,7 @@ import { emitCritical } from "@/lib/events/queues";
 import { emit } from "@/lib/events/event-bus";
 import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
+import { resolveDeliveryOutcome } from "@/services/attribution.service";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
 import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
 
@@ -150,6 +151,10 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
       newStatus,
       buyerName: order.buyerName,
     });
+
+    if (newStatus === "DELIVERED" || newStatus === "REFUSED") {
+      await resolveDeliveryOutcome(orderId, newStatus)
+    }
 
     if (newStatus === "DELIVERED") {
       await scheduleD3UgcAsk(orderId);

@@ -112,3 +112,9 @@ export {
   getRecommendedChannel,
   mockSendViaChannel,
 } from "./contact-channel.service";
+
+export {
+  recordAction,
+  resolveDeliveryOutcome,
+  getActionEffectiveness,
+} from "./attribution.service";

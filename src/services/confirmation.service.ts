@@ -4,6 +4,7 @@ import { transitionOrderStatus } from "./order.service";
 import { calculateActionOutcome } from "@/services/revenue-protection.service";
 import { recordOutcome } from "@/services/operation-outcome.service";
 import { getProviderRtsCost } from "@/services/delivery-provider.service";
+import { recordAction } from "@/services/attribution.service";
 import type { OrderStatus } from "@/types/order";
 
 export type ConfirmStatus = "pending_confirmation" | "contacted" | "confirmed" | "unreachable" | "suspicious" | "cancelled"
@@ -179,7 +180,7 @@ export async function markConfirmed(
 
     await logAttempt(orgId, orderId, method, "confirmed", notes, operator)
 
-    await recordOutcome(orgId, orderId, "confirm", {
+    const outcomeRecord = await recordOutcome(orgId, orderId, "confirm", {
       revenueSaved: outcome.revenueSaved,
       lossPrevented: outcome.lossPrevented,
       riskLevelBefore: order.riskLevel,
@@ -188,6 +189,10 @@ export async function markConfirmed(
       attemptedBy: operator,
       notes,
     })
+
+    if (outcomeRecord.success && outcomeRecord.id) {
+      await recordAction(orgId, orderId, outcomeRecord.id, "confirm", outcome.revenueSaved)
+    }
 
     emit("ORDER_CONFIRMED", {
       orderId,
@@ -250,7 +255,7 @@ export async function markUnreachable(
 
     await logAttempt(orgId, orderId, method, "unreachable", notes, undefined)
 
-    await recordOutcome(orgId, orderId, "unreachable", {
+    const outcomeRecord = await recordOutcome(orgId, orderId, "unreachable", {
       revenueSaved: outcome.revenueSaved,
       lossPrevented: outcome.lossPrevented,
       riskLevelBefore: order.riskLevel,
@@ -258,6 +263,10 @@ export async function markUnreachable(
       trustScoreBefore: order.trustScore,
       notes,
     })
+
+    if (outcomeRecord.success && outcomeRecord.id) {
+      await recordAction(orgId, orderId, outcomeRecord.id, "unreachable", outcome.revenueSaved)
+    }
 
     emit("ORDER_UNREACHABLE", {
       orderId,
@@ -300,7 +309,7 @@ export async function markSuspicious(
 
     await logAttempt(orgId, orderId, "manual_call", "suspicious", notes, undefined)
 
-    await recordOutcome(orgId, orderId, "suspicious", {
+    const outcomeRecord = await recordOutcome(orgId, orderId, "suspicious", {
       revenueSaved: outcome.revenueSaved,
       lossPrevented: outcome.lossPrevented,
       riskLevelBefore: order.riskLevel,
@@ -308,6 +317,10 @@ export async function markSuspicious(
       trustScoreBefore: order.trustScore,
       notes,
     })
+
+    if (outcomeRecord.success && outcomeRecord.id) {
+      await recordAction(orgId, orderId, outcomeRecord.id, "suspicious", outcome.revenueSaved)
+    }
 
     emit("CUSTOMER_VERIFIED", {
       orderId,
@@ -351,7 +364,7 @@ export async function scheduleRetry(
 
     await logAttempt(orgId, orderId, "manual_call", "no_answer", notes, undefined)
 
-    await recordOutcome(orgId, orderId, "retry", {
+    const outcomeRecord = await recordOutcome(orgId, orderId, "retry", {
       revenueSaved: outcome.revenueSaved,
       lossPrevented: outcome.lossPrevented,
       riskLevelBefore: order.riskLevel,
@@ -359,6 +372,10 @@ export async function scheduleRetry(
       trustScoreBefore: order.trustScore,
       notes,
     })
+
+    if (outcomeRecord.success && outcomeRecord.id) {
+      await recordAction(orgId, orderId, outcomeRecord.id, "retry", outcome.revenueSaved)
+    }
 
     return { success: true }
   } catch {
@@ -394,7 +411,7 @@ export async function cancelOrder(
 
     await logAttempt(orgId, orderId, "manual_call", "cancelled", reason, operator)
 
-    await recordOutcome(orgId, orderId, "cancel", {
+    const outcomeRecord = await recordOutcome(orgId, orderId, "cancel", {
       revenueSaved: outcome.revenueSaved,
       lossPrevented: outcome.lossPrevented,
       riskLevelBefore: order.riskLevel,
@@ -403,6 +420,10 @@ export async function cancelOrder(
       attemptedBy: operator,
       notes: reason,
     })
+
+    if (outcomeRecord.success && outcomeRecord.id) {
+      await recordAction(orgId, orderId, outcomeRecord.id, "cancel", outcome.revenueSaved)
+    }
 
     emit("ORDER_CANCELLED", {
       orderId,
