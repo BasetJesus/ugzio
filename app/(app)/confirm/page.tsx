@@ -19,7 +19,7 @@ export default async function ConfirmPage() {
   return (
     <div className="p-4 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-zinc-100">Confirmation queue</h1>
+        <h1 className="text-xl font-bold text-zinc-100">Confirm queue</h1>
         <p className="text-xs text-zinc-500 mt-0.5">
           {queue.pendingCount} pending &middot; {queue.contactedCount} contacted &middot; {queue.total} total
         </p>

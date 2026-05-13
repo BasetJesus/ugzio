@@ -4,7 +4,6 @@ import { useState, useMemo } from "react"
 import type { OrderTableItem } from "@/types/order"
 import OrdersFilters from "@/components/orders/OrdersFilters"
 import OrdersTable from "@/components/orders/OrdersTable"
-import OrderDetailsDrawer from "@/components/orders/OrderDetailsDrawer"
 
 interface Props {
   orders: OrderTableItem[]
@@ -14,7 +13,6 @@ export default function OrdersPageClient({ orders }: Props) {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("")
   const [riskFilter, setRiskFilter] = useState("")
-  const [selectedOrder, setSelectedOrder] = useState<OrderTableItem | null>(null)
 
   const filtered = useMemo(() => {
     return orders.filter((o) => {
@@ -41,8 +39,7 @@ export default function OrdersPageClient({ orders }: Props) {
         riskFilter={riskFilter}
         onRiskFilterChange={setRiskFilter}
       />
-      <OrdersTable orders={filtered} totalCount={orders.length} onSelectOrder={setSelectedOrder} />
-      <OrderDetailsDrawer order={selectedOrder} onClose={() => setSelectedOrder(null)} />
+      <OrdersTable orders={filtered} totalCount={orders.length} />
     </>
   )
 }

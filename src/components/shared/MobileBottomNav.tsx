@@ -5,11 +5,9 @@ import { usePathname } from "next/navigation"
 import { useLanguage } from "@/context/LanguageContext"
 
 const ITEMS = [
-  { href: "/", labelKey: "nav.dashboard", icon: "📊" },
-  { href: "/orders", labelKey: "nav.activate", icon: "📤", accent: "text-green-400" },
-  { href: "/inbox", labelKey: "nav.inbox", icon: "📸", accent: "text-amber-400" },
-  { href: "/shield", labelKey: "nav.track", icon: "📈", accent: "text-orange-400" },
-  { href: "/success", labelKey: "nav.success", icon: "🏆", accent: "text-orange-400" },
+  { href: "/overview", labelKey: "nav.overview", icon: "⌘", accent: "text-purple-400" },
+  { href: "/confirm", labelKey: "nav.confirm", icon: "✅", accent: "text-green-400" },
+  { href: "/orders", labelKey: "nav.orders", icon: "📦", accent: "text-blue-400" },
   { href: "#logout", labelKey: "nav.logout", icon: "🚪", accent: "text-zinc-600" },
 ] as const
 
@@ -27,7 +25,7 @@ export default function MobileBottomNav() {
       <div className="flex items-center justify-around">
         {ITEMS.map((item: any) => {
           const isActive = pathname === item.href
-          const activeColor = item.accent ?? "text-green-400"
+          const activeColor = item.accent ?? "text-purple-400"
 
           if (item.href === "#logout") {
             return (

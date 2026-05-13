@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { getOrdersPageData } from "@/services/order.service"
 import { requireSession } from "@/services/auth.service"
 import OrdersHeader from "@/components/orders/OrdersHeader"
@@ -12,15 +11,7 @@ export default async function OrdersPage() {
 
   return (
     <div className="p-4 sm:p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-zinc-100">Orders</h1>
-        <Link
-          href="/orders/new"
-          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
-        >
-          + New
-        </Link>
-      </div>
+      <h1 className="text-xl font-bold text-zinc-100">Orders</h1>
       <OrdersHeader stats={data.stats} />
       <OrdersPageClient orders={data.orders} />
     </div>

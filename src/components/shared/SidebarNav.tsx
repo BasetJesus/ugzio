@@ -5,46 +5,6 @@ import { usePathname } from "next/navigation"
 import { useLanguage } from "@/context/LanguageContext"
 import NotificationBell from "./NotificationBell"
 
-const PILLARS = [
-  {
-    key: "activate",
-    labelKey: "nav.activate",
-    icon: "📤",
-    accent: "green",
-    items: [
-      { href: "/orders", labelKey: "nav.orders" },
-      { href: "/orders/new", labelKey: "nav.new-order" },
-      { href: "/confirm", labelKey: "nav.confirm" },
-    ],
-  },
-  {
-    key: "collect",
-    labelKey: "nav.collect",
-    icon: "📸",
-    accent: "amber",
-    items: [
-      { href: "/inbox", labelKey: "nav.inbox" },
-    ],
-  },
-  {
-    key: "track",
-    labelKey: "nav.track",
-    icon: "📈",
-    accent: "orange",
-    items: [
-      { href: "/shield", labelKey: "nav.zioshield" },
-      { href: "/success", labelKey: "nav.success" },
-      { href: "/blacklist", labelKey: "nav.blacklist" },
-    ],
-  },
-] as const
-
-const ACCENT_CLASSES: Record<string, { active: string }> = {
-  green: { active: "bg-green-500/10 text-green-400" },
-  amber: { active: "bg-amber-500/10 text-amber-400" },
-  orange: { active: "bg-orange-500/10 text-orange-400" },
-}
-
 interface Props {
   orgName: string
   planName: string
@@ -52,73 +12,41 @@ interface Props {
   completedCount: number
 }
 
+const NAV_ITEMS = [
+  { href: "/overview", labelKey: "nav.overview", icon: "⌘" },
+  { href: "/confirm", labelKey: "nav.confirm", icon: "✅" },
+  { href: "/orders", labelKey: "nav.orders", icon: "📦" },
+] as const
+
 export default function SidebarNav({ orgName, planName, orgId, completedCount }: Props) {
   const pathname = usePathname()
   const { t } = useLanguage()
   const showOnboarding = completedCount < 4
 
-  function isActive(href: string) {
-    if (href === "/") return pathname === "/"
-    return pathname.startsWith(href)
-  }
-
   return (
     <aside className="hidden w-52 border-r border-zinc-800/40 bg-zinc-950/50 p-3 sm:flex sm:flex-col">
       <div className="mb-5 flex items-center justify-between px-2">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-green-500 text-[10px] font-bold text-white">U</span>
+        <Link href="/overview" className="flex items-center gap-2">
+          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-600 text-[10px] font-bold text-white">U</span>
           <span className="text-sm font-bold text-zinc-100">UGZIO</span>
         </Link>
         <NotificationBell orgId={orgId} />
       </div>
-      <nav className="flex flex-col gap-3 flex-1">
-        <Link
-          href="/dashboard"
-          className={`rounded-md px-2 py-1.5 text-sm transition ${
-            pathname.startsWith("/dashboard")
-              ? "bg-zinc-800/40 text-zinc-100 font-medium"
-              : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
-          }`}
-        >
-          {t("nav.dashboard")}
-        </Link>
-        <Link
-          href="/overview"
-          className={`rounded-md px-2 py-1.5 text-sm transition ${
-            pathname.startsWith("/overview")
-              ? "bg-purple-600/20 text-purple-400 font-medium"
-              : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
-          }`}
-        >
-          ⌘ {t("nav.overview")}
-        </Link>
-        {PILLARS.map((pillar) => {
-          const hasActive = pillar.items.some((i) => isActive(i.href))
-          const ac = ACCENT_CLASSES[pillar.accent]
+      <nav className="flex flex-col gap-1 flex-1">
+        {NAV_ITEMS.map((item) => {
+          const active = pathname.startsWith(item.href)
           return (
-            <div key={pillar.key}>
-              <p className="mb-0.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
-                {pillar.icon} {t(pillar.labelKey)}
-              </p>
-              <div className="flex flex-col gap-px">
-                {pillar.items.map((item) => {
-                  const active = isActive(item.href)
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`rounded-md px-2 py-1.5 text-sm transition ${
-                        active
-                          ? `${ac.active} font-medium`
-                          : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
-                      }`}
-                    >
-                      {t(item.labelKey)}
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`rounded-md px-2 py-1.5 text-sm transition ${
+                active
+                  ? "bg-purple-600/20 text-purple-400 font-medium"
+                  : "text-zinc-500 hover:bg-zinc-800/20 hover:text-zinc-300"
+              }`}
+            >
+              {item.icon} {t(item.labelKey)}
+            </Link>
           )
         })}
       </nav>
