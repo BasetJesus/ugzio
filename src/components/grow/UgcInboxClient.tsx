@@ -42,10 +42,13 @@ function UgcMediaCard({ item, onAction, acting }: {
             loading="lazy"
           />
         ) : (
-          <div className="flex flex-col items-center justify-center text-[var(--text-tertiary)] gap-2">
-            <span className="text-2xl">🎬</span>
-            <span className="text-xs">Video</span>
-          </div>
+          <video
+            src={item.mediaUrl}
+            className="w-full h-full object-cover"
+            preload="metadata"
+            playsInline
+            controls
+          />
         )}
       </div>
 
