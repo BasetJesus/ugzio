@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { trackFeedback } from "@/lib/analytics"
 import type { BuyerOrderView } from "@/services/buyer-order.service"
 
 interface Props {
@@ -38,8 +39,10 @@ export default function BuyerFeedback({ order }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: order.orderId, satisfaction: selected, note }),
       })
+      trackFeedback(order.orderId, selected, { note: note || null })
       setSubmitted(true)
     } catch {
+      trackFeedback(order.orderId, selected, { note: note || null, error: "true" })
       setSubmitted(true)
     }
   }

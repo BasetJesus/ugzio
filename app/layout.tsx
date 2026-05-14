@@ -3,6 +3,7 @@ import { Inter, Geist_Mono, Fraunces } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
 import { SessionProvider } from "@/lib/auth/session-provider";
+import AnalyticsProvider from "@/components/shared/AnalyticsProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -21,9 +22,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "UGZIO — Protection Revenue pour les Vendeurs COD Tunisiens",
+  title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
   description:
-    "UGZIO analyse le risque de chaque acheteur en 3 secondes. Protégez votre revenue COD contre les fausses commandes et les retours.",
+    "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
 };
 
 export default function RootLayout({
@@ -41,7 +42,9 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <SessionProvider>
-              {children}
+              <AnalyticsProvider>
+                {children}
+              </AnalyticsProvider>
             </SessionProvider>
           </LanguageProvider>
         </ThemeProvider>

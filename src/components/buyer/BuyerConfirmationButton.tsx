@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { trackConfirmation, trackWhatsAppClick } from "@/lib/analytics"
 import type { BuyerAction } from "@/services/buyer-order.service"
 
 interface Props {
@@ -22,18 +23,20 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
       })
       if (!res.ok) throw new Error("failed")
       setStatus("confirmed")
+      trackConfirmation(orderId, { method: "button_click" })
     } catch {
       setStatus("error")
     }
   }, [orderId])
 
   const handleQuestion = useCallback(async () => {
+    trackWhatsAppClick("buyer_question", { orderId, hasQuestion: !!question.trim() })
     if (!question.trim()) {
       window.open(`https://wa.me/?text=${encodeURIComponent("J'ai une question sur ma commande")}`, "_blank")
       return
     }
     window.open(`https://wa.me/?text=${encodeURIComponent(question)}`, "_blank")
-  }, [question])
+  }, [question, orderId])
 
   if (status === "confirmed") {
     return (

@@ -1,4 +1,5 @@
 import RevealOnScroll from "./RevealOnScroll"
+import TrackedCTA from "./TrackedCTA"
 
 export default function FinalCtaSection() {
   return (
@@ -23,20 +24,24 @@ export default function FinalCtaSection() {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 relative z-10">
-            <a
+            <TrackedCTA
               href="/overview?demo=true"
+              label="try_live_demo"
+              eventName="final_cta_click"
               className="group inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple min-w-[200px] relative overflow-hidden"
               style={{ backgroundColor: "#7c3aed" }}
             >
               <span className="relative z-10">🚀 Try Live Demo</span>
               <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
-            </a>
-            <a
+            </TrackedCTA>
+            <TrackedCTA
               href="/waitlist"
+              label="join_waitlist"
+              eventName="final_cta_click"
               className="inline-flex items-center justify-center rounded-xl border border-white/15 px-8 py-4 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass min-w-[200px]"
             >
               🇹🇳 Join Waitlist
-            </a>
+            </TrackedCTA>
           </div>
 
           <div className="mt-8 flex items-center justify-center gap-4 text-xs text-white/20 relative z-10">

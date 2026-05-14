@@ -118,7 +118,7 @@ export async function submitBuyerFeedback(
   }
 }
 
-function derivePhase(status: string): BuyerOrderView["phase"] {
+export function derivePhase(status: string): BuyerOrderView["phase"] {
   switch (status) {
     case "CREATED":
     case "PRE_SHIPPING_CONFIRM_SENT":

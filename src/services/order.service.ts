@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { scoreAndPersist } from "@/services/risk.service";
+import { recordAnalyticsSnapshot } from "@/services/case-study.service";
 import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib/zioconfirm/service";
 import { canTransition } from "@/lib/zioconfirm/state-machine";
 import { emitCritical } from "@/lib/events/queues";
@@ -125,6 +126,7 @@ export async function createOrder(orgId: string, data: {
   });
 
   await ensureActivationEvent(orgId, "FIRST_ORDER_CREATED");
+  await recordAnalyticsSnapshot(orgId, "baseline");
 
   return order;
 }

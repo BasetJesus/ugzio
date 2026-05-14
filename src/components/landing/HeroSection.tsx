@@ -1,5 +1,6 @@
 import WhatsAppFlowFeed from "./WhatsAppFlowFeed"
 import RevealOnScroll from "./RevealOnScroll"
+import TrackedCTA from "./TrackedCTA"
 
 export default function HeroSection() {
   return (
@@ -18,32 +19,36 @@ export default function HeroSection() {
               </div>
 
               <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white text-balance text-break-safe">
-                <span className="block">Les commandes qui revenaient</span>
-                <span className="block landing-text-gradient">deviennent du revenu.</span>
+                <span className="block">Les annulations tuent</span>
+                <span className="block landing-text-gradient">votre ecommerce.</span>
               </h1>
 
               <p className="mt-5 text-sm sm:text-base leading-relaxed text-white/50 content-narrow">
-                Faux clients. Clients silencieux. Livraisons retournees. Budget gaspillé. Stress quotidien.
+                30% d'annulations. Fausses commandes. Silence acheteur. Budget qui part en RTS. Stress quotidien.
               </p>
               <p className="mt-2 text-sm leading-relaxed text-white/40 content-narrow">
-                UGZIO analyse chaque commande avant l'envoi, automatise les sequences WhatsApp et protege votre marge.
+                UGZIO analyse, confirme et sécurise chaque commande avant l'envoi — et reduit les annulations.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-3">
-                <a
+                <TrackedCTA
                   href="/overview?demo=true"
+                  label="try_live_demo"
+                  eventName="hero_cta_click"
                   className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple relative overflow-hidden group w-full sm:w-auto"
                   style={{ backgroundColor: "#7c3aed" }}
                 >
                   <span className="relative z-10">🚀 Try Live Demo</span>
                   <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
-                </a>
-                <a
+                </TrackedCTA>
+                <TrackedCTA
                   href="/waitlist"
+                  label="join_waitlist"
+                  eventName="hero_cta_click"
                   className="inline-flex items-center justify-center rounded-xl border border-white/15 px-7 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass w-full sm:w-auto"
                 >
                   📲 Join Waitlist
-                </a>
+                </TrackedCTA>
               </div>
 
               <div className="mt-6 flex items-center sm:justify-start justify-center gap-3 text-xs text-white/30">

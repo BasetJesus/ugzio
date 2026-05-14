@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { trackUGCTrigger, trackWhatsAppClick } from "@/lib/analytics"
 import type { BuyerOrderView } from "@/services/buyer-order.service"
 
 interface Props {
@@ -16,6 +17,8 @@ export default function BuyerUGCPrompt({ order }: Props) {
   const ugcMessage = `Salem ${order.buyerName}!, J'ai reçu ma commande ${order.product ? `de ${order.product} ` : ""}et je confirme que tout va bien ✅`
 
   const handleWhatsApp = () => {
+    trackUGCTrigger(order.orderId, { method: "whatsapp_photo" })
+    trackWhatsAppClick("ugc_photo_share", { orderId: order.orderId })
     window.open(
       `https://wa.me/?text=${encodeURIComponent(ugcMessage)}`,
       "_blank",
@@ -43,7 +46,10 @@ export default function BuyerUGCPrompt({ order }: Props) {
               📸 Envoyer une photo
             </button>
             <button
-              onClick={() => setDismissed(true)}
+              onClick={() => {
+                trackUGCTrigger(order.orderId, { method: "dismiss" })
+                setDismissed(true)
+              }}
               className="rounded-lg border border-[var(--border)] py-2.5 px-3 text-center text-xs text-zinc-500 hover:text-zinc-400 transition-colors"
             >
               Plus tard
