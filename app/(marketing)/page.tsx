@@ -10,7 +10,7 @@ import Footer from "@/components/landing/Footer"
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-dvh" style={{ backgroundColor: "#0a0a0a" }}>
+    <>
       <Navbar />
       <main className="flex-1">
         <HeroSection />
@@ -22,6 +22,6 @@ export default function LandingPage() {
         <FinalCtaSection />
       </main>
       <Footer />
-    </div>
+    </>
   )
 }
