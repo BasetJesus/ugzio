@@ -61,8 +61,22 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         })}
       </div>
 
+      <div className="pt-panel border-t border-[var(--nav-border)]">
+        <Link
+          href="/inbox"
+          className={`group rounded-lg px-3 py-2 text-xs font-medium transition flex items-center gap-3 ${
+            pathname.startsWith("/inbox")
+              ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+              : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
+          }`}
+        >
+          <span className="text-sm">📸</span>
+          <span>{t("nav.inbox")}</span>
+        </Link>
+      </div>
+
       {showOnboarding && (
-        <div className="pt-panel mt-panel border-t border-[var(--nav-border)]">
+        <div className="pt-panel border-t border-[var(--nav-border)]">
           <Link
             href="/onboarding"
             className={`block rounded-lg px-3 py-2 text-xs font-medium transition ${
