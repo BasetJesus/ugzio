@@ -13,7 +13,7 @@ export default function HeroSection() {
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 mb-6 landing-glass">
                 <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
                 <span className="text-[11px] text-white/50 tracking-wide">
-                  🇹🇳 Built for Tunisian COD sellers
+                  🇹🇳 للبيع بالتقسيط في تونس
                 </span>
               </div>
 
@@ -53,7 +53,7 @@ export default function HeroSection() {
               <div className="mt-6 flex items-center sm:justify-start justify-center gap-3 text-xs text-white/30">
                 <span className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-status-online" />
-                  Tunisian sellers testing UGZIO
+                  Vendeurs tunisiens déjà testent
                 </span>
                 <span className="hidden sm:inline text-white/10">•</span>
                 <span className="hidden sm:inline">WhatsApp-native • COD-focused</span>

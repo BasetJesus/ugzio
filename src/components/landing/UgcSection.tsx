@@ -4,28 +4,28 @@ const stories = [
   {
     handle: "@boutique_sfax",
     niche: "Mode femme • Sfax",
-    quote: "قبل UGZIO كنت نخسر 400 دينار كل شهر في طلبات مزيفة. دابا النظام يعرف مين يخسرني قبل ما نبعث.",
+    quote: "قبل UGZIO كنت نحاسب بالعين. 400 دينار كل ما تطلب — ما تعرفش ترد ولا ترجع. دابا النظام يقرر مكاني.",
     saved: "+400 TND / mois",
     platform: "Instagram + WhatsApp",
   },
   {
     handle: "@parfum_tunis",
     niche: "Parfumerie • Tunis",
-    quote: "اللي يطلب 200 دينار وما يردش — UGZIO يبعثو message يتأكد. 80% من العملاء اللي كانو يضيعو صارو يconfirmi.",
+    quote: "العميل اللي يطلب ويسكت — UGZIO يكلمو. 80% من اللي ضايعين صارو يثبتو. تغيير جذري.",
     saved: "+280 TND / mois",
     platform: "Facebook + WhatsApp",
   },
   {
     handle: "@cosmetique_sousse",
     niche: "Cosmétique • Sousse",
-    quote: "الفرق بين 3 ثواني UGZIO و15 دقيقة manual — الفلوس اللي حافظتها هذا الشهر تغطي الإيجار.",
+    quote: "3 ثواني UGZIO ضد 15 دقيقة يدوي — الفرق بين الإيجار والضياع.",
     saved: "+520 TND / mois",
     platform: "TikTok + WhatsApp",
   },
   {
     handle: "@electronix_tn",
     niche: "Électronique • Ariana",
-    quote: "كان عندي 30% RTS rate. بعد UGZIO نزلت لـ 8% فقط. النظام يحمي المارج حقاً.",
+    quote: "RTS نزلت من 30% لـ 8% في 3 أسابيع. المارج يلي ضاع يرجع.",
     saved: "+340 TND / mois",
     platform: "Instagram + WhatsApp",
   },
@@ -39,10 +39,10 @@ export default function UgcSection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro">
-            <p className="section-intro-label">Social Proof</p>
+            <p className="section-intro-label">Yhaddhou fihom</p>
             <h2 className="section-intro-title">El confiance تجيب ventes.</h2>
             <p className="section-intro-desc">
-              Ki el client yethenna — y3awed يشري, yposti story, yab3eth feedback. UGZIO يبني trust cycle.
+              Ki el client yethanna — يعاود يطلب, ينشر تجربتو, يجيب ناس أخرين. UGZIO يبني ثقة cycle.
             </p>
           </div>
         </RevealOnScroll>

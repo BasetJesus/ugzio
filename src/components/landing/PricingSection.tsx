@@ -6,14 +6,14 @@ const plans = [
     price: "0",
     currency: "TND",
     period: "/mois",
-    desc: "Pour tester UGZIO avec tes premières commandes",
-    cta: "Commencer gratuit",
+    desc: "Testi UGZIO b 3 commandes, blas karta bancaire",
+    cta: "Jarreb gratuit",
     href: "/overview?demo=true",
     features: [
       { text: "3 commandes / mois", included: true },
       { text: "Analyse risque automatique", included: true },
-      { text: "Séquences WhatsApp basics", included: true },
-      { text: "Protection revenue tracking", included: true },
+      { text: "Séquences WhatsApp de base", included: true },
+      { text: "Revenue tracking", included: true },
       { text: "Support email", included: true },
       { text: "Commandes illimitées", included: false },
       { text: "Séquences psychologiques avancées", included: false },
@@ -23,37 +23,16 @@ const plans = [
     highlight: false,
   },
   {
-    name: "Démarrage",
-    price: "59",
-    currency: "TND",
-    period: "/mois",
-    desc: "Pour les vendeurs en croissance avec un volume modéré",
-    cta: "Commencer l'essai",
-    href: "/overview?demo=true",
-    features: [
-      { text: "50 commandes / mois", included: true },
-      { text: "Analyse risque automatique", included: true },
-      { text: "Séquences WhatsApp avancées", included: true },
-      { text: "Protection revenue tracking", included: true },
-      { text: "Séquences psychologiques avancées", included: true },
-      { text: "Collection UGC automatique", included: true },
-      { text: "Support email", included: true },
-      { text: "Support WhatsApp prioritaire", included: false },
-      { text: "Accès équipe (jusqu'à 3 membres)", included: false },
-    ],
-    highlight: false,
-  },
-  {
     name: "Croissance",
     price: "129",
     currency: "TND",
     period: "/mois",
-    desc: "Pour les vendeurs qui veulent protéger leur revenue à grande échelle",
-    cta: "Démarrer l'essai",
+    desc: "Protège ton revenue à grande échelle, commandes illimitées",
+    cta: "Démarrer",
     href: "/overview?demo=true",
     features: [
       { text: "Commandes illimitées", included: true },
-      { text: "Analyse risque automatique", included: true },
+      { text: "Analyse risque en 3 secondes", included: true },
       { text: "Séquences WhatsApp avancées", included: true },
       { text: "Protection revenue tracking", included: true },
       { text: "Séquences psychologiques avancées", included: true },
@@ -63,7 +42,7 @@ const plans = [
       { text: "Export données & rapports", included: true },
     ],
     highlight: true,
-    badge: "Recommandé",
+    badge: "El choix mte3ek",
   },
 ]
 
@@ -97,13 +76,13 @@ export default function PricingSection() {
               <span className="landing-text-gradient">volume</span>.
             </h2>
             <p className="section-intro-desc">
-              Commence gratuit. Passe à Croissance quand tes commandes augmentent.
+              Ibadё b Free w zid l Croissance ki commandes mte3ek yethrow.
               <span className="block text-white/30 text-xs mt-1">Pas de contrat. Pas de surprise. Pas de frais cachés.</span>
             </p>
           </div>
         </RevealOnScroll>
 
-        <div className="grid gap-6 md:grid-cols-3 md:max-w-5xl mx-auto items-start">
+        <div className="grid gap-6 md:grid-cols-2 md:max-w-3xl mx-auto items-start">
           {plans.map((plan, i) => (
             <RevealOnScroll key={plan.name} delay={i * 150}>
               <div

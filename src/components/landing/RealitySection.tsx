@@ -50,7 +50,7 @@ export default function RealitySection() {
             <p className="section-intro-label">T3ebna men</p>
             <h2 className="section-intro-title">نفس المشاكل.</h2>
             <p className="section-intro-desc">
-              كل يوم نفس القصة. طلبات مزيفة. عملاء ما يردوش. فلوس تضيع. UGZIO يفهم اللي تعاني منه.
+              كل يوم نفس القصة. طلبات مزيفة، عملاء ما يردوش، مارج تضيع. حان وقت التغيير.
             </p>
           </div>
         </RevealOnScroll>

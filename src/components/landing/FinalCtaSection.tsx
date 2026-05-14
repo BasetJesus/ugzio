@@ -18,7 +18,7 @@ export default function FinalCtaSection() {
           </p>
 
           <p className="mt-6 text-sm text-white/40 leading-relaxed max-w-[32rem] mx-auto relative z-10">
-            UGZIO معمول للناس اللي تبيع réellement fi Tounes. Mouch SaaS generic.
+            UGZIO معمول للناس اللي تبيع réellement fi Tounes. Mouch SaaS générique.
             COD. WhatsApp. UGC. Operations. Kollhom fi système واحد.
           </p>
 
@@ -28,14 +28,14 @@ export default function FinalCtaSection() {
               className="group inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple min-w-[200px] relative overflow-hidden"
               style={{ backgroundColor: "#7c3aed" }}
             >
-              <span className="relative z-10">🚀 Start Live Demo</span>
+              <span className="relative z-10">🚀 Jarreb Live Demo</span>
               <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
             </a>
             <a
               href="/waitlist"
               className="inline-flex items-center justify-center rounded-xl border border-white/15 px-8 py-4 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass min-w-[200px]"
             >
-              🇹🇳 Join Tunisian Sellers
+              🇹🇳 D5ol lel Waitlist
             </a>
           </div>
 

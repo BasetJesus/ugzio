@@ -3,10 +3,10 @@ import RevealOnScroll from "./RevealOnScroll"
 const sequences = [
   {
     icon: "🤝",
-    title: "Réassurance",
-    goal: "Bâtir la confiance",
-    reason: "Premier achat • Client hésite",
-    preview: "Salam [Name], votre commande est entre de bonnes mains. Plus de 500 clients satisfaits cette mois. On vous confirme?",
+    title: "T2akkid",
+    goal: "Yabni thiqa",
+    reason: "Premier achat • Client متردد",
+    preview: "Salam [Name], commande mte3ek fi ayedeen أمينة. Plus de 500 clients satisfaits هذا الشهر. Tconfirmlha?",
     outcome: "+40% taux de confirmation",
     color: "text-emerald-400",
     border: "border-emerald-500/15",
@@ -15,10 +15,10 @@ const sequences = [
   },
   {
     icon: "⚡",
-    title: "Urgence",
-    goal: "Créer l'action",
-    reason: "Faux client • Non-réponse",
-    preview: "Salam, votre commande de [montant] TND vous attend. Stock limité — confirmez maintenant pour éviter l'annulation.",
+    title: "T3ajil",
+    goal: "Yjabbar action",
+    reason: "Client suspect • Ma yjewbch",
+    preview: "Salam, commande mte3ek [montant] TND t7ebsek. Stock limité — confirmi taw wala nannoulouha.",
     outcome: "-60% fausses commandes",
     color: "text-amber-400",
     border: "border-amber-500/15",
@@ -27,10 +27,10 @@ const sequences = [
   },
   {
     icon: "🔔",
-    title: "Rappel",
-    goal: "Ramener l'attention",
-    reason: "Client distrait • Pas de réponse",
-    preview: "Salam [Name], on n'a pas eu de réponse. Votre colis de [montant] TND vous attend encore. Dernier rappel!",
+    title: "Tadhkir",
+    goal: "Yarja3 lik le client",
+    reason: "Client nsitou • Ma radch",
+    preview: "Salam [Name], mazelt ma radit. Colis mte3ek [montant] TND mazel y7ebsek. Dernier appel!",
     outcome: "+25% récupération",
     color: "text-blue-400",
     border: "border-blue-500/15",
@@ -39,10 +39,10 @@ const sequences = [
   },
   {
     icon: "🛡️",
-    title: "Trust-Building",
-    goal: "Fidéliser durablement",
-    reason: "Client confirmé • Préparer prochaine vente",
-    preview: "Salam [Name], merci d'avoir confirmé! Suivez votre livraison ici. À bientôt pour vos prochains achats.",
+    title: "Thiqa",
+    goal: "Ykhalik mte3ek",
+    reason: "Client confirmé • Wajjou lil vente li jeya",
+    preview: "Salam [Name], merci 3la confirmation! Taba3 livraison mte3ek hné. Nchoufoukom fi prochaine commande.",
     outcome: "+70% retour client",
     color: "text-purple-400",
     border: "border-purple-500/15",
@@ -59,10 +59,10 @@ export default function PsychologySection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro">
-            <p className="section-intro-label">WhatsApp Psychology</p>
-            <h2 className="section-intro-title">Mouch ay message.</h2>
+            <p className="section-intro-label">WhatsApp Intelligence</p>
+            <h2 className="section-intro-title">Mouch ay message. كل واحد حسب state mte3ou.</h2>
             <p className="section-intro-desc">
-              كل client ياخو sequence مختلف حسب comportement mte3ou. UGZIO يقرر شنوّة يبعث ومتى.
+              Client mertaa7? Client suspect? Client nsitou? كل واحد ياخو sequence يلي تناسبو. UGZIO يعرف شنوّة يبعث ومتى.
             </p>
           </div>
         </RevealOnScroll>

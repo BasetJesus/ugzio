@@ -23,15 +23,16 @@ const buyers: BuyerConfig[] = [
     id: "fake",
     name: "Faux Client",
     desc: "Numéro suspect • 0 historique",
+
     risk: 94,
     trust: 8,
     label: "Risque Critique",
     labelColor: "text-red-400",
-    whatsappSequence: "Urgence + Vérification d'identité",
+    whatsappSequence: "T3ajil + T2akkid",
     messages: [
-      { text: "Salam, on a détecté une activité suspecte.", time: "10:32" },
-      { text: "Veuillez confirmer cette commande de 120 TND en répondant OUI.", time: "10:32" },
-      { text: "⚠️ Dernier rappel avant annulation automatique.", time: "10:35" },
+      { text: "Salam, 3malna analyse 3la commande mte3ek 🔍", time: "10:32" },
+      { text: "Commandet 120 TND — confirmiha b OUI wala tet7at fel attente.", time: "10:32" },
+      { text: "⚠️ Don't miss out! Dernier appel avant annulation.", time: "10:35" },
     ],
     outcome: "120 TND évités",
     outcomeIcon: "🛡️",
@@ -40,15 +41,16 @@ const buyers: BuyerConfig[] = [
   {
     id: "first",
     name: "Nouveau Client",
-    desc: "Premier achat • WhatsApp inactif",
+    desc: "Premier achat • WhatsApp mouch actif",
+
     risk: 68,
     trust: 32,
     label: "Risque Moyen",
     labelColor: "text-amber-400",
-    whatsappSequence: "Réassurance + Preuve sociale",
+    whatsappSequence: "T2akkid + Thiqa",
     messages: [
-      { text: "Salam, merci pour votre commande de 85 TND! 🎉", time: "10:30" },
-      { text: "Plus de 200 clients satisfaits cette semaine. On vous confirme ?", time: "10:30" },
+      { text: "Salam, merci 3la commandet 85 TND 🎉", time: "10:30" },
+      { text: "Plus de 200 clients satisfaits هذا الأسبوع. Tconfirmilna?", time: "10:30" },
     ],
     outcome: "85 TND en attente",
     outcomeIcon: "⏳",
@@ -57,15 +59,16 @@ const buyers: BuyerConfig[] = [
   {
     id: "returning",
     name: "Client Fidèle",
-    desc: "3ème commande • Déjà confirmé",
+    desc: "3ème commande • Déjà confirmé avant",
+
     risk: 8,
     trust: 94,
     label: "Client Sûr",
     labelColor: "text-green-400",
-    whatsappSequence: "Confirmation simple + Remerciement",
+    whatsappSequence: "T2akkid + Chokran",
     messages: [
-      { text: "Salam Ahmed, votre commande de 150 TND est en préparation 🚀", time: "10:28" },
-      { text: "Merci pour votre confiance! À très vite 🙏", time: "10:28" },
+      { text: "Salam Ahmed, commandet 150 TND t7adar 🚀", time: "10:28" },
+      { text: "Merci 3la thiqa mte3ek! Nchoufoukom fi prochaine ✅", time: "10:28" },
     ],
     outcome: "150 TND sécurisés ✅",
     outcomeIcon: "✅",
@@ -80,10 +83,10 @@ const buyers: BuyerConfig[] = [
     trust: 18,
     label: "Risque Élevé",
     labelColor: "text-red-400",
-    whatsappSequence: "Réassurance + Urgence + Relance",
+    whatsappSequence: "T2akkid + T3ajil + Tadhkir",
     messages: [
-      { text: "Salam, on a essayé de vous joindre sans succès.", time: "10:25" },
-      { text: "Votre commande de 200 TND vous attend. Répondez OUI pour confirmer.", time: "10:26" },
+      { text: "Salam, 9asit nwasslek — ma njemnach 😕", time: "10:25" },
+      { text: "Commandet 200 TND t7ebsek. رد بـ OUI باش تثبت.", time: "10:26" },
     ],
     outcome: "200 TND en danger",
     outcomeIcon: "⚠️",
@@ -144,8 +147,9 @@ export default function LiveDemoSection() {
         <div className="section-intro">
           <p className="section-intro-label">Live Demo</p>
           <h2 className="section-intro-title">Chouf kifesh UGZIO y5adem live.</h2>
+
           <p className="section-intro-desc">
-            Switch entre les types de clients. Regarde comment UGZIO analyse, décide, et protège ton revenue.
+            Switch entre les types de clients. Chouf kifesh UGZIO y7allel, y9arrir, w y7mi revenue mte3ek.
           </p>
         </div>
 
@@ -219,7 +223,7 @@ export default function LiveDemoSection() {
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">WhatsApp Sequence</p>
+                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">WhatsApp Intelligence</p>
                   <div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
                     <span className="text-[10px] font-medium text-purple-400">{active.whatsappSequence}</span>
