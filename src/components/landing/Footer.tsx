@@ -1,8 +1,8 @@
 export default function Footer() {
   return (
     <footer className="border-t border-white/[0.04] py-8">
-      <div className="mx-auto max-w-6xl px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-xs text-white/20">
+      <div className="section-container flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-xs text-white/20 text-center sm:text-left">
           Built in Tunisia for Tunisian commerce. WhatsApp-first. COD-native. Mobile-native.
         </p>
         <div className="flex items-center gap-4 text-xs text-white/20">

@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
 import type { PsychologyPreview } from "@/types/whatsapp";
 import type { JourneyTimeline as JourneyTimelineData } from "@/services/buyer-journey.service";
-import DecisionCard from "@/components/shared/DecisionCard";
+import WhatsAppDecisionCard from "@/components/confirm/WhatsAppDecisionCard";
 import PsychologyCard from "@/components/shared/PsychologyCard";
 import JourneyTimelineComponent from "@/components/shared/JourneyTimeline";
+import ConfettiBurst from "@/components/shared/ConfettiBurst";
 
 interface Props {
   items: ConfirmationQueueItem[]
@@ -16,6 +17,10 @@ interface Props {
   total: number
   psychologyMap?: Record<string, PsychologyPreview>
   pendingOutcomes?: PendingOutcomeOrder[]
+}
+
+function initials(name: string): string {
+  return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
 }
 
 function impactMessage(action: string, item: ConfirmationQueueItem): string {
@@ -54,114 +59,124 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-[var(--overlay)]" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[var(--bg-card)] border-l border-[var(--border)] overflow-y-auto shadow-2xl animate-slide-in-right">
-        <div className="sticky top-0 bg-[var(--bg-card)] border-b border-[var(--border)] px-panel py-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Order Insight</h3>
-          <button onClick={onClose} className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] text-lg leading-none px-2 py-1">&times;</button>
-        </div>
-
-        <div className="p-panel space-y-4">
-          <div>
-            <p className="text-base font-semibold text-[var(--text-primary)]">{item.buyerName}</p>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{item.buyerPhone}</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-              <p className="text-label text-[var(--text-tertiary)]">Amount</p>
-              <p className="text-metric text-[var(--text-primary)]">{item.amount.toFixed(0)} TND</p>
-            </div>
-            <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-              <p className="text-label text-[var(--text-tertiary)]">Trust score</p>
-              <p className={`text-metric ${item.trustScore < 40 ? "text-[var(--state-urgent)]" : item.trustScore < 70 ? "text-[var(--state-recovering)]" : "text-[var(--state-protected)]"}`}>{item.trustScore}</p>
-            </div>
-          </div>
-
-          <div
-            className="rounded-xl border p-3"
-            style={{
-              borderColor: item.riskLevel === "high" ? "var(--kpi-red-border)" : "var(--warning-amber-border)",
-              backgroundColor: item.riskLevel === "high" ? "var(--kpi-red-bg)" : "var(--warning-amber-bg)",
-            }}
-          >
-            <p className="text-label mb-1" style={{ color: item.riskLevel === "high" ? "var(--state-urgent)" : "var(--state-recovering)" }}>
-              If you do nothing
-            </p>
-            <p className="text-sm font-medium" style={{ color: item.riskLevel === "high" ? "var(--state-urgent)" : "var(--state-recovering)" }}>
-              Estimated loss: {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
-            </p>
-          </div>
-
-          <div>
-            <p className="text-label text-[var(--text-tertiary)] mb-2">Risk signals</p>
-            <ul className="space-y-1.5">
-              {signals.map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
-                  <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[var(--border)]" />
-                  <div>
-                    <p className="text-[var(--text-primary)] font-medium">{s.label}</p>
-                    <p className="text-[var(--text-secondary)]">{s.detail}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-label text-[var(--text-tertiary)] mb-2">Buyer journey</p>
-            {timelineLoading ? (
-              <div className="space-y-2">
-                {[1,2,3].map((i) => (
-                  <div key={i} className="flex gap-3 animate-pulse">
-                    <div className="h-2 w-2 rounded-full bg-[var(--border)] mt-1" />
-                    <div className="flex-1 space-y-1 pb-2">
-                      <div className="h-3 w-24 bg-[var(--border)] rounded" />
-                      <div className="h-2 w-16 bg-[var(--border)] rounded" />
-                    </div>
-                  </div>
-                ))}
+      <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+        <div className="relative w-full max-w-md bg-zinc-900 border-l border-white/10 overflow-y-auto shadow-2xl animate-slide-in-right">
+          <div className="sticky top-0 bg-zinc-900 border-b border-white/10 px-5 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
+                <span className="text-xs font-bold text-white">{initials(item.buyerName)}</span>
               </div>
-            ) : timeline && timeline.events.length > 0 ? (
-              <JourneyTimelineComponent events={timeline.events} behaviorTags={timeline.behaviorTags} />
-            ) : (
-              <p className="text-xs text-[var(--text-tertiary)]">No journey data recorded yet</p>
-            )}
+              <div>
+                <h3 className="text-sm font-semibold text-white">{item.buyerName}</h3>
+                <p className="text-[10px] text-white/40">{item.buyerPhone}</p>
+              </div>
+            </div>
+            <button onClick={onClose} className="text-white/40 hover:text-white text-lg leading-none px-2 py-1">&times;</button>
           </div>
 
-          {psychologyPreview && (
-            <PsychologyCard
-              sequenceType={psychologyPreview.sequenceType}
-              psychologicalReason={psychologyPreview.psychologicalReason}
-              expectedGoal={psychologyPreview.expectedGoal}
-              previewMessage={psychologyPreview.previewMessage}
-            />
-          )}
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-lg bg-zinc-800/50 p-3">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">Amount</p>
+                <p className="text-lg font-bold text-white">{item.amount.toFixed(0)} TND</p>
+              </div>
+              <div className="rounded-lg bg-zinc-800/50 p-3">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">Trust score</p>
+                <p className={`text-lg font-bold ${item.trustScore < 40 ? "text-red-400" : item.trustScore < 70 ? "text-amber-400" : "text-emerald-400"}`}>{item.trustScore}</p>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[var(--border)]">
-            <button
-              onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
-              className="rounded-lg bg-[var(--btn-green)] py-3 text-sm font-semibold text-white hover:bg-[var(--btn-green-hover)] transition-colors btn-base active:scale-[0.97] touch-manipulation"
-            >
-              Secure Revenue
-            </button>
-            <button
-              onClick={() => { onAction(item.orderId, "retry"); onClose(); }}
-              className="rounded-lg border border-[var(--warning-amber)]/30 py-3 text-sm font-semibold text-[var(--warning-amber)] hover:bg-[var(--warning-amber-bg)] transition-colors btn-base active:scale-[0.97] touch-manipulation"
-            >
-              Re-contact
-            </button>
-            <button
-              onClick={() => { onAction(item.orderId, "cancel"); onClose(); }}
-              className="rounded-lg border border-[var(--risk-red)]/30 py-3 text-sm font-semibold text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] transition-colors btn-base active:scale-[0.97] touch-manipulation"
-            >
-              Prevent Loss
-            </button>
+            <div className="rounded-xl border p-4 border-red-500/20 bg-red-500/5">
+              <p className="text-[10px] text-red-400 font-medium uppercase tracking-wider mb-1">
+                If you do nothing
+              </p>
+              <p className="text-sm font-semibold text-red-300">
+                Estimated loss: {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Risk signals</p>
+              <ul className="space-y-1.5">
+                {signals.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/50">
+                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-white/20" />
+                    <div>
+                      <p className="text-white font-medium">{s.label}</p>
+                      <p className="text-white/50">{s.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Buyer journey</p>
+              {timelineLoading ? (
+                <div className="space-y-2">
+                  {[1,2,3].map((i) => (
+                    <div key={i} className="flex gap-3 animate-pulse">
+                      <div className="h-2 w-2 rounded-full bg-white/10 mt-1" />
+                      <div className="flex-1 space-y-1 pb-2">
+                        <div className="h-3 w-24 bg-white/10 rounded" />
+                        <div className="h-2 w-16 bg-white/10 rounded" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : timeline && timeline.events.length > 0 ? (
+                <JourneyTimelineComponent events={timeline.events} behaviorTags={timeline.behaviorTags} />
+              ) : (
+                <p className="text-xs text-white/40">No journey data recorded yet</p>
+              )}
+            </div>
+
+            {psychologyPreview && (
+              <div className="rounded-xl bg-[#1a2e2a] border border-green-900/30 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-medium text-green-400/70 uppercase tracking-wider">WhatsApp Sequence</span>
+                  <span className="text-[9px] text-green-600 ml-auto">{psychologyPreview.sequenceType}</span>
+                </div>
+                <div className="rounded-lg bg-white/[0.05] border border-white/[0.06] p-3">
+                  <p className="text-xs text-green-200/70 leading-relaxed">{psychologyPreview.previewMessage}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="rounded-lg bg-black/20 p-2">
+                    <p className="text-[9px] text-white/40">Why</p>
+                    <p className="text-[10px] text-white/70 mt-0.5">{psychologyPreview.psychologicalReason}</p>
+                  </div>
+                  <div className="rounded-lg bg-black/20 p-2">
+                    <p className="text-[9px] text-white/40">Goal</p>
+                    <p className="text-[10px] text-white/70 mt-0.5">{psychologyPreview.expectedGoal}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/10">
+              <button
+                onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
+                className="rounded-lg bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors active:scale-[0.97] touch-manipulation"
+              >
+                Secure
+              </button>
+              <button
+                onClick={() => { onAction(item.orderId, "retry"); onClose(); }}
+                className="rounded-lg border border-amber-500/30 py-3 text-sm font-semibold text-amber-400 hover:bg-amber-500/10 transition-colors active:scale-[0.97] touch-manipulation"
+              >
+                Re-contact
+              </button>
+              <button
+                onClick={() => { onAction(item.orderId, "cancel"); onClose(); }}
+                className="rounded-lg border border-red-500/30 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-colors active:scale-[0.97] touch-manipulation"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
@@ -176,6 +191,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
     timelineLoading?: boolean
   } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "neutral" | "danger" } | null>(null);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const filtered = filter === "all"
     ? items
@@ -192,6 +208,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       });
       const msg = item ? impactMessage(action, item) : "Action completed";
       const type = action === "confirm" || action === "delivered" ? "success" : action === "cancel" || action === "refused" ? "danger" : "neutral";
+      if (type === "success") setConfettiActive(true);
       setToast({ message: msg, type });
       setTimeout(() => setToast(null), 2000);
       router.refresh();
@@ -201,16 +218,19 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
   }
 
   function toastStyle(type: string) {
-    if (type === "success") return { backgroundColor: "var(--btn-green)", color: "white" };
-    if (type === "danger") return { backgroundColor: "var(--btn-red)", color: "white" };
-    return { backgroundColor: "var(--warning-amber)", color: "white" };
+    if (type === "success") return { backgroundColor: "#059669", color: "white" };
+    if (type === "danger") return { backgroundColor: "#dc2626", color: "white" };
+    return { backgroundColor: "#d97706", color: "white" };
   }
 
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-panel text-center">
-        <p className="text-sm font-medium text-[var(--text-secondary)]">No revenue at risk right now</p>
-        <p className="text-xs text-[var(--text-tertiary)] mt-1">Your store is stable. UGZIO is still monitoring incoming orders.</p>
+      <div className="rounded-xl border border-white/10 bg-zinc-900/50 p-6 text-center">
+        <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
+          <span className="text-lg">🛡️</span>
+        </div>
+        <p className="text-sm font-medium text-white">Koul chay t7at l control</p>
+        <p className="text-xs text-white/40 mt-1">No orders at risk. UGZIO is monitoring.</p>
       </div>
     );
   }
@@ -220,39 +240,39 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar touch-manipulation">
         <button
           onClick={() => setFilter("all")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap btn-base ${filter === "all" ? "bg-[var(--accent)] text-white" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "all" ? "bg-emerald-600 text-white" : "bg-zinc-800 text-white/40 hover:text-white"}`}
         >
           All ({total})
         </button>
         <button
           onClick={() => setFilter("pending_confirmation")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap btn-base ${filter === "pending_confirmation" ? "bg-[var(--warning-amber-bg)] text-[var(--warning-amber)]" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "pending_confirmation" ? "bg-amber-500/20 text-amber-400" : "bg-zinc-800 text-white/40 hover:text-white"}`}
         >
           Pending ({pendingCount})
         </button>
         <button
           onClick={() => setFilter("contacted")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap btn-base ${filter === "contacted" ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "bg-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "contacted" ? "bg-emerald-500/20 text-emerald-400" : "bg-zinc-800 text-white/40 hover:text-white"}`}
         >
           Contacted ({contactedCount})
         </button>
       </div>
 
       {pendingOutcomes && pendingOutcomes.length > 0 && (
-        <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--success-green-bg)] p-4 mb-4">
-          <p className="text-label text-[var(--state-protected)] mb-3">
-            Mark delivery outcome ({pendingOutcomes.length})
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 mb-4">
+          <p className="text-[10px] font-medium text-emerald-400 uppercase tracking-wider mb-3">
+            Delivery pending ({pendingOutcomes.length})
           </p>
           <div className="space-y-2">
             {pendingOutcomes.map((o) => (
               <div
                 key={o.orderId}
-                className="rounded-lg bg-[var(--bg-card)] px-4 py-3 border border-[var(--border)]"
+                className="rounded-lg bg-zinc-900/50 px-4 py-3 border border-white/10"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{o.buyerName}</p>
-                    <p className="text-[10px] text-[var(--text-tertiary)]">
+                    <p className="text-sm font-medium text-white truncate">{o.buyerName}</p>
+                    <p className="text-[10px] text-white/40">
                       {o.amount.toFixed(0)} TND
                       {o.product ? " \u2014 " + o.product : ""}
                     </p>
@@ -262,16 +282,16 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "delivered"); }}
                     disabled={submitting === o.orderId + "_delivered"}
-                    className="rounded-lg bg-[var(--btn-green)] py-2.5 text-xs font-semibold text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-50 transition-colors btn-base active:scale-[0.97] touch-manipulation"
+                    className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_delivered" ? "..." : "Delivered"}
+                    {submitting === o.orderId + "_delivered" ? "..." : "\u2705 Delivered"}
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
                     disabled={submitting === o.orderId + "_refused"}
-                    className="rounded-lg border border-[var(--risk-red)]/30 py-2.5 text-xs font-semibold text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-50 transition-colors btn-base active:scale-[0.97] touch-manipulation"
+                    className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_refused" ? "..." : "Refused"}
+                    {submitting === o.orderId + "_refused" ? "..." : "\uD83D\uDDD1\uFE0F Refused"}
                   </button>
                 </div>
               </div>
@@ -282,7 +302,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
       <div className="space-y-3">
         {filtered.map((item) => (
-          <DecisionCard
+          <WhatsAppDecisionCard
             key={item.orderId}
             item={item}
             psychology={psychologyMap?.[item.orderId]}
@@ -320,6 +340,8 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           timelineLoading={selected.timelineLoading}
         />
       )}
+
+      <ConfettiBurst active={confettiActive} onComplete={() => setConfettiActive(false)} />
     </div>
   );
 }

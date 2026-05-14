@@ -41,17 +41,15 @@ const problems = [
 
 export default function RealitySection() {
   return (
-    <section className="relative px-5 py-20 sm:py-28">
+    <section className="relative section-padding">
       <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
 
-      <div className="mx-auto max-w-6xl">
+      <div className="section-container">
         <RevealOnScroll>
-          <div className="max-w-xl mb-12">
-            <p className="text-[11px] font-semibold tracking-widest text-white/30 uppercase mb-4">T3ebna men</p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-              نفس المشاكل.
-            </h2>
-            <p className="mt-4 text-sm text-white/40 leading-relaxed">
+          <div className="section-intro">
+            <p className="section-intro-label">T3ebna men</p>
+            <h2 className="section-intro-title">نفس المشاكل.</h2>
+            <p className="section-intro-desc">
               كل يوم نفس القصة. طلبات مزيفة. عملاء ما يردوش. فلوس تضيع. UGZIO يفهم اللي تعاني منه.
             </p>
           </div>

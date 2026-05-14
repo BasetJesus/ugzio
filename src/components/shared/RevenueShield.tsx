@@ -41,7 +41,8 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 rounded-lg px-3 py-2 transition-all duration-300" style={{ backgroundColor: emotionCfg.bg, border: `1px solid ${emotionCfg.border}` }}>
+      <div className="relative flex items-center gap-2 rounded-lg px-3 py-2 transition-all duration-300 overflow-hidden" style={{ backgroundColor: emotionCfg.bg, border: `1px solid ${emotionCfg.border}` }}>
+        <span className="absolute top-1 right-1 text-[6px] text-white/10 select-none pointer-events-none">🇹🇳</span>
         <span className={"text-sm " + (animate ? "animate-revenue-increment" : "")}>\uD83D\uDEE1\uFE0F</span>
         <div>
           <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: emotionCfg.color }}>{todayLabel}</p>
@@ -58,30 +59,33 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
 
   return (
     <div
-      className="rounded-xl border p-panel relative overflow-hidden transition-all duration-500"
+      className="rounded-xl border px-5 py-6 sm:p-6 relative overflow-hidden transition-all duration-500"
       style={{
         borderColor: emotionCfg.border,
         backgroundColor: emotionCfg.bg,
         boxShadow: animate ? emotionCfg.glow : "none",
       }}
     >
+      <span className="absolute top-3 right-3 text-[9px] text-white/10 select-none pointer-events-none">
+        🇹🇳 UGZIO
+      </span>
       <div className="flex items-start justify-between relative z-10">
         <div>
-          <p className="text-caption" style={{ color: emotionCfg.color }}>{todayLabel}</p>
-          <p className={"text-emotion mt-1 " + (animate ? "animate-revenue-increment" : "")} style={{ color: emotionCfg.color }}>
+          <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: emotionCfg.color }}>{todayLabel}</p>
+          <p className={"text-3xl sm:text-4xl font-extrabold tracking-tight mt-1 " + (animate ? "animate-revenue-increment" : "")} style={{ color: emotionCfg.color }}>
             {displayAmount.toFixed(0)} TND
           </p>
-          <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+          <p className="text-xs text-white/40 mt-1">
             Revenue protected through operator decisions
           </p>
           {continuityLabel && (
-            <p className="text-[10px] text-[var(--state-calm)] mt-0.5">
+            <p className="text-[10px] text-indigo-400 mt-0.5">
               {continuityLabel}
             </p>
           )}
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border" style={{ backgroundColor: emotionCfg.bg, borderColor: emotionCfg.border }}>
-          <span className={"text-lg " + (animate ? "animate-revenue-increment" : "")}>\uD83D\uDEE1\uFE0F</span>
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border" style={{ backgroundColor: emotionCfg.bg, borderColor: emotionCfg.border }}>
+          <span className={"text-xl " + (animate ? "animate-revenue-increment" : "")}>\uD83D\uDEE1\uFE0F</span>
         </div>
       </div>
 

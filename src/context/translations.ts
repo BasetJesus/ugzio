@@ -185,7 +185,3 @@ export const NICHE_KEYS = [
 export function t(key: string, lang: Lang): string {
   return dict[key]?.[lang] ?? key;
 }
-
-export function getDir(lang: Lang): "ltr" | "rtl" {
-  return lang === "tun" ? "rtl" : "ltr";
-}

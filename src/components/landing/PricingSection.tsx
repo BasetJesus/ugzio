@@ -1,0 +1,166 @@
+import RevealOnScroll from "./RevealOnScroll"
+
+const plans = [
+  {
+    name: "Free",
+    price: "0",
+    currency: "TND",
+    period: "/mois",
+    desc: "Pour tester UGZIO avec tes premières commandes",
+    cta: "Commencer gratuit",
+    href: "/overview?demo=true",
+    features: [
+      { text: "3 commandes / mois", included: true },
+      { text: "Analyse risque automatique", included: true },
+      { text: "Séquences WhatsApp basics", included: true },
+      { text: "Protection revenue tracking", included: true },
+      { text: "Support email", included: true },
+      { text: "Commandes illimitées", included: false },
+      { text: "Séquences psychologiques avancées", included: false },
+      { text: "Collection UGC automatique", included: false },
+      { text: "Support WhatsApp prioritaire", included: false },
+    ],
+    highlight: false,
+  },
+  {
+    name: "Croissance",
+    price: "129",
+    currency: "TND",
+    period: "/mois",
+    desc: "Pour les vendeurs qui veulent protéger leur revenue à grande échelle",
+    cta: "Démarrer l'essai",
+    href: "/overview?demo=true",
+    features: [
+      { text: "Commandes illimitées", included: true },
+      { text: "Analyse risque automatique", included: true },
+      { text: "Séquences WhatsApp avancées", included: true },
+      { text: "Protection revenue tracking", included: true },
+      { text: "Séquences psychologiques avancées", included: true },
+      { text: "Collection UGC automatique", included: true },
+      { text: "Support WhatsApp prioritaire", included: true },
+      { text: "Accès équipe (jusqu'à 3 membres)", included: true },
+      { text: "Export données & rapports", included: true },
+    ],
+    highlight: true,
+    badge: "Recommandé",
+  },
+]
+
+function CheckIcon() {
+  return (
+    <svg className="h-3.5 w-3.5 shrink-0 text-green-400" viewBox="0 0 16 16" fill="none">
+      <path d="M13.3 4.3L6 11.6L2.7 8.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function MinusIcon() {
+  return (
+    <svg className="h-3.5 w-3.5 shrink-0 text-white/20" viewBox="0 0 16 16" fill="none">
+      <path d="M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export default function PricingSection() {
+  return (
+    <section className="relative section-padding">
+      <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
+
+      <div className="section-container">
+        <RevealOnScroll>
+          <div className="section-intro section-intro-center">
+            <p className="section-intro-label">Pricing</p>
+            <h2 className="section-intro-title">
+              Un prix qui suit ton{" "}
+              <span className="landing-text-gradient">volume</span>.
+            </h2>
+            <p className="section-intro-desc">
+              Commence gratuit. Passe à Croissance quand tes commandes augmentent.
+              <span className="block text-white/30 text-xs mt-1">Pas de contrat. Pas de surprise. Pas de frais cachés.</span>
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        <div className="grid gap-6 md:grid-cols-2 md:max-w-3xl mx-auto items-start">
+          {plans.map((plan, i) => (
+            <RevealOnScroll key={plan.name} delay={i * 150}>
+              <div
+                className={`relative rounded-2xl border p-6 sm:p-8 transition-all duration-300 hover:scale-[1.02] ${
+                  plan.highlight
+                    ? "border-purple-500/30 bg-purple-500/[0.04] shadow-lg shadow-purple-500/5"
+                    : "border-white/[0.06] bg-white/[0.02]"
+                }`}
+              >
+                {plan.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-600 px-4 py-1 text-[10px] font-semibold text-white shadow-lg">
+                      ⭐ {plan.badge}
+                    </span>
+                  </div>
+                )}
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-white">{plan.name}</h3>
+                  <p className="text-xs text-white/40 mt-1">{plan.desc}</p>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-3xl font-bold text-white">{plan.price}</span>
+                    <span className="text-sm text-white/40">{plan.currency}</span>
+                    <span className="text-xs text-white/30 ml-1">{plan.period}</span>
+                  </div>
+                </div>
+
+                <a
+                  href={plan.href}
+                  className={`group relative w-full rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.98] overflow-hidden inline-flex items-center justify-center mb-6 ${
+                    plan.highlight ? "landing-glow-purple" : "border border-white/15"
+                  }`}
+                  style={{
+                    backgroundColor: plan.highlight ? "#7c3aed" : "transparent",
+                  }}
+                >
+                  <span className="relative z-10">{plan.cta}</span>
+                  <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
+                </a>
+
+                <ul className="space-y-3">
+                  {plan.features.map((f) => (
+                    <li key={f.text} className="flex items-center gap-2.5">
+                      {f.included ? <CheckIcon /> : <MinusIcon />}
+                      <span className={`text-xs ${f.included ? "text-white/60" : "text-white/20"}`}>
+                        {f.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </RevealOnScroll>
+          ))}
+        </div>
+
+        <RevealOnScroll delay={300}>
+          <div className="mt-10 text-center">
+            <div className="landing-glass rounded-2xl p-6 sm:p-8 inline-block mx-auto max-w-lg">
+              <p className="text-sm text-white/70 font-medium mb-2">
+                🎯 Tous les plans incluent
+              </p>
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-white/40">
+                <span>✓ Analyse risque en 3 secondes</span>
+                <span>✓ Séquences WhatsApp</span>
+                <span>✓ Revenue tracking</span>
+                <span>✓ Dashboard mobile</span>
+                <span>✓ Mise à jour gratuites</span>
+              </div>
+              <p className="text-[10px] text-white/20 mt-4">
+                Pas de carte bancaire requise pour le plan Free. Annulation à tout moment.
+              </p>
+            </div>
+          </div>
+        </RevealOnScroll>
+      </div>
+    </section>
+  )
+}

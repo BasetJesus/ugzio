@@ -35,6 +35,19 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+function SectionHeader({ icon, label, subtitle }: { icon: string; label: string; subtitle?: string }) {
+  return (
+    <div className="flex items-center gap-2 pt-2">
+      <span className="text-sm">{icon}</span>
+      <span className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">{label}</span>
+      {subtitle && (
+        <span className="text-[10px] text-white/20 ml-auto">{subtitle}</span>
+      )}
+      <div className="flex-1 h-px bg-white/5 ml-3" />
+    </div>
+  )
+}
+
 export default async function OverviewPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/login");
@@ -77,26 +90,20 @@ export default async function OverviewPage() {
   return (
     <OperationalPresenceLayer>
     <div className="space-y-section" data-state="live">
-      <div className="flex items-start justify-between">
-        <SystemNarrative
-          title={tense ? "Revenue at risk" : "Live Revenue Stream"}
-          narrative={
-            tense
-              ? `${revenueAtRisk.toFixed(0)} TND exposed — ${needsAction} orders need your attention`
-              : hasOutcomes
-              ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protected today — ${needsAction} orders in queue`
-              : sellerContext?.narrative ?? "No active risks — system monitoring incoming orders"
-          }
-          emotion={tense ? "tense" : "protective"}
-          sellerStyle={sellerStyle}
-        />
-        <Link
-          href="/orders/import"
-          className="rounded-lg bg-[var(--accent)] px-4 py-2 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors shrink-0"
-        >
-          + Import Orders
-        </Link>
-      </div>
+      <SystemNarrative
+        title={tense ? "Revenue at risk" : "Live Revenue Stream"}
+        narrative={
+          tense
+            ? `${revenueAtRisk.toFixed(0)} TND exposed — ${needsAction} orders need your attention`
+            : hasOutcomes
+            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protected today — ${needsAction} orders in queue`
+            : sellerContext?.narrative ?? "No active risks — system monitoring incoming orders"
+        }
+        emotion={tense ? "tense" : "protective"}
+        sellerStyle={sellerStyle}
+      />
+
+      <SectionHeader icon="🛡️" label="Protect" subtitle={revenueAtRisk > 0 ? `${revenueAtRisk.toFixed(0)} TND at risk` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-panel">
         <KpiCard
@@ -104,20 +111,60 @@ export default async function OverviewPage() {
           value={`${revenueAtRisk.toFixed(0)} TND`}
           tier="high"
           emotion={tense ? "tense" : "calm"}
-        />
+        >
+          {tense && <p className="text-[10px] text-red-400/60 mt-1">⚡ Needs immediate attention</p>}
+        </KpiCard>
         <KpiCard
           label="Orders needing action"
           value={needsAction}
           tier={needsAction > 0 ? "medium" : "low"}
           emotion={needsAction > 0 ? "tense" : "calm"}
-        />
+        >
+          {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">⚠️ Pending decisions</p>}
+        </KpiCard>
         <KpiCard
           label="Protection status"
           value={revenueAtRisk > 0 ? "Active" : "Stable"}
           tier={revenueAtRisk > 0 ? "low" : "neutral"}
           emotion={revenueAtRisk > 0 ? "protective" : "calm"}
-        />
+        >
+          {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">🛡️ All protected</p>}
+        </KpiCard>
       </div>
+
+      {protectedToday > 0 && (
+        <RevenueShield
+          protectedAmount={protectedToday}
+          estimatedLossPrevented={preventedToday}
+          continuityLabel={sellerContext?.continuity?.[0]?.text}
+        />
+      )}
+
+      {hasOutcomes && (
+        <div>
+          <p className="text-[10px] font-medium text-white/40 uppercase tracking-wider mb-3">Today&apos;s Outcomes</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
+            <MiniKpiCard label="Revenue Protected" value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
+            <MiniKpiCard label="RTS Loss Prevented" value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
+            <MiniKpiCard label="Confirmation Rate" value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
+            <MiniKpiCard label="Actions Taken" value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
+          </div>
+        </div>
+      )}
+
+      {!hasOutcomes && !tense && (
+        <div className="rounded-xl border border-white/10 bg-zinc-900/50 p-6 text-center">
+          <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
+            <span className="text-lg">🛡️</span>
+          </div>
+          <p className="text-sm font-medium text-white">Koul chay t7at l control</p>
+          <p className="text-xs text-white/40 mt-1">
+            <Link href="/confirm" className="text-emerald-400 hover:underline">Go to confirmation queue</Link> to start protecting revenue
+          </p>
+        </div>
+      )}
+
+      <SectionHeader icon="⚡" label="Act" subtitle={needsAction > 0 ? `${needsAction} pending` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
         {sellerContext && (
@@ -129,21 +176,33 @@ export default async function OverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
-        {sellerContext && (
-          <SellerBusinessProfileCard context={sellerContext} />
+        {whatsappConnection && (
+          <WhatsAppConnectionCard data={whatsappConnection} />
         )}
-        {sellerContext && (
-          <SellerHealthCard data={sellerHealth} sellerStyle={sellerStyle} />
+        {commPerf && (
+          <CommunicationPerformanceCard data={commPerf} />
         )}
       </div>
 
-      {protectedToday > 0 && (
-        <RevenueShield
-          protectedAmount={protectedToday}
-          estimatedLossPrevented={preventedToday}
-          continuityLabel={sellerContext?.continuity?.[0]?.text}
-        />
-      )}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-panel">
+        <div className="lg:col-span-2">
+          <RevenueStoryCard story={weeklyStory!} context={sellerContext ?? undefined} />
+        </div>
+        <div>
+          <OperationalFeed events={recentActivity} />
+        </div>
+      </div>
+
+      <SectionHeader icon="📈" label="Grow" />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
+        {sellerContext && (
+          <SellerBusinessProfileCard context={sellerContext} />
+        )}
+        {sellerHealth && (
+          <SellerHealthCard data={sellerHealth} sellerStyle={sellerStyle} />
+        )}
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-panel">
         {quickstart && (
@@ -155,71 +214,8 @@ export default async function OverviewPage() {
         {successMoments.length > 0 && (
           <SuccessMomentsFeed moments={successMoments} />
         )}
-        {commPerf && (
-          <CommunicationPerformanceCard data={commPerf} />
-        )}
       </div>
 
-      {hasOutcomes && (
-        <div>
-          <p className="text-caption text-[var(--text-tertiary)] mb-card">Today&apos;s Outcomes</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-            <MiniKpiCard
-              label="Revenue Protected"
-              value={`${protectedToday.toFixed(0)} TND`}
-              tier="low"
-              emotion="protective"
-            />
-            <MiniKpiCard
-              label="RTS Loss Prevented"
-              value={`${preventedToday.toFixed(0)} TND`}
-              tier="low"
-              emotion="achievement"
-            />
-            <MiniKpiCard
-              label="Confirmation Rate"
-              value={`${confirmationRate}%`}
-              tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"}
-              emotion={confirmationRate >= 70 ? "protective" : "tense"}
-            />
-            <MiniKpiCard
-              label="Actions Taken"
-              value={today?.totalActions ?? 0}
-              tier="neutral"
-              emotion="achievement"
-            />
-          </div>
-        </div>
-      )}
-
-      {!hasOutcomes && !tense && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-panel text-center">
-          <div className="h-10 w-10 rounded-full bg-[var(--border)] flex items-center justify-center mx-auto mb-4">
-            <span className="text-sm text-[var(--text-tertiary)]">—</span>
-          </div>
-          <p className="text-sm font-medium text-[var(--text-primary)]">No actions taken yet today</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">
-            <Link href="/confirm" className="text-[var(--accent)] hover:underline">
-              Go to confirmation queue
-            </Link>{" "}
-            to start protecting revenue
-          </p>
-        </div>
-      )}
-
-      {whatsappConnection && (
-        <WhatsAppConnectionCard data={whatsappConnection} />
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-panel">
-        <div className="lg:col-span-2">
-          <RevenueStoryCard story={weeklyStory!} context={sellerContext ?? undefined} />
-        </div>
-        <div>
-          <OperationalFeed events={recentActivity} />
-        </div>
-      </div>
-      
       {trustMomentum && (
         <TrustMomentumCard data={trustMomentum} sellerStyle={sellerStyle} />
       )}

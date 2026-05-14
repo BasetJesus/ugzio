@@ -2,16 +2,14 @@ import RevealOnScroll from "./RevealOnScroll"
 
 export default function OutcomeSection() {
   return (
-    <section className="relative px-5 py-20 sm:py-28">
+    <section className="relative section-padding">
       <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
 
-      <div className="mx-auto max-w-6xl">
+      <div className="section-container">
         <RevealOnScroll>
-          <div className="max-w-2xl mb-14">
-            <p className="text-[11px] font-semibold tracking-widest text-white/30 uppercase mb-4">Résultat</p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-              A9al stress. A9al RTS. A9wa operations.
-            </h2>
+          <div className="section-intro">
+            <p className="section-intro-label">Résultat</p>
+            <h2 className="section-intro-title">A9al stress. A9al RTS. A9wa operations.</h2>
           </div>
         </RevealOnScroll>
 

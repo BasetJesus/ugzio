@@ -11,28 +11,21 @@ interface Props {
   emotion?: EmotionTier
   children?: ReactNode
   onClick?: () => void
+  shareable?: boolean
 }
 
 const tierStyles: Record<RiskTier, string> = {
-  high: "border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]",
-  medium: "border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]",
-  low: "border-[var(--success-green-border)] bg-[var(--success-green-bg)]",
-  neutral: "border-[var(--border)] bg-[var(--bg-card)]",
+  high: "border-red-500/20 bg-red-500/5",
+  medium: "border-amber-500/20 bg-amber-500/5",
+  low: "border-emerald-500/20 bg-emerald-500/5",
+  neutral: "border-white/10 bg-zinc-900/50",
 }
 
 const valueColors: Record<RiskTier, string> = {
-  high: "text-[var(--risk-red)]",
-  medium: "text-[var(--warning-amber)]",
-  low: "text-[var(--success-green)]",
-  neutral: "text-[var(--text-primary)]",
-}
-
-const emotionGlows: Record<EmotionTier, string> = {
-  protective: "shadow-[var(--glow-green)]",
-  tense: "shadow-[var(--glow-red)]",
-  calm: "shadow-[0_0_12px_rgba(99,102,241,0.06)]",
-  achievement: "shadow-[var(--glow-amber)]",
-  neutral: "",
+  high: "text-red-400",
+  medium: "text-amber-400",
+  low: "text-emerald-400",
+  neutral: "text-white",
 }
 
 const emotionIcons: Record<EmotionTier, string> = {
@@ -43,40 +36,50 @@ const emotionIcons: Record<EmotionTier, string> = {
   neutral: "",
 }
 
-export default function KpiCard({ label, value, tier = "neutral", emotion, children, onClick }: Props) {
+export default function KpiCard({ label, value, tier = "neutral", emotion, children, onClick, shareable = true }: Props) {
   return (
     <div
-      className={`rounded-xl border p-card sm:p-panel ${tierStyles[tier]} ${emotion ? emotionGlows[emotion] : ""} ${onClick ? "cursor-pointer hover:opacity-80" : ""}`}
+      className={`relative rounded-xl border p-4 sm:p-5 overflow-hidden ${tierStyles[tier]} ${onClick ? "cursor-pointer hover:opacity-80" : ""}`}
       onClick={onClick}
     >
-      <div className="flex items-center justify-between">
-        <p className="text-caption text-[var(--text-tertiary)]">{label}</p>
+      {shareable && (
+        <span className="absolute top-3 right-3 text-[9px] text-white/10 select-none pointer-events-none">
+          🇹🇳 UGZIO
+        </span>
+      )}
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{label}</p>
         {emotion && emotion !== "neutral" && (
-          <span className="text-xs opacity-70">{emotionIcons[emotion]}</span>
+          <span className="text-sm opacity-70">{emotionIcons[emotion]}</span>
         )}
       </div>
-      <p className={`text-display mt-1 ${valueColors[tier]}`}>{value}</p>
+      <p className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${valueColors[tier]}`}>{value}</p>
       {children}
     </div>
   )
 }
 
-export function MiniKpiCard({ label, value, tier = "neutral", emotion }: Props) {
+export function MiniKpiCard({ label, value, tier = "neutral", emotion, shareable = true }: Props) {
   return (
-    <div className={`rounded-xl border p-card ${tierStyles[tier]} ${emotion ? emotionGlows[emotion] : ""}`}>
-      <p className="text-caption text-[var(--text-tertiary)]">{label}</p>
-      <p className={`text-base font-semibold mt-0.5 ${valueColors[tier]}`}>{value}</p>
+    <div className={`relative rounded-xl border p-3 overflow-hidden ${tierStyles[tier]}`}>
+      {shareable && (
+        <span className="absolute top-2 right-2 text-[7px] text-white/10 select-none pointer-events-none">
+          🇹🇳
+        </span>
+      )}
+      <p className="text-[9px] font-medium text-white/40 uppercase tracking-wider">{label}</p>
+      <p className={`text-base font-bold mt-0.5 ${valueColors[tier]}`}>{value}</p>
     </div>
   )
 }
 
 export function EmotionBadge({ emotion, label }: { emotion: EmotionTier; label?: string }) {
   const colors: Record<EmotionTier, string> = {
-    protective: "bg-[var(--emotion-protection)] text-[var(--success-green)] border-[var(--success-green-border)]",
-    tense: "bg-[var(--emotion-tension)] text-[var(--risk-red)] border-[var(--kpi-red-border)]",
-    calm: "bg-[var(--emotion-calm)] text-[var(--accent)] border-[var(--accent)]/20",
-    achievement: "bg-[var(--emotion-achievement)] text-[var(--warning-amber)] border-[var(--warning-amber-border)]",
-    neutral: "bg-[var(--border)] text-[var(--text-tertiary)] border-[var(--border)]",
+    protective: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    tense: "bg-red-500/10 text-red-400 border-red-500/20",
+    calm: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    achievement: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    neutral: "bg-white/5 text-white/40 border-white/10",
   }
   return (
     <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full border ${colors[emotion]}`}>

@@ -5,6 +5,7 @@ import LiveDemoSection from "@/components/landing/LiveDemoSection"
 import PsychologySection from "@/components/landing/PsychologySection"
 import UgcSection from "@/components/landing/UgcSection"
 import OutcomeSection from "@/components/landing/OutcomeSection"
+import PricingSection from "@/components/landing/PricingSection"
 import FinalCtaSection from "@/components/landing/FinalCtaSection"
 import Footer from "@/components/landing/Footer"
 
@@ -19,6 +20,7 @@ export default function LandingPage() {
         <PsychologySection />
         <UgcSection />
         <OutcomeSection />
+        <PricingSection />
         <FinalCtaSection />
       </main>
       <Footer />

@@ -2,9 +2,10 @@ import RevealOnScroll from "./RevealOnScroll"
 
 export default function FinalCtaSection() {
   return (
-    <section className="relative px-5 py-20 sm:py-28">
+    <section className="relative section-padding">
       <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
 
+      <div className="section-container">
       <div className="mx-auto max-w-2xl text-center relative z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-purple-600/10 animate-glow-breathe pointer-events-none" />
 
@@ -49,6 +50,7 @@ export default function FinalCtaSection() {
             <span>Mobile-native</span>
           </div>
         </RevealOnScroll>
+      </div>
       </div>
     </section>
   )
