@@ -82,6 +82,19 @@ function UgcMediaCard({ item, onAction, acting }: {
             </button>
           </div>
         )}
+
+        {item.status === "approved" && (
+          <div className="pt-1">
+            <a
+              href={item.mediaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] py-2.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/50 text-center transition-all duration-200"
+            >
+              Download ↗
+            </a>
+          </div>
+        )}
       </div>
     </div>
   )
