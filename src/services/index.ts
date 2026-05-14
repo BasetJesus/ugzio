@@ -34,7 +34,10 @@ export {
   getUgcItems,
   getUgcCount,
   getUgcStats,
+  approveUgcItem,
+  rejectUgcItem,
 } from "./grow.service";
+export type { UgcItemSummary, UgcStats } from "./grow.service";
 
 export {
   listConversations,
