@@ -23,6 +23,27 @@ const plans = [
     highlight: false,
   },
   {
+    name: "Démarrage",
+    price: "59",
+    currency: "TND",
+    period: "/mois",
+    desc: "Pour les vendeurs en croissance avec un volume modéré",
+    cta: "Commencer l'essai",
+    href: "/overview?demo=true",
+    features: [
+      { text: "50 commandes / mois", included: true },
+      { text: "Analyse risque automatique", included: true },
+      { text: "Séquences WhatsApp avancées", included: true },
+      { text: "Protection revenue tracking", included: true },
+      { text: "Séquences psychologiques avancées", included: true },
+      { text: "Collection UGC automatique", included: true },
+      { text: "Support email", included: true },
+      { text: "Support WhatsApp prioritaire", included: false },
+      { text: "Accès équipe (jusqu'à 3 membres)", included: false },
+    ],
+    highlight: false,
+  },
+  {
     name: "Croissance",
     price: "129",
     currency: "TND",
@@ -82,7 +103,7 @@ export default function PricingSection() {
           </div>
         </RevealOnScroll>
 
-        <div className="grid gap-6 md:grid-cols-2 md:max-w-3xl mx-auto items-start">
+        <div className="grid gap-6 md:grid-cols-3 md:max-w-5xl mx-auto items-start">
           {plans.map((plan, i) => (
             <RevealOnScroll key={plan.name} delay={i * 150}>
               <div
