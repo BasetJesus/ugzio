@@ -43,7 +43,7 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
     return (
       <div className="relative flex items-center gap-2 rounded-lg px-3 py-2 transition-all duration-300 overflow-hidden" style={{ backgroundColor: emotionCfg.bg, border: `1px solid ${emotionCfg.border}` }}>
         <span className="absolute top-1 right-1 text-[6px] text-white/10 select-none pointer-events-none">🇹🇳</span>
-        <span className={"text-sm " + (animate ? "animate-revenue-increment" : "")}>\uD83D\uDEE1\uFE0F</span>
+        <span className={"text-sm " + (animate ? "animate-revenue-increment" : "")}>🛡️</span>
         <div>
           <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: emotionCfg.color }}>{todayLabel}</p>
           <p className={"text-sm font-bold " + (animate ? "animate-revenue-increment" : "")} style={{ color: emotionCfg.color }}>
@@ -85,7 +85,7 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
           )}
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full border" style={{ backgroundColor: emotionCfg.bg, borderColor: emotionCfg.border }}>
-          <span className={"text-xl " + (animate ? "animate-revenue-increment" : "")}>\uD83D\uDEE1\uFE0F</span>
+          <span className={"text-xl " + (animate ? "animate-revenue-increment" : "")}>🛡️</span>
         </div>
       </div>
 
@@ -107,7 +107,7 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
             </span>
             {estimatedLossPrevented > 0 && (
               <>
-                <span className="text-[var(--text-tertiary)]">\u2022</span>
+                <span className="text-[var(--text-tertiary)]">•</span>
                 <span className="text-[var(--text-tertiary)]">
                   {estimatedLossPrevented.toFixed(0)} TND losses prevented
                 </span>

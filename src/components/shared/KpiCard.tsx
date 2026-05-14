@@ -29,10 +29,10 @@ const valueColors: Record<RiskTier, string> = {
 }
 
 const emotionIcons: Record<EmotionTier, string> = {
-  protective: "\uD83D\uDEE1\uFE0F",
-  tense: "\u26A1",
-  calm: "\u25CB",
-  achievement: "\u2B50",
+  protective: "🛡️",
+  tense: "⚡",
+  calm: "○",
+  achievement: "⭐",
   neutral: "",
 }
 

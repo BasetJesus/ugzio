@@ -7,11 +7,11 @@ interface Props {
 }
 
 const STEPS = [
-  { key: "whatsappConnected" as const, label: "Connect WhatsApp", icon: "\uD83D\uDCF1" },
-  { key: "ordersImported" as const, label: "Import orders", icon: "\uD83D\uDCE6" },
-  { key: "firstConfirmationDone" as const, label: "First confirmation", icon: "\u2705" },
-  { key: "firstDeliveryProtected" as const, label: "First delivery protected", icon: "\uD83D\uDEE1\uFE0F" },
-  { key: "firstUgcSent" as const, label: "First UGC request", icon: "\uD83D\uDCF7" },
+  { key: "whatsappConnected" as const, label: "Connect WhatsApp", icon: "📱" },
+  { key: "ordersImported" as const, label: "Import orders", icon: "📦" },
+  { key: "firstConfirmationDone" as const, label: "First confirmation", icon: "✅" },
+  { key: "firstDeliveryProtected" as const, label: "First delivery protected", icon: "🛡️" },
+  { key: "firstUgcSent" as const, label: "First UGC request", icon: "📷" },
 ]
 
 export default function SellerQuickstartCard({ data }: Props) {
@@ -28,7 +28,7 @@ export default function SellerQuickstartCard({ data }: Props) {
               {allDone ? "You're operational!" : "Set up your store"}
             </h2>
           </div>
-          <span className="text-2xl">{allDone ? "\uD83C\uDF89" : "\uD83D\uDE80"}</span>
+          <span className="text-2xl">{allDone ? "🎉" : "🚀"}</span>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
           {allDone ? "All steps completed. UGZIO is protecting your revenue." : data.nextAction}
@@ -56,7 +56,7 @@ export default function SellerQuickstartCard({ data }: Props) {
                 <div
                   className={"h-5 w-5 rounded-full flex items-center justify-center text-[10px] shrink-0 " + (done ? "bg-[var(--success-green-bg)]" : "bg-[var(--border)]")}
                 >
-                  {done ? "\u2713" : step.icon}
+                  {done ? "✓" : step.icon}
                 </div>
                 <span className={"text-xs " + (done ? "text-[var(--text-primary)] font-medium" : "text-[var(--text-tertiary)]")}>
                   {step.label}

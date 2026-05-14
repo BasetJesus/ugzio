@@ -21,28 +21,28 @@ const PSYCH_STYLES: Record<SequenceType, {
     accent: "var(--psych-trust)",
     bg: "var(--psych-trust-bg)",
     border: "var(--psych-trust)",
-    icon: "\u2714\uFE0F",
+    icon: "✔️",
   },
   reminder: {
     label: "Reminder",
     accent: "var(--psych-reminder)",
     bg: "var(--psych-reminder-bg)",
     border: "var(--psych-reminder)",
-    icon: "\uD83D\uDD14",
+    icon: "🔔",
   },
   urgency: {
     label: "Urgency",
     accent: "var(--psych-urgency)",
     bg: "var(--psych-urgency-bg)",
     border: "var(--psych-urgency)",
-    icon: "\u26A0\uFE0F",
+    icon: "⚠️",
   },
   reassurance: {
     label: "Reassurance",
     accent: "var(--psych-reassurance)",
     bg: "var(--psych-reassurance-bg)",
     border: "var(--psych-reassurance)",
-    icon: "\uD83D\uDE4C",
+    icon: "🙌",
   },
 }
 
@@ -72,7 +72,7 @@ export default function PsychologyCard({ sequenceType, psychologicalReason, expe
       <div className="space-y-1.5">
         <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{psychologicalReason}</p>
         <div className="flex items-start gap-1.5">
-          <span className="text-[10px] text-[var(--text-tertiary)] mt-0.5">\u2192</span>
+          <span className="text-[10px] text-[var(--text-tertiary)] mt-0.5">→</span>
           <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">{expectedGoal}</p>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function PsychologyCard({ sequenceType, psychologicalReason, expe
             <span className="text-[9px] font-medium uppercase tracking-wider" style={{ color: style.accent }}>
               Preview
             </span>
-            <span className="text-[9px] text-[var(--text-tertiary)]">\u00B7 WhatsApp</span>
+            <span className="text-[9px] text-[var(--text-tertiary)]">· WhatsApp</span>
           </div>
           <p className="italic opacity-90">{previewMessage}</p>
         </div>

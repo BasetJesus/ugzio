@@ -33,7 +33,7 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
           <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-[var(--text-tertiary)]">
             <span className="text-xs" style={{ color: state.color }}>{state.icon}</span>
             <span>{state.label}</span>
-            <span className="mx-1">\u00B7</span>
+            <span className="mx-1">·</span>
             <span className="truncate max-w-[120px]">{orgName}</span>
           </div>
         </div>

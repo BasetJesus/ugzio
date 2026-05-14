@@ -274,7 +274,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                     <p className="text-sm font-medium text-white truncate">{o.buyerName}</p>
                     <p className="text-[10px] text-white/40">
                       {o.amount.toFixed(0)} TND
-                      {o.product ? " \u2014 " + o.product : ""}
+                      {o.product ? " — " + o.product : ""}
                     </p>
                   </div>
                 </div>
@@ -284,14 +284,14 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                     disabled={submitting === o.orderId + "_delivered"}
                     className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_delivered" ? "..." : "\u2705 Delivered"}
+                    {submitting === o.orderId + "_delivered" ? "..." : "✅ Delivered"}
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
                     disabled={submitting === o.orderId + "_refused"}
                     className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_refused" ? "..." : "\uD83D\uDDD1\uFE0F Refused"}
+                    {submitting === o.orderId + "_refused" ? "..." : "🗑️ Refused"}
                   </button>
                 </div>
               </div>
@@ -323,7 +323,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
         <div className="fixed bottom-20 sm:bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:right-4 sm:translate-x-0 z-50 animate-slide-in-top">
           <div className="rounded-lg px-4 py-3 text-xs font-semibold shadow-[var(--shadow-lg)]" style={toastStyle(toast.type)}>
             <div className="flex items-center gap-2">
-              <span>{toast.type === "success" ? "\u2713" : toast.type === "danger" ? "\u26A0" : "\u2139"}</span>
+              <span>{toast.type === "success" ? "✓" : toast.type === "danger" ? "⚠️" : "ℹ"}</span>
               {toast.message}
             </div>
           </div>

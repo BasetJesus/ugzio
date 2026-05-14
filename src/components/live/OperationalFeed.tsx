@@ -29,23 +29,23 @@ const EVENT_LABELS: Record<string, string> = {
 }
 
 const EVENT_ICONS: Record<string, string> = {
-  message_sent: "\uD83D\uDCE8",
-  whatsapp_opened: "\uD83D\uDC41\uFE0F",
-  whatsapp_message_sent: "\uD83D\uDCE8",
-  buyer_replied: "\uD83D\uDCAC",
-  buyer_confirmed: "\u2705",
-  confirmed: "\u2705",
-  unreachable: "\uD83D\uDCF5",
-  delayed_request: "\u23F3",
-  cancelled: "\uD83D\uDEAB",
-  retry_scheduled: "\uD83D\uDD04",
-  operator_note: "\uD83D\uDCDD",
-  sequence_selected: "\uD83E\uDDE0",
-  ugc_request_sent: "\uD83D\uDCF7",
-  ugc_received: "\uD83D\uDCF8",
-  delivery_completed: "\uD83D\uDE9A",
-  customer_story_shared: "\uD83D\uDCAC",
-  review_received: "\u2B50",
+  message_sent: "📨",
+  whatsapp_opened: "👁️",
+  whatsapp_message_sent: "📨",
+  buyer_replied: "💬",
+  buyer_confirmed: "✅",
+  confirmed: "✅",
+  unreachable: "📵",
+  delayed_request: "⏳",
+  cancelled: "🚫",
+  retry_scheduled: "🔄",
+  operator_note: "📝",
+  sequence_selected: "🧠",
+  ugc_request_sent: "📷",
+  ugc_received: "📸",
+  delivery_completed: "🚚",
+  customer_story_shared: "💬",
+  review_received: "⭐",
 }
 
 const EVENT_EMOTIONS: Record<string, string> = {
@@ -144,7 +144,7 @@ export default function OperationalFeed({ events }: Props) {
       <div className="divide-y divide-[var(--border)]">
         {visible.map((event) => {
           const label = EVENT_LABELS[event.type] ?? event.type
-          const icon = EVENT_ICONS[event.type] ?? "\u2022"
+          const icon = EVENT_ICONS[event.type] ?? "•"
           const color = EVENT_EMOTIONS[event.type] ?? "var(--text-tertiary)"
           const isNew = animatingIn === event.id
           const actor = ACTOR_LABELS[event.actorType] ?? event.actorType

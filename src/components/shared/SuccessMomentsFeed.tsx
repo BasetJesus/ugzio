@@ -9,11 +9,11 @@ interface Props {
 }
 
 const MOMENT_ICONS: Record<string, string> = {
-  revenue_protected: "\uD83D\uDEE1\uFE0F",
-  delivery_prevented: "\uD83D\uDEAB",
-  buyer_confirmed: "\u2705",
-  ugc_received: "\uD83D\uDCF7",
-  first_action: "\uD83C\uDF1F",
+  revenue_protected: "🛡️",
+  delivery_prevented: "🚫",
+  buyer_confirmed: "✅",
+  ugc_received: "📷",
+  first_action: "🌟",
 }
 
 const MOMENT_COLORS: Record<string, string> = {
@@ -86,7 +86,7 @@ export default function SuccessMomentsFeed({ moments }: Props) {
 
       <div className="divide-y divide-[var(--border)]">
         {visible.map((m) => {
-          const icon = MOMENT_ICONS[m.type] ?? "\u2022"
+          const icon = MOMENT_ICONS[m.type] ?? "•"
           const color = MOMENT_COLORS[m.type] ?? "var(--text-tertiary)"
           const verb = MOMENT_VERBS[m.type] ?? "completed"
           const isNew = animating === m.id

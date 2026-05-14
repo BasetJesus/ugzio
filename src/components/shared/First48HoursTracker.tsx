@@ -41,7 +41,7 @@ export default function First48HoursTracker({ data }: Props) {
                 <div
                   className={"h-3 w-3 rounded-full border-2 flex items-center justify-center text-[8px] " + (m.done ? "bg-[var(--success-green)] border-[var(--success-green)] text-white" : "border-[var(--border)]")}
                 >
-                  {m.done ? "\u2713" : ""}
+                  {m.done ? "✓" : ""}
                 </div>
                 {i < data.milestones.length - 1 && (
                   <div className={"w-px flex-1 " + (m.done ? "bg-[var(--success-green)]/30" : "bg-[var(--border)]")} />

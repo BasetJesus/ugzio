@@ -37,7 +37,7 @@ export default function MorningBriefCard({ context, revenueAtRisk, needsAction }
         {hasRisk && (
           <div className="rounded-lg bg-[var(--kpi-red-bg)] border border-[var(--kpi-red-border)] p-3">
             <div className="flex items-start gap-2">
-              <span className="text-xs mt-0.5 shrink-0">{needsAction > 0 ? "\u26A0\uFE0F" : "\uD83D\uDEE1\uFE0F"}</span>
+              <span className="text-xs mt-0.5 shrink-0">{needsAction > 0 ? "⚠️" : "🛡️"}</span>
               <div className="min-w-0">
                 <p className="text-xs font-medium text-[var(--risk-red)]">{attentionLabel}</p>
                 {needsAction > 0 && (
@@ -52,7 +52,7 @@ export default function MorningBriefCard({ context, revenueAtRisk, needsAction }
 
         {hasData && rhythm.confirmationSpeedTrend !== "stable" && (
           <div className="flex items-center gap-2">
-            <span className="text-xs">{rhythm.confirmationSpeedTrend === "improving" ? "\u2191" : "\u2193"}</span>
+            <span className="text-xs">{rhythm.confirmationSpeedTrend === "improving" ? "↑" : "↓"}</span>
             <span className="text-[11px] text-[var(--text-secondary)]">
               Confirmations {rhythm.confirmationSpeedTrend === "improving" ? "speeding up" : "slowing down"}
             </span>
@@ -64,7 +64,7 @@ export default function MorningBriefCard({ context, revenueAtRisk, needsAction }
             <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Trending</p>
             {continuity.map((msg, i) => (
               <div key={i} className="flex items-center gap-2">
-                <span className="text-xs">{msg.positive ? "\u2191" : "\u2193"}</span>
+                <span className="text-xs">{msg.positive ? "↑" : "↓"}</span>
                 <span className={"text-[11px] " + (msg.positive ? "text-[var(--text-primary)]" : "text-[var(--state-recovering)]")}>
                   {msg.text}
                 </span>
@@ -76,7 +76,7 @@ export default function MorningBriefCard({ context, revenueAtRisk, needsAction }
         {rhythm.highRiskPeriods.length > 0 && (
           <div className="pt-2 border-t border-[var(--border)]">
             <div className="flex items-start gap-2">
-              <span className="text-xs mt-0.5 shrink-0">\uD83D\uDCC5</span>
+              <span className="text-xs mt-0.5 shrink-0">📅</span>
               <div>
                 <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Watch periods</p>
                 {rhythm.highRiskPeriods.slice(0, 2).map((p, i) => (
