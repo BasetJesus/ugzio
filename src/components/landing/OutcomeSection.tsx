@@ -61,7 +61,7 @@ export default function OutcomeSection() {
               { value: "-22%", label: "RTS Rate", color: "text-green-400" },
               { value: "+40%", label: "Taux de confirmation", color: "text-purple-400" },
               { value: "3s", label: "Décision par commande", color: "text-blue-400" },
-              { value: "500+", label: "TND محمية / شهر", color: "text-emerald-400" },
+              { value: "500+", label: "TND protégés / mois", color: "text-emerald-400" },
             ].map((m) => (
               <div key={m.label} className="landing-glass rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.05]">
                 <p className={`text-xl sm:text-2xl font-bold ${m.color}`}>{m.value}</p>

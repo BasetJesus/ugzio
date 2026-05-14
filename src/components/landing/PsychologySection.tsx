@@ -5,7 +5,7 @@ const sequences = [
     icon: "🤝",
     title: "T2akkid",
     goal: "Yabni thiqa",
-    reason: "Premier achat • Client متردد",
+    reason: "Premier achat • Client hésitant",
     preview: "Salam [Name], commande mte3ek fi ayedeen أمينة. Plus de 500 clients satisfaits هذا الشهر. Tconfirmlha?",
     outcome: "+40% taux de confirmation",
     color: "text-emerald-400",
@@ -17,7 +17,7 @@ const sequences = [
     icon: "⚡",
     title: "T3ajil",
     goal: "Yjabbar action",
-    reason: "Client suspect • Ma yjewbch",
+    reason: "Client suspect • Sans réponse",
     preview: "Salam, commande mte3ek [montant] TND t7ebsek. Stock limité — confirmi taw wala nannoulouha.",
     outcome: "-60% fausses commandes",
     color: "text-amber-400",
@@ -29,7 +29,7 @@ const sequences = [
     icon: "🔔",
     title: "Tadhkir",
     goal: "Yarja3 lik le client",
-    reason: "Client nsitou • Ma radch",
+    reason: "Client distrait • Pas de réponse",
     preview: "Salam [Name], mazelt ma radit. Colis mte3ek [montant] TND mazel y7ebsek. Dernier appel!",
     outcome: "+25% récupération",
     color: "text-blue-400",
@@ -41,7 +41,7 @@ const sequences = [
     icon: "🛡️",
     title: "Thiqa",
     goal: "Ykhalik mte3ek",
-    reason: "Client confirmé • Wajjou lil vente li jeya",
+    reason: "Client confirmé • Préparer prochaine vente",
     preview: "Salam [Name], merci 3la confirmation! Taba3 livraison mte3ek hné. Nchoufoukom fi prochaine commande.",
     outcome: "+70% retour client",
     color: "text-purple-400",
@@ -62,7 +62,7 @@ export default function PsychologySection() {
             <p className="section-intro-label">WhatsApp Intelligence</p>
             <h2 className="section-intro-title">Mouch ay message. كل واحد حسب state mte3ou.</h2>
             <p className="section-intro-desc">
-              Client mertaa7? Client suspect? Client nsitou? كل واحد ياخو sequence يلي تناسبو. UGZIO يعرف شنوّة يبعث ومتى.
+              Client rassuré ? Client suspect ? Client distrait ? Chacun reçoit la séquence qui lui correspond. UGZIO sait quoi envoyer et quand.
             </p>
           </div>
         </RevealOnScroll>

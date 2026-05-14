@@ -6,8 +6,8 @@ const plans = [
     price: "0",
     currency: "TND",
     period: "/mois",
-    desc: "Testi UGZIO b 3 commandes, blas karta bancaire",
-    cta: "Jarreb gratuit",
+    desc: "Testez UGZIO avec 3 commandes, sans carte bancaire",
+    cta: "Start Free",
     href: "/overview?demo=true",
     features: [
       { text: "3 commandes / mois", included: true },
@@ -28,7 +28,7 @@ const plans = [
     currency: "TND",
     period: "/mois",
     desc: "Protège ton revenue à grande échelle, commandes illimitées",
-    cta: "Démarrer",
+    cta: "Get Started",
     href: "/overview?demo=true",
     features: [
       { text: "Commandes illimitées", included: true },
@@ -42,7 +42,7 @@ const plans = [
       { text: "Export données & rapports", included: true },
     ],
     highlight: true,
-    badge: "El choix mte3ek",
+    badge: "Le choix recommandé",
   },
 ]
 
@@ -76,7 +76,7 @@ export default function PricingSection() {
               <span className="landing-text-gradient">volume</span>.
             </h2>
             <p className="section-intro-desc">
-              Ibadё b Free w zid l Croissance ki commandes mte3ek yethrow.
+              Commencez gratuitement, passez à Croissance quand votre volume augmente.
               <span className="block text-white/30 text-xs mt-1">Pas de contrat. Pas de surprise. Pas de frais cachés.</span>
             </p>
           </div>

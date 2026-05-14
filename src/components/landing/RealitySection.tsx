@@ -47,7 +47,7 @@ export default function RealitySection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro">
-            <p className="section-intro-label">T3ebna men</p>
+            <p className="section-intro-label">Assez</p>
             <h2 className="section-intro-title">نفس المشاكل.</h2>
             <p className="section-intro-desc">
               كل يوم نفس القصة. طلبات مزيفة، عملاء ما يردوش، مارج تضيع. حان وقت التغيير.

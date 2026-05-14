@@ -8,14 +8,14 @@ export default function Navbar() {
             href="/waitlist"
             className="text-xs text-white/50 hover:text-white/70 transition-colors px-3 py-2 rounded-lg touch-manipulation"
           >
-            تسجيل الدخول
+            Login
           </a>
           <a
             href="/overview?demo=true"
             className="rounded-lg px-5 py-2.5 text-xs font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation"
             style={{ backgroundColor: "#7c3aed" }}
           >
-            Demo مباشر
+            Live Demo
           </a>
         </div>
       </div>

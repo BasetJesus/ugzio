@@ -41,7 +41,8 @@ const buyers: BuyerConfig[] = [
   {
     id: "first",
     name: "Nouveau Client",
-    desc: "Premier achat • WhatsApp mouch actif",
+    desc: "Premier achat • WhatsApp inactif",
+
 
     risk: 68,
     trust: 32,
@@ -59,7 +60,7 @@ const buyers: BuyerConfig[] = [
   {
     id: "returning",
     name: "Client Fidèle",
-    desc: "3ème commande • Déjà confirmé avant",
+    desc: "3ème commande • Déjà confirmé",
 
     risk: 8,
     trust: 94,
@@ -149,7 +150,7 @@ export default function LiveDemoSection() {
           <h2 className="section-intro-title">Chouf kifesh UGZIO y5adem live.</h2>
 
           <p className="section-intro-desc">
-            Switch entre les types de clients. Chouf kifesh UGZIO y7allel, y9arrir, w y7mi revenue mte3ek.
+            Basculez entre les profils clients. Découvrez comment UGZIO analyse, décide et protège votre chiffre d'affaires en temps réel.
           </p>
         </div>
 

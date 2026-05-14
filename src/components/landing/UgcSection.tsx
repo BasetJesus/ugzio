@@ -39,7 +39,7 @@ export default function UgcSection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro">
-            <p className="section-intro-label">Yhaddhou fihom</p>
+            <p className="section-intro-label">Témoignages</p>
             <h2 className="section-intro-title">El confiance تجيب ventes.</h2>
             <p className="section-intro-desc">
               Ki el client yethanna — يعاود يطلب, ينشر تجربتو, يجيب ناس أخرين. UGZIO يبني ثقة cycle.

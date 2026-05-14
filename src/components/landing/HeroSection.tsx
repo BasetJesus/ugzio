@@ -13,7 +13,7 @@ export default function HeroSection() {
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 mb-6 landing-glass">
                 <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
                 <span className="text-[11px] text-white/50 tracking-wide">
-                  🇹🇳 للبيع بالتقسيط في تونس
+                  🇹🇳 Pour les vendeurs COD tunisiens
                 </span>
               </div>
 
@@ -39,21 +39,21 @@ export default function HeroSection() {
                   className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple relative overflow-hidden group w-full sm:w-auto"
                   style={{ backgroundColor: "#7c3aed" }}
                 >
-                  <span className="relative z-10">🚀 Jarreb Live Demo</span>
+                  <span className="relative z-10">🚀 Try Live Demo</span>
                   <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
                 </a>
                 <a
                   href="/waitlist"
                   className="inline-flex items-center justify-center rounded-xl border border-white/15 px-7 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass w-full sm:w-auto"
                 >
-                  📲 D5ol lel Waitlist
+                  📲 Join Waitlist
                 </a>
               </div>
 
               <div className="mt-6 flex items-center sm:justify-start justify-center gap-3 text-xs text-white/30">
                 <span className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-status-online" />
-                  Vendeurs tunisiens déjà testent
+                  Des vendeurs tunisiens testent déjà
                 </span>
                 <span className="hidden sm:inline text-white/10">•</span>
                 <span className="hidden sm:inline">WhatsApp-native • COD-focused</span>
