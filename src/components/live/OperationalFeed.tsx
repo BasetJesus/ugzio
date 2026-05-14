@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { OperationEventRecord } from "@/services/operation-timeline.service"
+import { timeAgo, feedRhythmDelay } from "@/lib/utils"
 
 interface Props {
   events: OperationEventRecord[]
@@ -48,40 +49,54 @@ const EVENT_ICONS: Record<string, string> = {
 }
 
 const EVENT_EMOTIONS: Record<string, string> = {
-  message_sent: "var(--accent)",
-  whatsapp_opened: "var(--accent)",
-  whatsapp_message_sent: "var(--accent)",
-  buyer_replied: "var(--success-green)",
-  buyer_confirmed: "var(--success-green)",
-  confirmed: "var(--success-green)",
-  unreachable: "var(--risk-red)",
-  delayed_request: "var(--warning-amber)",
-  cancelled: "var(--risk-red)",
-  retry_scheduled: "var(--warning-amber)",
+  message_sent: "var(--state-calm)",
+  whatsapp_opened: "var(--state-calm)",
+  whatsapp_message_sent: "var(--state-calm)",
+  buyer_replied: "var(--state-protected)",
+  buyer_confirmed: "var(--state-protected)",
+  confirmed: "var(--state-protected)",
+  unreachable: "var(--state-urgent)",
+  delayed_request: "var(--state-recovering)",
+  cancelled: "var(--state-urgent)",
+  retry_scheduled: "var(--state-recovering)",
   operator_note: "var(--text-tertiary)",
   sequence_selected: "var(--psych-trust)",
   ugc_request_sent: "var(--psych-reassurance)",
-  ugc_received: "var(--accent)",
-  delivery_completed: "var(--success-green)",
+  ugc_received: "var(--state-calm)",
+  delivery_completed: "var(--state-protected)",
   customer_story_shared: "var(--psych-reminder)",
-  review_received: "var(--warning-amber)",
+  review_received: "var(--state-recovering)",
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "just now"
-  if (mins < 60) return `${mins}m ago`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
+const ACTOR_LABELS: Record<string, string> = {
+  system: "System",
+  operator: "You",
+  buyer: "Buyer",
+}
+
+const EVENT_STATES: Record<string, string> = {
+  message_sent: "calm",
+  whatsapp_opened: "calm",
+  whatsapp_message_sent: "calm",
+  buyer_replied: "protected",
+  buyer_confirmed: "protected",
+  confirmed: "protected",
+  unreachable: "urgent",
+  delayed_request: "recovering",
+  cancelled: "urgent",
+  retry_scheduled: "recovering",
+  operator_note: "stable",
+  sequence_selected: "focused",
+  ugc_request_sent: "focused",
+  ugc_received: "calm",
+  delivery_completed: "protected",
+  customer_story_shared: "calm",
+  review_received: "recovering",
 }
 
 export default function OperationalFeed({ events }: Props) {
-  const [visible, setVisible] = useState<OperationEventRecord[]>(events.slice(0, 5))
+  const [visible, setVisible] = useState<OperationEventRecord[]>([])
   const [animatingIn, setAnimatingIn] = useState<string | null>(null)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     setVisible(events.slice(0, 5))
@@ -89,22 +104,24 @@ export default function OperationalFeed({ events }: Props) {
 
   useEffect(() => {
     if (events.length === 0) return
-    intervalRef.current = setInterval(() => {
-      setVisible((prev) => {
-        const nextIdx = prev.length
-        if (nextIdx >= events.length) {
-          if (intervalRef.current) clearInterval(intervalRef.current)
-          return prev
-        }
-        const next = events[nextIdx]
+    let idx = 5
+    let timer: ReturnType<typeof setTimeout> | null = null
+
+    function scheduleNext() {
+      if (idx >= events.length) return
+      const delay = feedRhythmDelay(idx)
+      timer = setTimeout(() => {
+        const next = events[idx]
+        idx++
         setAnimatingIn(next.id)
-        setTimeout(() => setAnimatingIn(null), 500)
-        return [...prev, next]
-      })
-    }, 4000)
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+        setVisible((prev) => [...prev, next])
+        setTimeout(() => setAnimatingIn(null), 600)
+        scheduleNext()
+      }, delay)
     }
+
+    scheduleNext()
+    return () => { if (timer) clearTimeout(timer) }
   }, [events])
 
   if (events.length === 0) {
@@ -120,7 +137,7 @@ export default function OperationalFeed({ events }: Props) {
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-green)] animate-pulse-soft" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--state-calm)] animate-pulse-calm" />
           <p className="text-caption text-[var(--text-tertiary)]">Live Activity</p>
         </div>
       </div>
@@ -130,18 +147,20 @@ export default function OperationalFeed({ events }: Props) {
           const icon = EVENT_ICONS[event.type] ?? "\u2022"
           const color = EVENT_EMOTIONS[event.type] ?? "var(--text-tertiary)"
           const isNew = animatingIn === event.id
+          const actor = ACTOR_LABELS[event.actorType] ?? event.actorType
+          const microState = EVENT_STATES[event.type] ?? "stable"
 
           return (
             <div
               key={event.id}
-              className={`flex items-start gap-3 px-panel py-3 ${
-                isNew ? "animate-fade-in" : ""
+              className={`flex items-start gap-3 px-panel py-3 transition-all duration-500 ${
+                isNew ? "animate-emotion-transition" : ""
               }`}
             >
               <span className="text-sm mt-0.5 shrink-0">{icon}</span>
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-[var(--text-primary)]">
-                  <span style={{ color }}>{event.actorType === "system" ? "System" : event.actorType === "operator" ? "Operator" : "Buyer"}</span>
+                  <span style={{ color }} className="font-medium">{actor}</span>
                   {" "}{label}
                 </p>
                 {event.metadata?.orderAmount != null && (
@@ -150,9 +169,18 @@ export default function OperationalFeed({ events }: Props) {
                   </p>
                 )}
               </div>
-              <span className="text-[10px] text-[var(--text-tertiary)] shrink-0">
-                {timeAgo(event.createdAt)}
-              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                <span
+                  className="h-1 w-1 rounded-full presence-dot"
+                  style={{ backgroundColor: color, boxShadow: `0 0 4px ${color}40` }}
+                />
+                <span className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider">
+                  {microState}
+                </span>
+                <span className="text-[10px] text-[var(--text-tertiary)]">
+                  {timeAgo(event.createdAt)}
+                </span>
+              </div>
             </div>
           )
         })}

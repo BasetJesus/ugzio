@@ -143,6 +143,14 @@ export {
 export type { BehavioralInsight, SequenceEffectiveness, WeeklyStory, TrustMomentumData } from "./behavioral-outcome.service";
 
 export {
+  getQuickstartProgress,
+  getFirst48Hours,
+  getSuccessMoments,
+  getSellerHealth,
+} from "./pilot.service";
+export type { QuickstartProgress, First48HoursData, Milestone, SuccessMoment, SellerHealth } from "./pilot.service";
+
+export {
   calculateUgcProbability,
   getUgcIntelligence,
   getUgcOpportunities,
@@ -156,3 +164,31 @@ export {
   getBuyerMemory,
 } from "./behavioral-memory.service";
 export type { OrderMemory, BuyerMemory } from "./behavioral-memory.service";
+
+export {
+  getConnectionStatus,
+  updateConnectionStatus,
+  getSessionStatus,
+  getMessageSessions,
+  recordSessionEvent,
+} from "./whatsapp-connection.service";
+export type {} from "./whatsapp-connection.service";
+
+export {
+  getPsychologyTemplates,
+  getPsychologyTemplate,
+  generateWhatsAppLink,
+  buildDefaultWhatsAppMessage,
+} from "./whatsapp-links.service";
+export type {} from "./whatsapp-links.service";
+
+export {
+  getCommunicationPerformance,
+} from "./communication-performance.service";
+export type {} from "./communication-performance.service";
+
+export {
+  getSellerContext,
+  getDailyMomentum,
+} from "./seller-context.service";
+export type { SellerContext, SellerBusinessProfile, BusinessRhythm, SellerStyle, SellerStyleData, ContinuityMessage, DailyMomentum } from "./seller-context.service";

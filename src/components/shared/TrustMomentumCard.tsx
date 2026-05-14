@@ -1,5 +1,7 @@
 "use client"
 
+import type { SellerStyle } from "@/services/seller-context.service"
+
 interface TrustMomentumData {
   trustImprovement: number
   confirmedOrders: number
@@ -11,9 +13,20 @@ interface TrustMomentumData {
 
 interface Props {
   data: TrustMomentumData
+  sellerStyle?: SellerStyle
 }
 
-export default function TrustMomentumCard({ data }: Props) {
+function trustNarrative(data: TrustMomentumData, style?: SellerStyle): string {
+  if (data.trustImprovement > 0) {
+    if (style === "relationship_seller") return `${data.trustImprovement}% improvement — your buyers trust your service`
+    if (style === "fast_responder") return `${data.trustImprovement}% improvement — fast confirmations build trust`
+    return `${data.trustImprovement}% improvement in buyer trust signals`
+  }
+  if (data.confirmedOrders > 5) return "Building trust through consistent confirmations"
+  return "Building trust baseline"
+}
+
+export default function TrustMomentumCard({ data, sellerStyle }: Props) {
   const hasData = data.confirmedOrders > 0 || data.successfulDeliveries > 0
 
   if (!hasData) return null
@@ -26,9 +39,7 @@ export default function TrustMomentumCard({ data }: Props) {
           Buyer Trust
         </h2>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          {data.trustImprovement > 0
-            ? data.trustImprovement + "% improvement in buyer trust signals"
-            : "Building trust baseline"}
+          {trustNarrative(data, sellerStyle)}
         </p>
       </div>
 

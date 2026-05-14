@@ -14,12 +14,6 @@ interface Props {
 
 const STATE_KEYS: SystemState[] = ["LIVE", "DECISION", "HISTORY"]
 
-const STATE_EMOTION: Record<string, string> = {
-  LIVE: "\u25CF",
-  DECISION: "\u25C6",
-  HISTORY: "\u25B8",
-}
-
 export default function SystemFlowNavigator({ orgName, planName, completedCount }: Props) {
   const pathname = usePathname()
   const { t } = useLanguage()
@@ -52,10 +46,10 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
             >
               <div className="flex items-center gap-3">
                 <span
-                  className={`w-4 text-center text-sm ${active && key === "LIVE" ? "animate-pulse-soft" : ""}`}
+                  className={`w-4 text-center text-sm ${active && key === "LIVE" ? "animate-pulse" : ""}`}
                   style={{ color: active ? cfg.color : undefined }}
                 >
-                  {STATE_EMOTION[key]}
+                  {cfg.icon}
                 </span>
                 <div className="flex flex-col">
                   <span>{cfg.label}</span>
@@ -65,26 +59,10 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
             </Link>
           )
         })}
-        <div className="mt-panel pt-panel border-t border-[var(--nav-border)]">
-          <Link
-            href="/intelligence"
-            className={`group rounded-lg px-3 py-2.5 text-sm transition flex items-center gap-3 ${
-              pathname.startsWith("/intelligence")
-                ? "bg-[var(--accent)]/10 text-[var(--accent)] font-medium"
-                : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
-            }`}
-          >
-            <span className="w-4 text-center text-sm">\u25CB</span>
-            <div className="flex flex-col">
-              <span>Intelligence</span>
-              <span className="text-[9px] text-[var(--text-tertiary)]">What works</span>
-            </div>
-          </Link>
-        </div>
       </div>
 
       {showOnboarding && (
-        <div className="pt-panel border-t border-[var(--nav-border)] mt-panel">
+        <div className="pt-panel mt-panel border-t border-[var(--nav-border)]">
           <Link
             href="/onboarding"
             className={`block rounded-lg px-3 py-2 text-xs font-medium transition ${
@@ -98,7 +76,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         </div>
       )}
 
-      <div className="pt-panel border-t border-[var(--nav-border)] mt-auto">
+      <div className="pt-panel mt-auto border-t border-[var(--nav-border)]">
         <button
           onClick={async () => {
             await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})

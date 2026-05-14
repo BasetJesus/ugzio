@@ -9,6 +9,7 @@ import type { PsychologyPreview } from "@/types/whatsapp";
 import { MiniKpiCard } from "@/components/shared/KpiCard";
 import SystemNarrative from "@/components/shared/SystemNarrative";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
+import OperationalPresenceLayer from "@/components/shared/OperationalPresenceLayer";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,7 @@ export default async function ConfirmPage() {
   const needsAttention = queue.pendingCount > 0;
 
   return (
+    <OperationalPresenceLayer>
     <div data-state="decision" className="space-y-section">
       <SystemNarrative
         title={needsAttention ? "Orders need you" : "Decision Queue"}
@@ -81,5 +83,6 @@ export default async function ConfirmPage() {
         pendingOutcomes={pendingOutcomes}
       />
     </div>
+    </OperationalPresenceLayer>
   );
 }

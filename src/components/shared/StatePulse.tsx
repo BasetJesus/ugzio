@@ -1,47 +1,72 @@
 "use client"
 
 interface Props {
-  state: "calm" | "focused" | "urgent" | "celebration"
+  state: "calm" | "focused" | "urgent" | "protected" | "recovering" | "stable" | "celebration"
   label?: string
   size?: "sm" | "md"
 }
 
 const STATE_CONFIG = {
   calm: {
-    color: "var(--success-green)",
-    bg: "var(--success-green-bg)",
-    animation: "",
+    color: "var(--state-calm)",
+    bg: "var(--state-calm-bg)",
+    animation: "animate-pulse-calm",
     label: "Stable",
+    dotSize: "h-1.5 w-1.5",
   },
   focused: {
-    color: "var(--accent)",
-    bg: "var(--emotion-calm)",
-    animation: "animate-pulse-soft",
+    color: "var(--state-focused)",
+    bg: "var(--state-focused-bg)",
+    animation: "animate-pulse-focused",
     label: "Active",
+    dotSize: "h-1.5 w-1.5",
   },
   urgent: {
-    color: "var(--risk-red)",
-    bg: "var(--emotion-tension)",
-    animation: "animate-pulse",
+    color: "var(--state-urgent)",
+    bg: "var(--state-urgent-bg)",
+    animation: "animate-pulse-urgent",
     label: "Attention needed",
+    dotSize: "h-2 w-2",
+  },
+  protected: {
+    color: "var(--state-protected)",
+    bg: "var(--state-protected-bg)",
+    animation: "animate-pulse-protected",
+    label: "Protected",
+    dotSize: "h-1.5 w-1.5",
+  },
+  recovering: {
+    color: "var(--state-recovering)",
+    bg: "var(--state-recovering-bg)",
+    animation: "animate-pulse-focused",
+    label: "Recovering",
+    dotSize: "h-1.5 w-1.5",
+  },
+  stable: {
+    color: "var(--state-stable)",
+    bg: "var(--state-stable-bg)",
+    animation: "",
+    label: "Stable",
+    dotSize: "h-1.5 w-1.5",
   },
   celebration: {
-    color: "var(--warning-amber)",
+    color: "var(--state-protected)",
     bg: "var(--emotion-achievement)",
-    animation: "animate-pulse-soft",
+    animation: "animate-pulse-protected",
     label: "Revenue protected",
+    dotSize: "h-2 w-2",
   },
 }
 
 export default function StatePulse({ state, label, size = "sm" }: Props) {
-  const cfg = STATE_CONFIG[state]
-  const dotSize = size === "sm" ? "h-1.5 w-1.5" : "h-2 w-2"
+  const cfg = STATE_CONFIG[state] ?? STATE_CONFIG.stable
+  const dotClass = size === "sm" ? cfg.dotSize : "h-2 w-2"
 
   return (
     <div className="flex items-center gap-1.5 rounded-full border border-[var(--nav-border)] px-2.5 py-0.5">
       <span
-        className={`${dotSize} rounded-full ${cfg.animation}`}
-        style={{ backgroundColor: cfg.color }}
+        className={`presence-dot ${dotClass} ${cfg.animation}`}
+        style={{ backgroundColor: cfg.color, boxShadow: `0 0 6px ${cfg.color}40` }}
       />
       <span className="text-[10px] font-medium text-[var(--text-secondary)]">
         {label ?? cfg.label}

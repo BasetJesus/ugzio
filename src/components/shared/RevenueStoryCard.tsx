@@ -1,14 +1,22 @@
 "use client"
 
 import type { WeeklyStory } from "@/services/behavioral-outcome.service"
+import type { SellerContext } from "@/services/seller-context.service"
 
 interface Props {
   story: WeeklyStory
+  context?: SellerContext
 }
 
-export default function RevenueStoryCard({ story }: Props) {
+export default function RevenueStoryCard({ story, context }: Props) {
   const hasRevenue = story.revenueProtected > 0
   if (!hasRevenue && story.totalActions === 0) return null
+
+  const subtitle = hasRevenue
+    ? context
+      ? `${story.revenueProtected.toFixed(0)} TND protected — ${context.rhythm.strongestSequence} is your strongest approach`
+      : `${story.revenueProtected.toFixed(0)} TND protected — ${story.failedDeliveriesPrevented} failed deliveries prevented`
+    : "Building operational patterns"
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
@@ -18,9 +26,7 @@ export default function RevenueStoryCard({ story }: Props) {
           Revenue Story
         </h2>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          {hasRevenue
-            ? `${story.revenueProtected.toFixed(0)} TND protected — ${story.failedDeliveriesPrevented} failed deliveries prevented`
-            : "Building operational patterns"}
+          {subtitle}
         </p>
       </div>
 
