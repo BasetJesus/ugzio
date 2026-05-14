@@ -17,7 +17,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white text-balance">
+              <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white text-balance text-break-safe">
                 <span className="block">El commandes elli kenet</span>
                 <span className="block landing-text-gradient">ترجع…</span>
                 <span className="block mt-1">UGZIO ywalli y7awelhom l</span>

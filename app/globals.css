@@ -160,7 +160,6 @@
 
 html,
 body {
-  overflow-wrap: break-word;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
@@ -776,6 +775,9 @@ body {
     @media (prefers-reduced-motion: no-preference) {
       animation: inherit;
     }
+  }
+  .text-break-safe {
+    overflow-wrap: break-word;
   }
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
