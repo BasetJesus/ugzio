@@ -11,15 +11,15 @@ export default function FinalCtaSection() {
 
         <RevealOnScroll>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight relative z-10">
-            التجارة في تونس تبدلت.
+            Le commerce en Tunisie a change.
           </h2>
           <p className="text-lg sm:text-xl text-purple-300/80 mt-3 font-medium relative z-10">
-            لازم operations mte3ek زادة تتبدل.
+            Vos operations aussi.
           </p>
 
           <p className="mt-6 text-sm text-white/40 leading-relaxed max-w-[32rem] mx-auto relative z-10">
-            UGZIO معمول للناس اللي تبيع réellement fi Tounes. Mouch SaaS générique.
-            COD. WhatsApp. UGC. Operations. Kollhom fi système واحد.
+            UGZIO est concu pour ceux qui vendent vraiment en Tunisie. Pas un SaaS generique.
+            COD. WhatsApp. UGC. Operations. Tout dans un seul systeme.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 relative z-10">

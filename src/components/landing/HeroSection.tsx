@@ -18,19 +18,15 @@ export default function HeroSection() {
               </div>
 
               <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white text-balance text-break-safe">
-                <span className="block">El commandes elli kenet</span>
-                <span className="block landing-text-gradient">ترجع…</span>
-                <span className="block mt-1">UGZIO ywalli y7awelhom l</span>
-                <span className="block text-transparent bg-clip-text" style={{
-                  backgroundImage: "linear-gradient(135deg, #4ade80, #34d399)"
-                }}>revenue.</span>
+                <span className="block">Les commandes qui revenaient</span>
+                <span className="block landing-text-gradient">deviennent du revenu.</span>
               </h1>
 
               <p className="mt-5 text-sm sm:text-base leading-relaxed text-white/50 content-narrow">
-                Fake clients. Clients ma yjewbouch. Livraison ترجع. Ads tethra9. Stress kol youm.
+                Faux clients. Clients silencieux. Livraisons retournees. Budget gaspillé. Stress quotidien.
               </p>
               <p className="mt-2 text-sm leading-relaxed text-white/40 content-narrow">
-                UGZIO y5allik تشوف les commandes risquées, تبعث message s7i7, وتأكد el clients قبل ma tetkasser marge mte3ek.
+                UGZIO analyse chaque commande avant l'envoi, automatise les sequences WhatsApp et protege votre marge.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-3">

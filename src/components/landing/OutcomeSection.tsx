@@ -9,21 +9,21 @@ export default function OutcomeSection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">Résultat</p>
-            <h2 className="section-intro-title">A9al stress. A9al RTS. A9wa operations. و فلوسك في أمان.</h2>
+            <h2 className="section-intro-title">Moins de stress. Moins de RTS. Des operations plus solides.</h2>
           </div>
         </RevealOnScroll>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <RevealOnScroll delay={0}>
             <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-6 sm:p-8">
-              <p className="text-[11px] font-semibold tracking-widest text-red-400/60 uppercase mb-4">Qbel UGZIO</p>
+              <p className="text-[11px] font-semibold tracking-widest text-red-400/60 uppercase mb-4">Avant UGZIO</p>
               <ul className="space-y-4">
                 {[
-                  { icon: "😰", text: "Stress kol youm — chkoun yakhserni?" },
-                  { icon: "📉", text: "30% RTS rate — marge tethrek" },
-                  { icon: "💰", text: "500 TND+ yodh3ou fel fausses commandes" },
-                  { icon: "🤯", text: "L'équipe ضايعة — chkoun confirmé, chkoun lé?" },
-                  { icon: "📱", text: "WhatsApp fi chaos — messages manuels kol chay" },
+                  { icon: "😰", text: "Stress quotidien — qui me fait perdre de l'argent ?" },
+                  { icon: "📉", text: "30% de RTS — la marge fond" },
+                  { icon: "💰", text: "500 TND+ perdus dans les fausses commandes" },
+                  { icon: "🤯", text: "L'equipe perdue — qui a confirme, qui n'a pas repondu ?" },
+                  { icon: "📱", text: "WhatsApp dans le chaos — tout est manuel" },
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1">
                     <span className="text-lg">{item.icon}</span>
@@ -36,14 +36,14 @@ export default function OutcomeSection() {
 
           <RevealOnScroll delay={150}>
             <div className="rounded-2xl border border-green-500/10 bg-green-500/5 p-6 sm:p-8">
-              <p className="text-[11px] font-semibold tracking-widest text-green-400/60 uppercase mb-4">Ba3d UGZIO</p>
+              <p className="text-[11px] font-semibold tracking-widest text-green-400/60 uppercase mb-4">Apres UGZIO</p>
               <ul className="space-y-4">
                 {[
-                  { icon: "😌", text: "Clarté totale — تعرف شنوّة لازم تعمل" },
-                  { icon: "📈", text: "8% RTS rate — revenue محفوظ" },
-                  { icon: "🛡️", text: "500 TND+ محمية كل شهر" },
-                  { icon: "⚡", text: "فريقك يخدم أسرع — 3 secondes par décision" },
-                  { icon: "✅", text: "WhatsApp ywalli organized — automated sequences" },
+                  { icon: "😌", text: "Clarte totale — vous savez exactement quoi faire" },
+                  { icon: "📈", text: "8% de RTS — revenue protege" },
+                  { icon: "🛡️", text: "500 TND+ proteges chaque mois" },
+                  { icon: "⚡", text: "Votre equipe va plus vite — 3 secondes par decision" },
+                  { icon: "✅", text: "WhatsApp organise — sequences automatisees" },
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1">
                     <span className="text-lg">{item.icon}</span>

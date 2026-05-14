@@ -51,7 +51,7 @@ const buyers: BuyerConfig[] = [
     whatsappSequence: "T2akkid + Thiqa",
     messages: [
       { text: "Salam, merci 3la commandet 85 TND 🎉", time: "10:30" },
-      { text: "Plus de 200 clients satisfaits هذا الأسبوع. Tconfirmilna?", time: "10:30" },
+      { text: "Plus de 200 clients satisfaits cette semaine. Vous confirmez ?", time: "10:30" },
     ],
     outcome: "85 TND en attente",
     outcomeIcon: "⏳",
@@ -87,7 +87,7 @@ const buyers: BuyerConfig[] = [
     whatsappSequence: "T2akkid + T3ajil + Tadhkir",
     messages: [
       { text: "Salam, 9asit nwasslek — ma njemnach 😕", time: "10:25" },
-      { text: "Commandet 200 TND t7ebsek. رد بـ OUI باش تثبت.", time: "10:26" },
+      { text: "Commande de 200 TND en attente. Repondez OUI pour confirmer.", time: "10:26" },
     ],
     outcome: "200 TND en danger",
     outcomeIcon: "⚠️",
@@ -147,7 +147,7 @@ export default function LiveDemoSection() {
       <div className="section-container">
         <div className="section-intro">
           <p className="section-intro-label">Live Demo</p>
-          <h2 className="section-intro-title">Chouf kifesh UGZIO y5adem live.</h2>
+          <h2 className="section-intro-title">Decouvrez UGZIO en action.</h2>
 
           <p className="section-intro-desc">
             Basculez entre les profils clients. Découvrez comment UGZIO analyse, décide et protège votre chiffre d'affaires en temps réel.

@@ -3,8 +3,8 @@ import RevealOnScroll from "./RevealOnScroll"
 const problems = [
   {
     icon: "📦",
-    title: '"Livraison ترجع فجأة"',
-    desc: "Tetsawer commande confirmée… ba3d 4 ayam ترجع.",
+    title: "Livraison qui revient",
+    desc: "Vous pensiez la commande confirmee... 4 jours plus tard, elle revient.",
     loss: "15-25 TND par RTS",
     color: "text-red-400",
     border: "border-red-500/10",
@@ -12,8 +12,8 @@ const problems = [
   },
   {
     icon: "📵",
-    title: '"El client ma yjewbch"',
-    desc: "3 appels. 2 messages. 0 réponse.",
+    title: "Le client ne repond pas",
+    desc: "3 appels. 2 messages. 0 reponse.",
     loss: "30-50 TND par commande",
     color: "text-amber-400",
     border: "border-amber-500/10",
@@ -21,8 +21,8 @@ const problems = [
   },
   {
     icon: "💸",
-    title: '"Ads تصرف… والنتيجة ضعيفة"',
-    desc: "Tjib commandes… أما marge تضيع fel RTS.",
+    title: "Les pubs brulent votre budget",
+    desc: "Vous attirez des commandes... mais la marge disparait dans les RTS.",
     loss: "200-500 TND / mois",
     color: "text-purple-400",
     border: "border-purple-500/10",
@@ -30,9 +30,9 @@ const problems = [
   },
   {
     icon: "😵",
-    title: '"L\'équipe ضايعة"',
-    desc: "Chkoun confirmed ? Chkoun risqué ? Chkoun لازم retry ? Chaos.",
-    loss: "Stress kol youm",
+    title: "L'equipe est perdue",
+    desc: "Qui a confirme ? Qui est risque ? Qui doit etre relance ? C'est le chaos.",
+    loss: "Stress quotidien",
     color: "text-pink-400",
     border: "border-pink-500/10",
     bg: "bg-pink-500/5",
@@ -48,9 +48,9 @@ export default function RealitySection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">Assez</p>
-            <h2 className="section-intro-title">نفس المشاكل.</h2>
+            <h2 className="section-intro-title">Les memes problemes.</h2>
             <p className="section-intro-desc">
-              كل يوم نفس القصة. طلبات مزيفة، عملاء ما يردوش، مارج تضيع. حان وقت التغيير.
+              Chaque jour la meme histoire. Fausses commandes, clients silencieux, marge qui fond. Il est temps de changer.
             </p>
           </div>
         </RevealOnScroll>

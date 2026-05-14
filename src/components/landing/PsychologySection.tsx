@@ -3,10 +3,10 @@ import RevealOnScroll from "./RevealOnScroll"
 const sequences = [
   {
     icon: "🤝",
-    title: "T2akkid",
-    goal: "Yabni thiqa",
-    reason: "Premier achat • Client hésitant",
-    preview: "Salam [Name], commande mte3ek fi ayedeen أمينة. Plus de 500 clients satisfaits هذا الشهر. Tconfirmlha?",
+    title: "Reassurance",
+    goal: "Batir la confiance",
+    reason: "Premier achat • Client hesitant",
+    preview: "Salam [Name], votre commande est entre de bonnes mains. Plus de 500 clients satisfaits ce mois. Vous confirmez ?",
     outcome: "+40% taux de confirmation",
     color: "text-emerald-400",
     border: "border-emerald-500/15",
@@ -15,10 +15,10 @@ const sequences = [
   },
   {
     icon: "⚡",
-    title: "T3ajil",
-    goal: "Yjabbar action",
-    reason: "Client suspect • Sans réponse",
-    preview: "Salam, commande mte3ek [montant] TND t7ebsek. Stock limité — confirmi taw wala nannoulouha.",
+    title: "Urgence",
+    goal: "Creer l'action",
+    reason: "Client suspect • Sans reponse",
+    preview: "Salam, votre commande de [montant] TND vous attend. Stock limite — confirmez maintenant ou elle sera annulee.",
     outcome: "-60% fausses commandes",
     color: "text-amber-400",
     border: "border-amber-500/15",
@@ -27,10 +27,10 @@ const sequences = [
   },
   {
     icon: "🔔",
-    title: "Tadhkir",
-    goal: "Yarja3 lik le client",
-    reason: "Client distrait • Pas de réponse",
-    preview: "Salam [Name], mazelt ma radit. Colis mte3ek [montant] TND mazel y7ebsek. Dernier appel!",
+    title: "Rappel",
+    goal: "Ramener l'attention",
+    reason: "Client distrait • Pas de reponse",
+    preview: "Salam [Name], nous n'avons pas eu de reponse. Votre colis de [montant] TND vous attend. Dernier rappel !",
     outcome: "+25% récupération",
     color: "text-blue-400",
     border: "border-blue-500/15",
@@ -39,10 +39,10 @@ const sequences = [
   },
   {
     icon: "🛡️",
-    title: "Thiqa",
-    goal: "Ykhalik mte3ek",
-    reason: "Client confirmé • Préparer prochaine vente",
-    preview: "Salam [Name], merci 3la confirmation! Taba3 livraison mte3ek hné. Nchoufoukom fi prochaine commande.",
+    title: "Fidelisation",
+    goal: "Fideliser durablement",
+    reason: "Client confirme • Preparer prochaine vente",
+    preview: "Salam [Name], merci d'avoir confirme ! Suivez votre livraison ici. A bientot pour vos prochains achats.",
     outcome: "+70% retour client",
     color: "text-purple-400",
     border: "border-purple-500/15",
@@ -60,7 +60,7 @@ export default function PsychologySection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">WhatsApp Intelligence</p>
-            <h2 className="section-intro-title">Mouch ay message. كل واحد حسب state mte3ou.</h2>
+            <h2 className="section-intro-title">Chaque client merite la sequence qu'on lui envoie.</h2>
             <p className="section-intro-desc">
               Client rassuré ? Client suspect ? Client distrait ? Chacun reçoit la séquence qui lui correspond. UGZIO sait quoi envoyer et quand.
             </p>

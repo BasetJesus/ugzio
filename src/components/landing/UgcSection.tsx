@@ -4,28 +4,28 @@ const stories = [
   {
     handle: "@boutique_sfax",
     niche: "Mode femme • Sfax",
-    quote: "قبل UGZIO كنت نحاسب بالعين. 400 دينار كل ما تطلب — ما تعرفش ترد ولا ترجع. دابا النظام يقرر مكاني.",
+    quote: "Avant UGZIO, je perdais 400 dinars chaque mois dans des fausses commandes. Maintenant le systeme sait qui me fait perdre de l'argent avant que j'envoie.",
     saved: "+400 TND / mois",
     platform: "Instagram + WhatsApp",
   },
   {
     handle: "@parfum_tunis",
     niche: "Parfumerie • Tunis",
-    quote: "العميل اللي يطلب ويسكت — UGZIO يكلمو. 80% من اللي ضايعين صارو يثبتو. تغيير جذري.",
+    quote: "Celui qui commande 200 dinars et ne repond pas — UGZIO lui envoie un message de confirmation. 80% des clients qui se perdaient confirment maintenant.",
     saved: "+280 TND / mois",
     platform: "Facebook + WhatsApp",
   },
   {
     handle: "@cosmetique_sousse",
     niche: "Cosmétique • Sousse",
-    quote: "3 ثواني UGZIO ضد 15 دقيقة يدوي — الفرق بين الإيجار والضياع.",
+    quote: "La difference entre 3 secondes avec UGZIO et 15 minutes manuel — l'argent que j'ai economise ce mois-ci couvre mon loyer.",
     saved: "+520 TND / mois",
     platform: "TikTok + WhatsApp",
   },
   {
     handle: "@electronix_tn",
     niche: "Électronique • Ariana",
-    quote: "RTS نزلت من 30% لـ 8% في 3 أسابيع. المارج يلي ضاع يرجع.",
+    quote: "J'avais 30% de RTS. Apres UGZIO, c'est descendu a 8%. Le systeme protege vraiment la marge.",
     saved: "+340 TND / mois",
     platform: "Instagram + WhatsApp",
   },
@@ -40,9 +40,9 @@ export default function UgcSection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">Témoignages</p>
-            <h2 className="section-intro-title">El confiance تجيب ventes.</h2>
+            <h2 className="section-intro-title">La confiance genere des ventes.</h2>
             <p className="section-intro-desc">
-              Ki el client yethanna — يعاود يطلب, ينشر تجربتو, يجيب ناس أخرين. UGZIO يبني ثقة cycle.
+              Quand le client est satisfait, il commande a nouveau, partage son experience et ramene d'autres personnes. UGZIO construit ce cercle vertueux.
             </p>
           </div>
         </RevealOnScroll>
