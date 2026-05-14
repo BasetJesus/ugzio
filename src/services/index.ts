@@ -188,6 +188,22 @@ export {
 export type {} from "./communication-performance.service";
 
 export {
+  getTemplates,
+  getTemplate,
+  getDefaultTemplate,
+  createTemplate,
+  updateTemplate,
+  deleteTemplate,
+  renderTemplate,
+} from "./ugc-template.service";
+export type {
+  UgcTemplateSummary,
+  UgcTemplateCreate,
+  UgcTemplateUpdate,
+  TemplateVariables,
+} from "./ugc-template.service";
+
+export {
   getSellerContext,
   getDailyMomentum,
 } from "./seller-context.service";

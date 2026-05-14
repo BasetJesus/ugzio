@@ -43,8 +43,9 @@ const messageWorker = new Worker(
   "scheduled-messages",
   async (job) => {
     console.log(`[MessageWorker] Processing ${job.name}:`, job.data);
-    const { orderId } = job.data as { orderId: string };
-    await executeTimelineMessage(job.name, orderId);
+    const data = job.data as Record<string, unknown>;
+    const orderId = data.orderId as string;
+    await executeTimelineMessage(job.name, orderId, data);
   },
   { connection: redis },
 );

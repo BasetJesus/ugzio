@@ -338,6 +338,62 @@ async function main() {
   for (const o of sarraOrders) await seedOrder(sarraOrg, o);
   for (const o of karimOrders) await seedOrder(karimOrg, o);
 
+  // ── Step 2.5: Default UGC Request Templates ──
+
+  const DEFAULT_UGC_TEMPLATES = [
+    {
+      name: "Photo Review — 15 TND",
+      requestType: "photo_review",
+      messageBody: "Hey {{buyerName}}! 🎉 Tu as reçu ton {{product}} — ça t'a plu ? Envoie-nous une photo et on te crédite {{incentive}} sur ta prochaine commande 🎁",
+      incentive: "15 TND",
+    },
+    {
+      name: "Instagram Story — 15 TND",
+      requestType: "instagram_story",
+      messageBody: "Salut {{buyerName}} 🙌 On adorerait voir ton {{product}} en action ! Tagge-nous dans ta story Instagram et reçois {{incentive}} de réduction 🎁",
+      incentive: "15 TND",
+    },
+    {
+      name: "TikTok Unboxing — 20 TND",
+      requestType: "tiktok_unboxing",
+      messageBody: "Hey {{buyerName}}! Tu veux participer à notre défi unboxing ? 🎬 Filme ton déballage du {{product}}, poste-le sur TikTok et gagne {{incentive}} 🎉",
+      incentive: "20 TND",
+    },
+    {
+      name: "Written Testimonial",
+      requestType: "written_testimonial",
+      messageBody: "{{buyerName}}! On a adoré te compter parmi nos clients. Tu peux nous laisser un petit mot sur ce que tu as pensé du {{product}} ? 📝✨",
+      incentive: "",
+    },
+    {
+      name: "WhatsApp Feedback",
+      requestType: "whatsapp_feedback",
+      messageBody: "Salam {{buyerName}}! Comment s'est passée la réception du {{product}} ? Un petit feedback nous ferait plaisir 💬🙏",
+      incentive: "",
+    },
+  ];
+
+  for (const org of allOrgs) {
+    for (const tpl of DEFAULT_UGC_TEMPLATES) {
+      const existing = await prisma.ugcRequestTemplate.findFirst({
+        where: { organizationId: org.id, name: tpl.name },
+      });
+      if (!existing) {
+        await prisma.ugcRequestTemplate.create({
+          data: {
+            organizationId: org.id,
+            name: tpl.name,
+            requestType: tpl.requestType,
+            messageBody: tpl.messageBody,
+            incentive: tpl.incentive,
+            isActive: tpl.requestType === "photo_review",
+          },
+        });
+      }
+    }
+    console.log(`Seeded UGC templates for: ${org.name}`);
+  }
+
   // ── Step 3: Conversations + Messages ──
   const allOrders = await prisma.order.findMany({ include: { organization: true } });
 

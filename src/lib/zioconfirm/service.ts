@@ -4,6 +4,7 @@ import { sendText, sendButtons } from "@/lib/whatsapp/client";
 import { alertSeller, cancelAlert } from "@/lib/alerts/seller";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
+import { renderTemplate } from "@/services/ugc-template.service";
 
 const CONFIRM_WINDOW_H = 20;
 
@@ -56,7 +57,7 @@ export async function schedulePreDeliveryConfirm(orderId: string, estimatedDeliv
   await scheduleMessage("PRE_DELIVERY_CONFIRM", { orderId }, delayMs);
 }
 
-export async function scheduleD3UgcAsk(orderId: string) {
+export async function scheduleD3UgcAsk(orderId: string, templateId?: string) {
   const now = Date.now();
   const d3 = new Date(now + ms(72));
 
@@ -69,7 +70,9 @@ export async function scheduleD3UgcAsk(orderId: string) {
     },
   });
 
-  await scheduleMessage("D3_UGC_ASK", { orderId }, ms(72));
+  const payload: Record<string, unknown> = { orderId };
+  if (templateId) payload.templateId = templateId;
+  await scheduleMessage("D3_UGC_ASK", payload, ms(72));
 }
 
 // ─── Message content ───
@@ -90,7 +93,7 @@ const CONFIRM_BUTTONS = [
 
 // ─── Execution ───
 
-export async function executeTimelineMessage(eventType: string, orderId: string) {
+export async function executeTimelineMessage(eventType: string, orderId: string, payload?: Record<string, unknown>) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) return;
 
@@ -116,7 +119,33 @@ export async function executeTimelineMessage(eventType: string, orderId: string)
     });
   }
 
-  const text = MESSAGES[eventType]?.(order.buyerName);
+  let text = MESSAGES[eventType]?.(order.buyerName);
+
+  if (eventType === "D3_UGC_ASK") {
+    const templateId = payload?.templateId as string | undefined;
+    let template = templateId
+      ? await prisma.ugcRequestTemplate.findFirst({
+          where: { id: templateId, organizationId: order.organizationId },
+        })
+      : null;
+
+    if (!template) {
+      template = await prisma.ugcRequestTemplate.findFirst({
+        where: { organizationId: order.organizationId, isActive: true },
+        orderBy: { createdAt: "asc" },
+      });
+    }
+
+    if (template) {
+      text = renderTemplate(template.messageBody, {
+        buyerName: order.buyerName,
+        product: order.product ?? undefined,
+        orderAmount: String(order.amount),
+        incentive: template.incentive || undefined,
+      });
+    }
+  }
+
   if (!text) return;
 
   await sendText(order.buyerPhone, text);
