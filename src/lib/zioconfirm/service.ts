@@ -5,6 +5,7 @@ import { alertSeller, cancelAlert } from "@/lib/alerts/seller";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { renderTemplate } from "@/services/ugc-template.service";
+import { METADATA_BASE_URL } from "@/lib/constants";
 
 const CONFIRM_WINDOW_H = 20;
 
@@ -77,11 +78,21 @@ export async function scheduleD3UgcAsk(orderId: string, templateId?: string) {
 
 // ─── Message content ───
 
-const MESSAGES: Record<string, (buyerName?: string) => string> = {
-  ANTICIPATION: () => "Taw ki touslek taw t7ebha barcha 😭✨",
-  SOCIAL_PROOF: () => "👀 Hedhi men akther les commandes eli talbinha tawa",
-  VISUAL_OWNERSHIP: (name) => `El couleur hedhi barcha habbouha ✨\nTaw tasta3melha w tferrah ${name ?? "fama"}`,
-  D3_UGC_ASK: () => "T'as eu le temps d'essayer? 📦\nEnvoie-moi une photo et je te crédite 15 TND sur ta prochaine commande 🎁",
+const BASE = METADATA_BASE_URL
+
+function orderLink(orderId: string): string {
+  return `${BASE}/order/${orderId}`
+}
+
+const MESSAGES: Record<string, (buyerName?: string, orderId?: string) => string> = {
+  ANTICIPATION: (name, id) =>
+    `Taw ki touslek taw t7ebha barcha 😭✨\nSuis ta commande ici: ${id ? orderLink(id) : ""}`,
+  SOCIAL_PROOF: (_, id) =>
+    `👀 Hedhi men akther les commandes eli talbinha tawa\n${id ? orderLink(id) : ""}`,
+  VISUAL_OWNERSHIP: (name, id) =>
+    `El couleur hedhi barcha habbouha ✨\nTaw tasta3melha w tferrah ${name ?? "fama"}\n${id ? orderLink(id) : ""}`,
+  D3_UGC_ASK: () =>
+    "T'as eu le temps d'essayer? 📦\nEnvoie-moi une photo et je te crédite 15 TND sur ta prochaine commande 🎁",
 };
 
 const CONFIRM_MESSAGE = "Commande mte3ek wajda 😍\nMazelt habb tconfirmi?";
@@ -103,7 +114,8 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
       data: { status: "PRE_SHIPPING_CONFIRM_SENT" },
     });
 
-    await sendButtons(order.buyerPhone, CONFIRM_MESSAGE, CONFIRM_BUTTONS);
+    const confirmWithLink = `${CONFIRM_MESSAGE}\n\n${orderLink(order.id)}`;
+    await sendButtons(order.buyerPhone, confirmWithLink, CONFIRM_BUTTONS);
 
     await prisma.messageTimelineEntry.updateMany({
       where: { orderId, eventType: "pre_delivery_confirm" },
@@ -119,7 +131,7 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
     });
   }
 
-  let text = MESSAGES[eventType]?.(order.buyerName);
+  let text = MESSAGES[eventType]?.(order.buyerName, order.id);
 
   if (eventType === "D3_UGC_ASK") {
     const templateId = payload?.templateId as string | undefined;

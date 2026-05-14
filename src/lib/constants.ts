@@ -44,6 +44,8 @@ export const PLANS = {
 
 export const FREE_TIER_LIMIT = 3;
 
+export const METADATA_BASE_URL = process.env.NEXTAUTH_URL ?? "https://ugzio.app"
+
 // ── Subscription Status ──
 export const SUBSCRIPTION_STATUS = {
   FREE: "free",

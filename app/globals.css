@@ -676,6 +676,66 @@ body {
   transition: opacity 2s ease;
 }
 
+/* ── Buyer Experience Animations ── */
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+@keyframes float-up {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes trust-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(99, 102, 241, 0.2); }
+}
+
+@keyframes whatsapp-reveal {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+.animate-float-up {
+  animation: float-up 0.4s ease-out forwards;
+}
+
+.animate-trust-glow {
+  animation: trust-glow 2.5s ease-in-out infinite;
+}
+
+.animate-whatsapp-reveal {
+  animation: whatsapp-reveal 0.35s ease-out forwards;
+}
+
+.animate-stagger-1 { animation-delay: 0.05s; }
+.animate-stagger-2 { animation-delay: 0.1s; }
+.animate-stagger-3 { animation-delay: 0.15s; }
+.animate-stagger-4 { animation-delay: 0.2s; }
+.animate-stagger-5 { animation-delay: 0.25s; }
+
+/* ── Buyer card — soft variant ── */
+.card-buyer {
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.buyer-timeline-line {
+  width: 1px;
+  background: linear-gradient(180deg, rgba(74, 222, 128, 0.3) 0%, rgba(74, 222, 128, 0.05) 100%);
+}
+
 /* ── Landing Page — Glassmorphism & Gradients ── */
 
 .gradient-behavioral {
