@@ -30,7 +30,7 @@ export default function MobileBottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--nav-border)] bg-[var(--bg-base)] pb-safe sm:hidden">
-      <div className="flex items-center justify-around">
+      <div className="flex items-stretch">
         {ITEMS.map((item) => {
           const active = isActive(item)
           const accent = getAccent(item)
@@ -39,9 +39,15 @@ export default function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center gap-0.5 py-3 px-4 text-[10px] font-medium transition flex-1 min-h-[52px] justify-center"
+              className="relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition"
               style={{ color: active ? accent : "var(--text-tertiary)" }}
             >
+              {active && (
+                <span
+                  className="absolute top-0 left-1/4 right-1/4 h-0.5 rounded-full"
+                  style={{ backgroundColor: accent }}
+                />
+              )}
               <span className={`text-sm leading-none ${active && item.stateKey === "LIVE" ? "animate-pulse" : ""}`}>
                 {item.icon}
               </span>

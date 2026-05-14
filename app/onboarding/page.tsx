@@ -39,7 +39,7 @@ export default async function OnboardingPage() {
 
   if (activation.completedSteps < activation.totalSteps) {
     return (
-      <div className="mx-auto max-w-lg p-4 sm:p-0 mt-12">
+      <div className="mx-auto max-w-[32rem] p-4 sm:p-0 mt-12">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
           <h1 className="text-xl font-bold text-[var(--text-primary)]">Your shop is ready</h1>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">

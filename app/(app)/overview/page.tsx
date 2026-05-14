@@ -37,13 +37,13 @@ export const dynamic = "force-dynamic";
 
 function SectionHeader({ icon, label, subtitle }: { icon: string; label: string; subtitle?: string }) {
   return (
-    <div className="flex items-center gap-2 pt-2">
+    <div className="flex items-center gap-2">
       <span className="text-sm">{icon}</span>
-      <span className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">{label}</span>
+      <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-widest">{label}</span>
       {subtitle && (
-        <span className="text-[10px] text-white/20 ml-auto">{subtitle}</span>
+        <span className="text-[10px] text-[var(--text-tertiary)]/60 ml-auto">{subtitle}</span>
       )}
-      <div className="flex-1 h-px bg-white/5 ml-3" />
+      <div className="flex-1 h-px bg-[var(--border)] ml-3" />
     </div>
   )
 }
@@ -142,7 +142,7 @@ export default async function OverviewPage() {
 
       {hasOutcomes && (
         <div>
-          <p className="text-[10px] font-medium text-white/40 uppercase tracking-wider mb-3">Today&apos;s Outcomes</p>
+          <p className="text-caption text-[var(--text-tertiary)] mb-3">Today&apos;s Outcomes</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
             <MiniKpiCard label="Revenue Protected" value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
             <MiniKpiCard label="RTS Loss Prevented" value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
@@ -153,13 +153,13 @@ export default async function OverviewPage() {
       )}
 
       {!hasOutcomes && !tense && (
-        <div className="rounded-xl border border-white/10 bg-zinc-900/50 p-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+          <div className="w-12 h-12 rounded-full bg-[var(--state-protected-bg)] flex items-center justify-center mx-auto mb-3">
             <span className="text-lg">🛡️</span>
           </div>
-          <p className="text-sm font-medium text-white">Koul chay t7at l control</p>
-          <p className="text-xs text-white/40 mt-1">
-            <Link href="/confirm" className="text-emerald-400 hover:underline">Go to confirmation queue</Link> to start protecting revenue
+          <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
+            <Link href="/confirm" className="text-[var(--success-green)] hover:underline">Go to confirmation queue</Link> to start protecting revenue
           </p>
         </div>
       )}

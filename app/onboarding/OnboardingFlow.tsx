@@ -55,7 +55,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
 
   if (step === "setup") {
     return (
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-[24rem]">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-zinc-100">UGZIO</h1>
           <p className="text-sm text-zinc-500 mt-1">Commerce operations intelligence</p>
@@ -116,7 +116,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
 
   if (step === "generating") {
     return (
-      <div className="w-full max-w-sm text-center">
+      <div className="w-full max-w-[24rem] text-center">
         <h1 className="text-2xl font-bold text-zinc-100">Setting up your shop</h1>
         <div className="mt-8 space-y-3 text-left">
           <div className="flex items-center gap-3 text-sm text-zinc-400">
@@ -137,7 +137,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
   }
 
   return (
-    <div className="w-full max-w-sm text-center">
+    <div className="w-full max-w-[24rem] text-center">
       <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-6">
         <p className="text-2xl mb-2">🎯</p>
         <h1 className="text-xl font-bold text-zinc-100">Your shop is ready</h1>

@@ -42,22 +42,22 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
   }, [currentState])
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-6xl pb-16 sm:pb-0">
+    <div className="mx-auto flex min-h-dvh max-w-[72rem]">
       <SystemFlowNavigator
         orgName={orgName}
         planName={planName}
         completedCount={completedCount}
       />
-      <div className="flex flex-1 flex-col">
+      <div className="relative flex flex-1 flex-col">
         <LiveSystemHeader
           orgName={orgName}
           planName={planName}
           orgId={orgId}
           revenueAtRisk={revenueAtRisk}
         />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-24 sm:pb-0">
           <div
-            className={`p-4 sm:p-6 ${
+            className={`px-4 py-5 sm:px-8 sm:py-6 ${
               animating
                 ? "animate-view-fade-out opacity-0"
                 : "animate-emotion-transition"
@@ -69,7 +69,7 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
         </main>
       </div>
       <MobileBottomNav />
-      <div className="fixed bottom-20 right-4 z-50 sm:bottom-4">
+      <div className="fixed bottom-24 right-4 z-50 sm:bottom-6">
         <LanguageToggle />
       </div>
     </div>

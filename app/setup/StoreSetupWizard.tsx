@@ -212,7 +212,7 @@ export default function StoreSetupWizard() {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-[32rem] mx-auto">
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 sm:p-8">
         <ProgressBar current={stepIndex} total={STEPS.length} />
         <StepLabel current={stepIndex} total={STEPS.length} />

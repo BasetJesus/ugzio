@@ -164,7 +164,7 @@ export default function PricingSection() {
 
         <RevealOnScroll delay={300}>
           <div className="mt-10 text-center">
-            <div className="landing-glass rounded-2xl p-6 sm:p-8 inline-block mx-auto max-w-lg">
+            <div className="landing-glass rounded-2xl p-6 sm:p-8 inline-block mx-auto max-w-[32rem]">
               <p className="text-sm text-white/70 font-medium mb-2">
                 🎯 Tous les plans incluent
               </p>

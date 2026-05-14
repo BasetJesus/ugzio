@@ -197,7 +197,7 @@ export default function DeliverySettingsClient() {
           </div>
         )}
 
-        <div className="space-y-4 max-w-md">
+        <div className="space-y-4 max-w-[28rem]">
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Provider Name *

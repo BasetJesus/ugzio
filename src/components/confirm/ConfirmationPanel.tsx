@@ -61,7 +61,7 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
   return (
       <div className="fixed inset-0 z-50 flex justify-end">
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div className="relative w-full max-w-md bg-zinc-900 border-l border-white/10 overflow-y-auto shadow-2xl animate-slide-in-right">
+        <div className="relative w-full max-w-[28rem] bg-zinc-900 border-l border-white/10 overflow-y-auto shadow-2xl animate-slide-in-right">
           <div className="sticky top-0 bg-zinc-900 border-b border-white/10 px-5 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">

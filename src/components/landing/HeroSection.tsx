@@ -9,7 +9,7 @@ export default function HeroSection() {
       <div className="section-container relative z-10">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
           <RevealOnScroll delay={0}>
-            <div className="max-w-xl text-left mx-auto sm:mx-none">
+            <div className="max-w-[36rem] text-left mx-auto sm:mx-none">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 mb-6 landing-glass">
                 <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
                 <span className="text-[11px] text-white/50 tracking-wide">

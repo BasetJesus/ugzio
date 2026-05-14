@@ -77,7 +77,7 @@ export default function WaitlistPage() {
       <div style={{ backgroundColor: "#0a0a0a" }} className="min-h-dvh flex flex-col">
         <Navbar />
         <main className="flex-1 flex items-center justify-center px-5">
-          <div className="w-full max-w-md text-center">
+          <div className="w-full max-w-[28rem] text-center">
             <div className="landing-glass rounded-2xl p-8 sm:p-10">
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20">
                 <span className="text-3xl animate-scale-bounce">✅</span>
@@ -112,7 +112,7 @@ export default function WaitlistPage() {
     <div style={{ backgroundColor: "#0a0a0a" }} className="min-h-dvh flex flex-col">
       <Navbar />
       <main className="flex-1 pt-24 pb-16">
-        <div className="mx-auto max-w-6xl px-5">
+        <div className="mx-auto max-w-[72rem] px-5">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-start">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 mb-6 landing-glass">

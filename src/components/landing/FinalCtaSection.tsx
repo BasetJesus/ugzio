@@ -6,7 +6,7 @@ export default function FinalCtaSection() {
       <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
 
       <div className="section-container">
-      <div className="mx-auto max-w-2xl text-center relative z-10">
+      <div className="mx-auto max-w-[42rem] text-center relative z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-purple-600/10 animate-glow-breathe pointer-events-none" />
 
         <RevealOnScroll>
@@ -17,7 +17,7 @@ export default function FinalCtaSection() {
             لازم operations mte3ek زادة تتبدل.
           </p>
 
-          <p className="mt-6 text-sm text-white/40 leading-relaxed max-w-lg mx-auto relative z-10">
+          <p className="mt-6 text-sm text-white/40 leading-relaxed max-w-[32rem] mx-auto relative z-10">
             UGZIO معمول للناس اللي تبيع réellement fi Tounes. Mouch SaaS generic.
             COD. WhatsApp. UGC. Operations. Kollhom fi système واحد.
           </p>

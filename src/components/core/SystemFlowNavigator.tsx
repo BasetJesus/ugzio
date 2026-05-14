@@ -21,16 +21,16 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
   const showOnboarding = completedCount < 4
 
   return (
-    <aside className="hidden w-56 border-r border-[var(--nav-border)] bg-[var(--nav-bg)] p-section sm:flex sm:flex-col">
-      <div className="flex items-center gap-3 px-2 mb-6">
+    <aside className="hidden w-56 border-r border-[var(--nav-border)] bg-[var(--nav-bg)] sm:flex sm:flex-col">
+      <div className="flex items-center gap-3 px-5 pt-5 pb-4 border-b border-[var(--nav-border)]">
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--accent)] text-xs font-bold text-white">U</span>
-        <div className="flex flex-col">
+        <div className="flex flex-col min-w-0">
           <p className="truncate text-xs font-medium text-[var(--text-primary)]">{orgName}</p>
           <p className="text-[9px] text-[var(--text-tertiary)]">{planName}</p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-tight flex-1">
+      <nav className="flex-1 px-3 py-3 space-y-0.5">
         {STATE_KEYS.map((key) => {
           const cfg = SYSTEM_STATES[key]
           const active = currentState === key
@@ -38,33 +38,31 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
             <Link
               key={key}
               href={cfg.route}
-              className={`group rounded-lg px-3 py-2.5 text-sm transition ${
+              className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                 active
                   ? "bg-[var(--accent)]/10 text-[var(--accent)] font-medium"
                   : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <span
-                  className={`w-4 text-center text-sm ${active && key === "LIVE" ? "animate-pulse" : ""}`}
-                  style={{ color: active ? cfg.color : undefined }}
-                >
-                  {cfg.icon}
-                </span>
-                <div className="flex flex-col">
-                  <span>{cfg.label}</span>
-                  <span className="text-[9px] text-[var(--text-tertiary)]">{cfg.description}</span>
-                </div>
+              <span
+                className={`w-4 text-center text-sm ${active && key === "LIVE" ? "animate-pulse" : ""}`}
+                style={{ color: active ? cfg.color : undefined }}
+              >
+                {cfg.icon}
+              </span>
+              <div className="flex flex-col">
+                <span>{cfg.label}</span>
+                <span className="text-[9px] leading-none text-[var(--text-tertiary)]">{cfg.description}</span>
               </div>
             </Link>
           )
         })}
-      </div>
+      </nav>
 
-      <div className="pt-panel border-t border-[var(--nav-border)] space-y-1">
+      <div className="px-3 py-2 border-t border-[var(--nav-border)] space-y-1">
         <Link
           href="/inbox"
-          className={`group rounded-lg px-3 py-2 text-xs font-medium transition flex items-center gap-3 ${
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition ${
             pathname.startsWith("/inbox")
               ? "bg-[var(--accent)]/10 text-[var(--accent)]"
               : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
@@ -75,7 +73,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         </Link>
         <Link
           href="/growth"
-          className={`group rounded-lg px-3 py-2 text-xs font-medium transition flex items-center gap-3 ${
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition ${
             pathname.startsWith("/growth")
               ? "bg-[var(--accent)]/10 text-[var(--accent)]"
               : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
@@ -87,7 +85,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
       </div>
 
       {showOnboarding && (
-        <div className="pt-panel border-t border-[var(--nav-border)]">
+        <div className="px-3 py-2 border-t border-[var(--nav-border)]">
           <Link
             href="/onboarding"
             className={`block rounded-lg px-3 py-2 text-xs font-medium transition ${
@@ -101,7 +99,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         </div>
       )}
 
-      <div className="pt-panel mt-auto border-t border-[var(--nav-border)]">
+      <div className="px-3 pt-2 border-t border-[var(--nav-border)]">
         <button
           onClick={async () => {
             await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})

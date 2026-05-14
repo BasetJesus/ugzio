@@ -21,10 +21,10 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--nav-border)] bg-[var(--nav-bg)] backdrop-blur-sm">
-      <div className="flex items-center justify-between px-card py-2 sm:px-panel">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between px-4 sm:px-8 py-2.5">
+        <div className="flex items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--accent)] text-[10px] font-bold text-white">U</span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--accent)] text-[11px] font-bold text-white">U</span>
             <span className="text-sm font-semibold text-[var(--text-primary)] hidden sm:inline">UGZIO</span>
           </div>
 
@@ -38,8 +38,8 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-[var(--nav-border)] px-2.5 py-1">
+        <div className="flex items-center gap-2.5">
+          <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-[var(--nav-border)] bg-[var(--bg-card)]/50 px-2.5 py-1">
             <span className="text-[10px] text-[var(--text-tertiary)]">At risk</span>
             <span className="text-xs font-semibold text-[var(--risk-red)]">{revenueAtRisk.toFixed(0)} TND</span>
           </div>

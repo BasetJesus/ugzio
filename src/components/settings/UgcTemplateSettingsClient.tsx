@@ -214,7 +214,7 @@ export default function UgcTemplateSettingsClient() {
           </div>
         )}
 
-        <div className="space-y-4 max-w-lg">
+        <div className="space-y-4 max-w-[32rem]">
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
               Template Name *
