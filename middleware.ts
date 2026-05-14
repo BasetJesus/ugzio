@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     "/login",
     "/register",
     "/onboarding",
+    "/waitlist",
   ];
 
   if (publicRoutes.includes(pathname)) {

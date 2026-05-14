@@ -1,95 +1,89 @@
 "use client"
 
-import type { OrderTableItem } from "@/types/order"
+import type { OrderTableItem, RiskLevel } from "@/types/order"
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge"
 import TrustScoreMeter from "@/components/orders/TrustScoreMeter"
 import { RISK_META } from "@/lib/risk/config"
-
-const PAYMENT_META: Record<string, { label: string; color: string }> = {
-  pending: { label: "Pending", color: "text-[var(--warning-amber)]" },
-  confirmed: { label: "Paid", color: "text-[var(--success-green)]" },
-  failed: { label: "Failed", color: "text-[var(--risk-red)]" },
-  refunded: { label: "Refunded", color: "text-[var(--text-tertiary)]" },
-}
-
-const DELIVERY_META: Record<string, { label: string; color: string }> = {
-  on_time: { label: "On Time", color: "text-[var(--success-green)]" },
-  delayed: { label: "Delayed", color: "text-[var(--warning-amber)]" },
-  at_risk: { label: "At Risk", color: "text-[var(--risk-red)]" },
-  delivered: { label: "Delivered", color: "text-[var(--success-green)]" },
-  returned: { label: "Returned", color: "text-[var(--risk-red)]" },
-}
 
 interface Props {
   orders: OrderTableItem[]
   totalCount: number
 }
 
+function RiskBadge({ level }: { level: RiskLevel }) {
+  const meta = RISK_META[level]
+  if (!meta) return null
+  return (
+    <span className={`text-sm font-semibold ${meta.color}`}>
+      {level.charAt(0).toUpperCase() + level.slice(1)}
+    </span>
+  )
+}
+
 export default function OrdersTable({ orders, totalCount }: Props) {
   if (orders.length === 0) {
     return (
-      <div className="flex flex-col items-center py-16 text-center">
-        <div className="h-10 w-10 rounded-full bg-[var(--border)] flex items-center justify-center mb-4">
-          <span className="text-sm text-[var(--text-tertiary)]">\u2014</span>
+      <div className="flex flex-col items-center py-16 text-center px-5">
+        <div className="h-12 w-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
+          <span className="text-base text-white/40">—</span>
         </div>
-        <p className="text-base font-medium text-[var(--text-primary)]">No orders yet</p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Orders will appear here once created.</p>
+        <p className="text-base font-medium text-white">No orders yet</p>
+        <p className="mt-1 text-sm text-white/50">Orders will appear here once created.</p>
       </div>
     )
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-[var(--table-border)] text-left text-caption text-[var(--text-tertiary)]">
-            <th className="px-4 py-3 font-medium">Customer</th>
-            <th className="px-4 py-3 font-medium">Product</th>
-            <th className="px-4 py-3 font-medium text-right">Amount</th>
-            <th className="px-4 py-3 font-medium">Status</th>
-            <th className="px-4 py-3 font-medium">Risk</th>
-            <th className="px-4 py-3 font-medium">Trust</th>
-            <th className="px-4 py-3 font-medium">Payment</th>
-            <th className="px-4 py-3 font-medium">Delivery</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr
-              key={order.id}
-              className="border-b border-[var(--table-border)] last:border-b-0 hover:bg-[var(--table-row-hover)] transition-colors"
-            >
-              <td className="px-4 py-3">
-                <p className="text-sm font-medium text-[var(--text-primary)]">{order.customer.name}</p>
-                <p className="text-xs text-[var(--text-secondary)]">{order.customer.phone}</p>
-                <p className="text-xs text-[var(--text-tertiary)]">{order.customer.wilaya}</p>
-              </td>
-              <td className="px-4 py-3 text-sm text-[var(--text-primary)] max-w-[160px] truncate">{order.product}</td>
-              <td className="px-4 py-3 text-right font-medium text-[var(--text-primary)] whitespace-nowrap">{order.amount.toFixed(3)} TND</td>
-              <td className="px-4 py-3"><OrderStatusBadge status={order.status} /></td>
-              <td className="px-4 py-3">
-                <span className={`text-xs font-medium ${RISK_META[order.riskLevel].color}`}>
-                  {order.riskLevel.charAt(0).toUpperCase() + order.riskLevel.slice(1)}
-                </span>
-              </td>
-              <td className="px-4 py-3"><TrustScoreMeter score={order.trustScore} /></td>
-              <td className="px-4 py-3">
-                <span className={`text-xs font-medium ${PAYMENT_META[order.paymentStatus]?.color ?? "text-[var(--text-tertiary)]"}`}>
-                  {PAYMENT_META[order.paymentStatus]?.label ?? order.paymentStatus}
-                </span>
-              </td>
-              <td className="px-4 py-3">
-                <span className={`text-xs font-medium ${DELIVERY_META[order.deliveryState]?.color ?? "text-[var(--text-tertiary)]"}`}>
-                  {DELIVERY_META[order.deliveryState]?.label ?? order.deliveryState}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="border-t border-[var(--table-border)] px-4 py-2 text-[10px] text-[var(--text-tertiary)]">
+    <div className="space-y-3">
+      {orders.map((order) => (
+        <div
+          key={order.id}
+          className="rounded-xl border border-white/10 p-4"
+          style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
+        >
+          {/* Header row */}
+          <div className="flex items-start justify-between mb-3">
+            <div className="min-w-0 flex-1 mr-3">
+              <p className="text-base font-semibold text-white truncate">{order.customer.name}</p>
+              <p className="text-sm text-white/50">{order.customer.phone}</p>
+              <p className="text-sm text-white/30">{order.customer.wilaya}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-base font-bold text-white">{order.amount.toFixed(3)}</p>
+              <p className="text-xs text-white/40">TND</p>
+            </div>
+          </div>
+
+          {/* Product row */}
+          <p className="text-sm text-white/70 mb-3 truncate">{order.product}</p>
+
+          {/* Status row */}
+          <div className="flex items-center justify-between mb-3">
+            <OrderStatusBadge status={order.status} />
+            <RiskBadge level={order.riskLevel} />
+          </div>
+
+          {/* Trust score + payment + delivery */}
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5">
+            <div className="flex-1">
+              <p className="text-xs text-white/40 mb-1">Trust</p>
+              <TrustScoreMeter score={order.trustScore} />
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-white/40">Paiement</p>
+              <p className="text-sm font-medium text-white/70">{order.paymentStatus}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-white/40">Livraison</p>
+              <p className="text-sm font-medium text-white/70">{order.deliveryState}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <p className="text-center text-sm text-white/30 pt-2">
         {totalCount} order{totalCount !== 1 ? "s" : ""}
-      </div>
+      </p>
     </div>
   )
 }

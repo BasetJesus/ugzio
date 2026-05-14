@@ -20,9 +20,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "UGZIO — Behavioral Revenue Protection for COD Commerce",
+  title: "UGZIO — Protection Revenue pour les Vendeurs COD Tunisiens",
   description:
-    "UGZIO predicts delivery failure before it costs you money. Behavioral intelligence for modern DTC operations.",
+    "UGZIO analyse le risque de chaque acheteur en 3 secondes. Protégez votre revenue COD contre les fausses commandes et les retours.",
 };
 
 export default function RootLayout({

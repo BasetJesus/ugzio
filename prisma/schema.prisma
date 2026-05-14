@@ -458,6 +458,9 @@ model WaitlistEntry {
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
   name           String
+  email          String
+  phone          String?
+  niche          String?
   instagram      String?
   storeType      String?
   monthlyOrders  Int?
