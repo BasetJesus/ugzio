@@ -314,9 +314,115 @@ body {
   .animate-float,
   .animate-float-delayed,
   .animate-float-slow,
-  .animate-liquid-shimmer {
+  .animate-liquid-shimmer,
+  .animate-hero-float-1,
+  .animate-hero-float-2,
+  .animate-hero-float-3,
+  .animate-glow-breathe,
+  .animate-notification-slide,
+  .animate-scale-bounce {
     animation: none;
   }
+}
+
+/* ── Landing Page Animations ── */
+
+@keyframes hero-float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(0.8deg); }
+}
+
+@keyframes hero-float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(-0.5deg); }
+  66% { transform: translateY(-5px) rotate(0.3deg); }
+}
+
+@keyframes hero-float-3 {
+  0%, 100% { transform: translateY(0px); }
+  25% { transform: translateY(-8px); }
+  50% { transform: translateY(-12px); }
+  75% { transform: translateY(-4px); }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.3; filter: blur(80px); transform: scale(1); }
+  50% { opacity: 0.7; filter: blur(100px); transform: scale(1.05); }
+}
+
+@keyframes notification-slide {
+  0% { transform: translateX(120%); opacity: 0; }
+  8% { transform: translateX(0); opacity: 1; }
+  85% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: var(--progress-pct, 100%); }
+}
+
+@keyframes scale-bounce {
+  0% { transform: scale(0.7); opacity: 0; }
+  55% { transform: scale(1.08); opacity: 1; }
+  75% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes demo-card-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes message-reveal {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-hero-float-1 { animation: hero-float-1 5s ease-in-out infinite; }
+.animate-hero-float-2 { animation: hero-float-2 6s ease-in-out infinite; }
+.animate-hero-float-3 { animation: hero-float-3 7s ease-in-out infinite; }
+.animate-glow-breathe { animation: glow-breathe 4s ease-in-out infinite; }
+.animate-notification-slide { animation: notification-slide 4.5s ease-in-out infinite; }
+.animate-progress-fill { animation: progress-fill 0.8s ease-out forwards; }
+.animate-scale-bounce { animation: scale-bounce 0.6s ease-out forwards; }
+.animate-demo-card-enter { animation: demo-card-enter 0.5s ease-out forwards; }
+.animate-message-reveal { animation: message-reveal 0.4s ease-out forwards; }
+
+/* ── Landing Neo-glassmorphism ── */
+
+.landing-glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.landing-glass-strong {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.landing-glow-purple {
+  box-shadow: 0 0 30px rgba(124,58,237,0.15), 0 0 60px rgba(124,58,237,0.05);
+}
+
+.landing-glow-green {
+  box-shadow: 0 0 30px rgba(74,222,128,0.12), 0 0 60px rgba(74,222,128,0.04);
+}
+
+.landing-text-gradient {
+  background: linear-gradient(135deg, #c084fc 0%, #a78bfa 40%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.landing-gradient-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,58,237,0.2), rgba(236,72,153,0.1), transparent);
 }
 
 /* ── Typography System ── */
