@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface BuyerConfig {
   id: string
@@ -10,13 +10,12 @@ interface BuyerConfig {
   trust: number
   label: string
   labelColor: string
-  bgColor: string
-  borderColor: string
   whatsappSequence: string
-  message: string
+  messages: { text: string; time: string }[]
   outcome: string
   outcomeIcon: string
   outcomeColor: string
+  celebration?: boolean
 }
 
 const buyers: BuyerConfig[] = [
@@ -28,10 +27,12 @@ const buyers: BuyerConfig[] = [
     trust: 8,
     label: "Risque Critique",
     labelColor: "text-red-400",
-    bgColor: "bg-red-500/5",
-    borderColor: "border-red-500/20",
     whatsappSequence: "Urgence + Vérification d'identité",
-    message: "Salam, on a détecté une activité suspecte. Veuillez confirmer cette commande de 120 TND en répondant OUI.",
+    messages: [
+      { text: "Salam, on a détecté une activité suspecte.", time: "10:32" },
+      { text: "Veuillez confirmer cette commande de 120 TND en répondant OUI.", time: "10:32" },
+      { text: "⚠️ Dernier rappel avant annulation automatique.", time: "10:35" },
+    ],
     outcome: "120 TND évités",
     outcomeIcon: "🛡️",
     outcomeColor: "text-red-400",
@@ -44,10 +45,11 @@ const buyers: BuyerConfig[] = [
     trust: 32,
     label: "Risque Moyen",
     labelColor: "text-amber-400",
-    bgColor: "bg-amber-500/5",
-    borderColor: "border-amber-500/20",
     whatsappSequence: "Réassurance + Preuve sociale",
-    message: "Salam, merci pour votre commande de 85 TND! Plus de 200 clients satisfaits cette semaine. On vous confirme ?",
+    messages: [
+      { text: "Salam, merci pour votre commande de 85 TND! 🎉", time: "10:30" },
+      { text: "Plus de 200 clients satisfaits cette semaine. On vous confirme ?", time: "10:30" },
+    ],
     outcome: "85 TND en attente",
     outcomeIcon: "⏳",
     outcomeColor: "text-amber-400",
@@ -60,13 +62,15 @@ const buyers: BuyerConfig[] = [
     trust: 94,
     label: "Client Sûr",
     labelColor: "text-green-400",
-    bgColor: "bg-green-500/5",
-    borderColor: "border-green-500/20",
     whatsappSequence: "Confirmation simple + Remerciement",
-    message: "Salam Ahmed, votre commande de 150 TND est en préparation. Merci pour votre confiance!",
-    outcome: "150 TND sécurisés",
+    messages: [
+      { text: "Salam Ahmed, votre commande de 150 TND est en préparation 🚀", time: "10:28" },
+      { text: "Merci pour votre confiance! À très vite 🙏", time: "10:28" },
+    ],
+    outcome: "150 TND sécurisés ✅",
     outcomeIcon: "✅",
     outcomeColor: "text-green-400",
+    celebration: true,
   },
   {
     id: "risky",
@@ -76,10 +80,11 @@ const buyers: BuyerConfig[] = [
     trust: 18,
     label: "Risque Élevé",
     labelColor: "text-red-400",
-    bgColor: "bg-red-500/5",
-    borderColor: "border-red-500/20",
     whatsappSequence: "Réassurance + Urgence + Relance",
-    message: "Salam, on a essayé de vous joindre sans succès. Votre commande de 200 TND vous attend. Répondez OUI pour confirmer.",
+    messages: [
+      { text: "Salam, on a essayé de vous joindre sans succès.", time: "10:25" },
+      { text: "Votre commande de 200 TND vous attend. Répondez OUI pour confirmer.", time: "10:26" },
+    ],
     outcome: "200 TND en danger",
     outcomeIcon: "⚠️",
     outcomeColor: "text-red-400",
@@ -88,7 +93,48 @@ const buyers: BuyerConfig[] = [
 
 export default function LiveDemoSection() {
   const [activeId, setActiveId] = useState("fake")
+  const [transitioning, setTransitioning] = useState(false)
+  const [showMessage, setShowMessage] = useState(false)
+  const [showTyping, setShowTyping] = useState(false)
+  const [celebration, setCelebration] = useState(false)
+  const [visibleMessages, setVisibleMessages] = useState(0)
+
   const active = buyers.find((b) => b.id === activeId) ?? buyers[0]
+
+  const switchBuyer = useCallback((id: string) => {
+    if (id === activeId || transitioning) return
+    setTransitioning(true)
+    setShowMessage(false)
+    setShowTyping(false)
+    setCelebration(false)
+    setVisibleMessages(0)
+
+    setTimeout(() => {
+      setActiveId(id)
+      setTransitioning(false)
+      setShowTyping(true)
+
+      setTimeout(() => {
+        setShowTyping(false)
+        setShowMessage(true)
+        const b = buyers.find((x) => x.id === id)
+        if (b) {
+          let i = 1
+          b.messages.forEach((_, idx) => {
+            setTimeout(() => setVisibleMessages(idx + 1), (idx + 1) * 600)
+            i = idx + 1
+          })
+          setTimeout(() => {
+            setVisibleMessages(i)
+            if (b.celebration) {
+              setCelebration(true)
+              setTimeout(() => setCelebration(false), 2500)
+            }
+          }, i * 600 + 200)
+        }
+      }, 1200)
+    }, 250)
+  }, [activeId, transitioning])
 
   return (
     <section className="relative px-5 py-20 sm:py-28">
@@ -109,88 +155,137 @@ export default function LiveDemoSection() {
 
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="lg:col-span-2 flex flex-col gap-2">
-            {buyers.map((b) => (
-              <button
-                key={b.id}
-                onClick={() => setActiveId(b.id)}
-                className={`w-full text-left rounded-xl border p-4 transition-all duration-200 touch-manipulation ${
-                  activeId === b.id
-                    ? `${b.borderColor} ${b.bgColor} scale-[1.02]`
-                    : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-white">{b.name}</span>
-                  <span className={`text-[10px] font-medium ${b.labelColor}`}>{b.label}</span>
-                </div>
-                <p className="text-xs text-white/40 mt-0.5">{b.desc}</p>
-              </button>
-            ))}
+            {buyers.map((b) => {
+              const isActive = activeId === b.id
+              return (
+                <button
+                  key={b.id}
+                  onClick={() => switchBuyer(b.id)}
+                  disabled={transitioning}
+                  className={`w-full text-left rounded-xl border p-4 transition-all duration-300 touch-manipulation disabled:cursor-wait ${
+                    isActive
+                      ? `border-${b.id === "returning" ? "green" : b.id === "fake" || b.id === "risky" ? "red" : "amber"}-500/30 bg-white/[0.04] scale-[1.02] shadow-lg`
+                      : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:scale-[1.01]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-white">{b.name}</span>
+                    <span className={`text-[10px] font-medium ${b.labelColor}`}>{b.label}</span>
+                  </div>
+                  <p className="text-xs text-white/40 mt-0.5">{b.desc}</p>
+                </button>
+              )
+            })}
           </div>
 
           <div className="lg:col-span-3">
-            <div className="landing-glass rounded-2xl p-5 sm:p-6 min-h-[320px]">
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Risk Score</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className={`text-3xl font-bold ${active.risk > 70 ? "text-red-400" : active.risk > 40 ? "text-amber-400" : "text-green-400"}`}>
-                      {active.risk}
-                    </span>
-                    <span className="text-xs text-white/30">/100</span>
-                  </div>
-                  <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        active.risk > 70 ? "bg-red-500" : active.risk > 40 ? "bg-amber-500" : "bg-green-500"
-                      }`}
-                      style={{ width: `${active.risk}%` }}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Trust Score</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className={`text-3xl font-bold ${active.trust > 70 ? "text-green-400" : active.trust > 40 ? "text-amber-400" : "text-red-400"}`}>
-                      {active.trust}
-                    </span>
-                    <span className="text-xs text-white/30">/100</span>
-                  </div>
-                  <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        active.trust > 70 ? "bg-green-500" : active.trust > 40 ? "bg-amber-500" : "bg-red-500"
-                      }`}
-                      style={{ width: `${active.trust}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">WhatsApp Sequence</p>
-                <div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-1.5">
-                  <span className="text-[10px] font-medium text-purple-400">{active.whatsappSequence}</span>
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Message Envoyé</p>
-                <div className="rounded-xl bg-green-500/5 border border-green-500/10 p-3 sm:p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-green-400 text-xs">📱 UGZIO Bot</span>
-                    <span className="text-[10px] text-white/20">via WhatsApp</span>
-                  </div>
-                  <p className="text-sm text-white/70 leading-relaxed">{active.message}</p>
-                </div>
-              </div>
-
-              <div className={`rounded-xl border ${active.borderColor} ${active.bgColor} p-3 sm:p-4`}>
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{active.outcomeIcon}</span>
+            <div className="landing-glass rounded-2xl p-5 sm:p-6 min-h-[400px]">
+              <div className={`transition-all duration-500 ease-out ${transitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
+                <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <p className="text-[10px] text-white/30 uppercase tracking-wider">Revenue Outcome</p>
-                    <p className={`text-base font-bold ${active.outcomeColor}`}>{active.outcome}</p>
+                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Risk Score</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className={`text-3xl font-bold transition-colors duration-500 ${
+                        active.risk > 70 ? "text-red-400" : active.risk > 40 ? "text-amber-400" : "text-green-400"
+                      }`}>
+                        {active.risk}
+                      </span>
+                      <span className="text-xs text-white/30">/100</span>
+                    </div>
+                    <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ease-out ${
+                          active.risk > 70 ? "bg-red-500" : active.risk > 40 ? "bg-amber-500" : "bg-green-500"
+                        }`}
+                        style={{ width: `${active.risk}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Trust Score</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className={`text-3xl font-bold transition-colors duration-500 ${
+                        active.trust > 70 ? "text-green-400" : active.trust > 40 ? "text-amber-400" : "text-red-400"
+                      }`}>
+                        {active.trust}
+                      </span>
+                      <span className="text-xs text-white/30">/100</span>
+                    </div>
+                    <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ease-out ${
+                          active.trust > 70 ? "bg-green-500" : active.trust > 40 ? "bg-amber-500" : "bg-red-500"
+                        }`}
+                        style={{ width: `${active.trust}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">WhatsApp Sequence</p>
+                  <div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
+                    <span className="text-[10px] font-medium text-purple-400">{active.whatsappSequence}</span>
+                  </div>
+                </div>
+
+                <div className="mb-5">
+                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Conversation WhatsApp</p>
+                  <div className="rounded-xl bg-[#1a2e2a] border border-green-900/30 p-4 min-h-[140px]">
+                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-green-900/20">
+                      <span className="h-5 w-5 rounded-full bg-green-600 flex items-center justify-center text-[10px] font-bold text-white">U</span>
+                      <span className="text-xs font-medium text-green-300">UGZIO Bot</span>
+                      <span className="text-[9px] text-green-600 ml-auto">online</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {active.messages.slice(0, visibleMessages).map((msg, i) => (
+                        <div
+                          key={i}
+                          className="animate-message-reveal"
+                        >
+                          <div className="inline-block rounded-2xl rounded-bl-sm bg-white/[0.07] px-3.5 py-2.5 max-w-[90%]">
+                            <p className="text-xs text-white/80 leading-relaxed">{msg.text}</p>
+                          </div>
+                          <p className="text-[9px] text-white/20 mt-0.5 ml-1">{msg.time}</p>
+                        </div>
+                      ))}
+
+                      {showTyping && (
+                        <div className="flex items-center gap-1.5 px-1 py-1">
+                          <span className="text-[9px] text-green-400/50">typing</span>
+                          <span className="flex items-center gap-0.5">
+                            <span className="h-1 w-1 rounded-full bg-green-400/60 animate-typing-dot" style={{ animationDelay: "0ms" }} />
+                            <span className="h-1 w-1 rounded-full bg-green-400/60 animate-typing-dot" style={{ animationDelay: "200ms" }} />
+                            <span className="h-1 w-1 rounded-full bg-green-400/60 animate-typing-dot" style={{ animationDelay: "400ms" }} />
+                          </span>
+                        </div>
+                      )}
+
+                      {!showMessage && !showTyping && (
+                        <div className="py-6 text-center">
+                          <p className="text-xs text-white/30">Switching buyer type...</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`rounded-xl border p-3 sm:p-4 transition-all duration-500 ${
+                  celebration ? "border-green-400/40 bg-green-500/10 animate-celebration-flash" : `${active.outcomeColor.includes("red") ? "border-red-500/15 bg-red-500/5" : active.outcomeColor.includes("green") ? "border-green-500/15 bg-green-500/5" : "border-amber-500/15 bg-amber-500/5"}`
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-xl ${celebration ? "animate-scale-bounce" : ""}`}>
+                      {celebration ? "🎉" : active.outcomeIcon}
+                    </span>
+                    <div>
+                      <p className="text-[10px] text-white/30 uppercase tracking-wider">Revenue Outcome</p>
+                      <p className={`text-base font-bold flex items-center gap-2 ${active.outcomeColor}`}>
+                        {active.outcome}
+                        {celebration && <span className="text-[9px] text-green-400/60 font-normal animate-pulse">Protected!</span>}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

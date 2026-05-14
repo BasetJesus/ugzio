@@ -1,4 +1,5 @@
 import type { OrdersPageData } from "@/types/order"
+import { MiniKpiCard } from "@/components/shared/KpiCard"
 
 interface Props {
   stats: OrdersPageData["stats"]
@@ -7,26 +8,34 @@ interface Props {
 export default function OrdersHeader({ stats }: Props) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-      <div className="rounded-xl border border-white/10 p-4" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Total</p>
-        <p className="text-lg font-bold text-white">{stats.total}</p>
-      </div>
-      <div className="rounded-xl border border-white/10 p-4" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">At Risk</p>
-        <p className="text-lg font-bold text-white" style={{ color: "#f87171" }}>{stats.atRisk}</p>
-      </div>
-      <div className="rounded-xl border border-white/10 p-4" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Pending</p>
-        <p className="text-lg font-bold text-white" style={{ color: "#fbbf24" }}>{stats.pendingToday}</p>
-      </div>
-      <div className="rounded-xl border border-white/10 p-4" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Revenue</p>
-        <p className="text-lg font-bold text-white" style={{ color: "#4ade80" }}>{stats.revenueTotal.toFixed(1)} TND</p>
-      </div>
-      <div className="rounded-xl border border-white/10 p-4" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Delivered</p>
-        <p className="text-lg font-bold text-white" style={{ color: "#4ade80" }}>{stats.deliveredRate}%</p>
-      </div>
+      <MiniKpiCard
+        label="Total"
+        value={stats.total}
+      />
+      <MiniKpiCard
+        label="At Risk"
+        value={stats.atRisk}
+        tier={stats.atRisk > 0 ? "high" : "neutral"}
+        emotion={stats.atRisk > 0 ? "tense" : "calm"}
+      />
+      <MiniKpiCard
+        label="Pending"
+        value={stats.pendingToday}
+        tier={stats.pendingToday > 0 ? "medium" : "neutral"}
+        emotion={stats.pendingToday > 0 ? "tense" : "calm"}
+      />
+      <MiniKpiCard
+        label="Revenue"
+        value={`${stats.revenueTotal.toFixed(1)} TND`}
+        tier="low"
+        emotion="protective"
+      />
+      <MiniKpiCard
+        label="Delivered"
+        value={`${stats.deliveredRate}%`}
+        tier={stats.deliveredRate >= 70 ? "low" : stats.deliveredRate >= 50 ? "medium" : "high"}
+        emotion={stats.deliveredRate >= 70 ? "protective" : stats.deliveredRate >= 50 ? "tense" : "tense"}
+      />
     </div>
   )
 }

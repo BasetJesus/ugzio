@@ -1,3 +1,5 @@
+import RevealOnScroll from "./RevealOnScroll"
+
 const sequences = [
   {
     icon: "🤝",
@@ -55,46 +57,50 @@ export default function PsychologySection() {
       <div className="landing-gradient-divider absolute top-0 left-5 right-5" />
 
       <div className="mx-auto max-w-6xl">
-        <div className="max-w-xl mb-12">
-          <p className="text-[11px] font-semibold tracking-widest text-white/30 uppercase mb-4">
-            WhatsApp Psychology
-          </p>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-            Mouch ay message.
-          </h2>
-          <p className="mt-4 text-sm text-white/40 leading-relaxed">
-            كل client ياخو sequence مختلف حسب comportement mte3ou. UGZIO يقرر شنوّة يبعث ومتى.
-          </p>
-        </div>
+        <RevealOnScroll>
+          <div className="max-w-xl mb-12">
+            <p className="text-[11px] font-semibold tracking-widest text-white/30 uppercase mb-4">
+              WhatsApp Psychology
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
+              Mouch ay message.
+            </h2>
+            <p className="mt-4 text-sm text-white/40 leading-relaxed">
+              كل client ياخو sequence مختلف حسب comportement mte3ou. UGZIO يقرر شنوّة يبعث ومتى.
+            </p>
+          </div>
+        </RevealOnScroll>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {sequences.map((s) => (
-            <div
-              key={s.title}
-              className={`rounded-2xl border ${s.border} ${s.bg} p-5 transition-all duration-300 hover:scale-[1.02]`}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">{s.icon}</span>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${s.badgeBg} ${s.color}`}>
-                  {s.goal}
-                </span>
-              </div>
-
-              <h3 className={`text-base font-bold ${s.color} mb-1`}>{s.title}</h3>
-              <p className="text-xs text-white/40 mb-3">{s.reason}</p>
-
-              <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 mb-3 min-h-[72px]">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <span className="h-2 w-2 rounded-full bg-green-400" />
-                  <span className="text-[9px] text-green-400/60 font-medium">Message Preview</span>
+          {sequences.map((s, i) => (
+            <RevealOnScroll key={s.title} delay={i * 100}>
+              <div
+                className={`rounded-2xl border ${s.border} ${s.bg} p-5 transition-all duration-300 hover:scale-[1.03] cursor-default`}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xl">{s.icon}</span>
+                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${s.badgeBg} ${s.color}`}>
+                    {s.goal}
+                  </span>
                 </div>
-                <p className="text-xs text-white/50 leading-relaxed">{s.preview}</p>
-              </div>
 
-              <div className="text-xs text-white/30">
-                <span className={s.color}>{s.outcome}</span>
+                <h3 className={`text-base font-bold ${s.color} mb-1`}>{s.title}</h3>
+                <p className="text-xs text-white/40 mb-3">{s.reason}</p>
+
+                <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 mb-3 min-h-[80px]">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="h-2 w-2 rounded-full bg-green-400" />
+                    <span className="text-[9px] text-green-400/60 font-medium">UGZIO • via WhatsApp</span>
+                  </div>
+                  <p className="text-xs text-white/50 leading-relaxed">{s.preview}</p>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className={`text-xs font-medium ${s.color}`}>{s.outcome}</span>
+                  <span className="text-[9px] text-white/20">WhatsApp-native</span>
+                </div>
               </div>
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
       </div>

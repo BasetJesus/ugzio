@@ -30,28 +30,46 @@ export default function WhatsAppFlowFeed() {
 
   return (
     <div className="relative">
-      <div className="landing-glass rounded-2xl p-4 min-h-[160px] flex flex-col justify-center">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+      <div className="landing-glass rounded-2xl p-4 min-h-[180px] flex flex-col justify-center">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-status-online" />
           <span className="text-[10px] font-medium text-white/40 tracking-wider uppercase">Live Feed</span>
+          <span className="text-[9px] text-green-400/40 ml-auto">online</span>
         </div>
-        {steps.map((step, i) => (
-          <div
-            key={i}
-            className={`flex items-start gap-3 transition-all duration-500 ${
-              i === current ? "opacity-100 translate-y-0" : "opacity-0 absolute -translate-y-2"
-            } ${i === current ? "relative" : ""}`}
-            style={{ display: i === current ? "flex" : "none" }}
-          >
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm ${step.bg}`}>
-              {step.icon}
-            </span>
-            <div className="min-w-0">
-              <p className={`text-sm font-semibold ${step.color}`}>{step.text}</p>
-              <p className="text-xs text-white/40 mt-0.5">{step.sub}</p>
+        <div className="relative min-h-[100px]">
+          {steps.map((step, i) => (
+            <div
+              key={i}
+              className={`transition-all duration-500 ease-out ${
+                i === current
+                  ? "opacity-100 translate-y-0 relative"
+                  : "opacity-0 absolute inset-0 pointer-events-none translate-y-3"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm ${step.bg} animate-scale-bounce`}>
+                  {step.icon}
+                </span>
+                <div className="min-w-0">
+                  <p className={`text-sm font-semibold ${step.color}`}>{step.text}</p>
+                  <p className="text-xs text-white/40 mt-0.5">{step.sub}</p>
+                  {i === 0 && (
+                    <div className="flex items-center gap-1 mt-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse-urgent" />
+                      <span className="text-[9px] text-amber-400/60 font-medium">Action required</span>
+                    </div>
+                  )}
+                  {i === 4 && (
+                    <div className="flex items-center gap-1 mt-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse-ring" />
+                      <span className="text-[9px] text-green-400/60 font-medium">Revenue protected</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )
