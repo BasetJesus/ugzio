@@ -60,7 +60,7 @@ export default function PsychologySection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">WhatsApp Intelligence</p>
-            <h2 className="section-intro-title">Chaque client merite la sequence qu'on lui envoie.</h2>
+            <h2 className="section-intro-title">Chaque client merite la sequence qu&apos;on lui envoie.</h2>
             <p className="section-intro-desc">
               Client rassuré ? Client suspect ? Client distrait ? Chacun reçoit la séquence qui lui correspond. UGZIO sait quoi envoyer et quand.
             </p>

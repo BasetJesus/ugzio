@@ -49,13 +49,13 @@ export default async function OrdersImportPage() {
                 <td className="py-2 px-3 font-mono">customerName</td>
                 <td className="py-2 px-3 text-green-400">Yes</td>
                 <td className="py-2 px-3">Ahmed Ben Ali</td>
-                <td className="py-2 px-3">Buyer's full name</td>
+                <td className="py-2 px-3">Buyer&apos;s full name</td>
               </tr>
               <tr className="border-b border-[var(--border)]/50">
                 <td className="py-2 px-3 font-mono">phone</td>
                 <td className="py-2 px-3 text-green-400">Yes</td>
                 <td className="py-2 px-3">+216 55 123 456</td>
-                <td className="py-2 px-3">Buyer's phone number</td>
+                <td className="py-2 px-3">Buyer&apos;s phone number</td>
               </tr>
               <tr className="border-b border-[var(--border)]/50">
                 <td className="py-2 px-3 font-mono">amount</td>

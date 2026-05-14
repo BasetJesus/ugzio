@@ -9,7 +9,7 @@ export default function OutcomeSection() {
         <RevealOnScroll>
           <div className="section-intro">
             <p className="section-intro-label">Résultat</p>
-            <h2 className="section-intro-title">Moins d'annulations. Moins de RTS. Plus de revenue.</h2>
+            <h2 className="section-intro-title">Moins d&apos;annulations. Moins de RTS. Plus de revenue.</h2>
           </div>
         </RevealOnScroll>
 

@@ -95,15 +95,14 @@ const EVENT_STATES: Record<string, string> = {
 }
 
 export default function OperationalFeed({ events }: Props) {
-  const [visible, setVisible] = useState<OperationEventRecord[]>([])
+  const [extraVisible, setExtraVisible] = useState<OperationEventRecord[]>([])
   const [animatingIn, setAnimatingIn] = useState<string | null>(null)
-
-  useEffect(() => {
-    setVisible(events.slice(0, 5))
-  }, [events])
+  const visible = [...events.slice(0, 5), ...extraVisible]
 
   useEffect(() => {
     if (events.length === 0) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setExtraVisible([])
     let idx = 5
     let timer: ReturnType<typeof setTimeout> | null = null
 
@@ -114,7 +113,7 @@ export default function OperationalFeed({ events }: Props) {
         const next = events[idx]
         idx++
         setAnimatingIn(next.id)
-        setVisible((prev) => [...prev, next])
+        setExtraVisible((prev) => [...prev, next])
         setTimeout(() => setAnimatingIn(null), 600)
         scheduleNext()
       }, delay)

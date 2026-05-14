@@ -42,7 +42,7 @@ export default function UgcSection() {
             <p className="section-intro-label">Témoignages</p>
             <h2 className="section-intro-title">La confiance genere des ventes.</h2>
             <p className="section-intro-desc">
-              Quand le client est satisfait, il commande a nouveau, partage son experience et ramene d'autres personnes. UGZIO construit ce cercle vertueux.
+              Quand le client est satisfait, il commande a nouveau, partage son experience et ramene d&apos;autres personnes. UGZIO construit ce cercle vertueux.
             </p>
           </div>
         </RevealOnScroll>

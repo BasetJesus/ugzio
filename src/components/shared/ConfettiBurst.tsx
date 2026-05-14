@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 interface Particle {
   id: number
@@ -15,37 +15,38 @@ interface Particle {
 
 const COLORS = ["#4ade80", "#22d3ee", "#a78bfa", "#fbbf24", "#f87171", "#34d399", "#60a5fa"]
 
+function rand(seed: number): number {
+  return ((seed * 9301 + 49297) % 233280) / 233280
+}
+
+function generateParticles(): Particle[] {
+  return Array.from({ length: 30 }, (_, i) => {
+    const s = i * 7 + 13
+    return {
+      id: i,
+      x: 40 + rand(s) * 20,
+      y: 40 + rand(s + 1) * 10,
+      color: COLORS[Math.floor(rand(s + 2) * COLORS.length)],
+      rotation: rand(s + 3) * 360,
+      size: 4 + rand(s + 4) * 6,
+      duration: 600 + rand(s + 5) * 600,
+      delay: rand(s + 6) * 100,
+    }
+  })
+}
+
 export default function ConfettiBurst({ active, onComplete }: { active: boolean; onComplete?: () => void }) {
-  const [particles, setParticles] = useState<Particle[]>([])
+  if (!active) return null
+  return <ConfettiBurstInner onComplete={onComplete} />
+}
+
+function ConfettiBurstInner({ onComplete }: { onComplete?: () => void }) {
+  const [particles] = useState(generateParticles)
 
   useEffect(() => {
-    if (!active) {
-      setParticles([])
-      return
-    }
-
-    const p: Particle[] = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      x: 40 + Math.random() * 20,
-      y: 40 + Math.random() * 10,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      rotation: Math.random() * 360,
-      size: 4 + Math.random() * 6,
-      duration: 600 + Math.random() * 600,
-      delay: Math.random() * 100,
-    }))
-
-    setParticles(p)
-
-    const timer = setTimeout(() => {
-      setParticles([])
-      onComplete?.()
-    }, 1400)
-
+    const timer = setTimeout(() => onComplete?.(), 1400)
     return () => clearTimeout(timer)
-  }, [active, onComplete])
-
-  if (particles.length === 0) return null
+  }, [onComplete])
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">

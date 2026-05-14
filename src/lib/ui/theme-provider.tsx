@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react"
+import { createContext, useContext, useEffect, useState, useCallback, useSyncExternalStore } from "react"
 import type { ThemeMode } from "./design-tokens"
 import { THEME_CLASSES, STORAGE_KEY } from "./design-tokens"
 
@@ -20,22 +20,23 @@ export function useTheme() {
   return useContext(ThemeContext)
 }
 
-function getInitialTheme(): ThemeMode {
-  if (typeof window === "undefined") return "dark"
-  const stored = localStorage.getItem(STORAGE_KEY)
-  if (stored === "light" || stored === "dark") return stored
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) return "light"
-  return "dark"
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("dark")
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setThemeState(getInitialTheme())
-    setMounted(true)
-  }, [])
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof window === "undefined") return "dark"
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored === "light" || stored === "dark") return stored
+    if (window.matchMedia?.("(prefers-color-scheme: light)").matches) return "light"
+    return "dark"
+  })
+  const mounted = useIsClient()
 
   const applyTheme = useCallback((mode: ThemeMode) => {
     const root = document.documentElement

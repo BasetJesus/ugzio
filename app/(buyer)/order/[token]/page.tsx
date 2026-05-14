@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { getBuyerOrder } from "@/services/buyer-order.service"
 import PageTracker from "@/components/shared/PageTracker"
 import { getOrCreateReferral } from "@/services/referral.service"
+import BuyerPageShell from "@/components/buyer/BuyerPageShell"
 import BuyerHero from "@/components/buyer/BuyerHero"
 import BuyerTrustBadge from "@/components/buyer/BuyerTrustBadge"
 import BuyerOrderInfo from "@/components/buyer/BuyerOrderInfo"
@@ -27,7 +28,7 @@ export default async function BuyerOrderPage({ params }: Props) {
   const referral = await getOrCreateReferral(order.orderId)
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <BuyerPageShell phase={order.phase}>
       <PageTracker page="buyer_order" meta={{ phase: order.phase, status: order.status }} />
       <BuyerHero order={order} />
       <BuyerTrustBadge sellerName={order.sellerName} trustScore={order.trustScore} />
@@ -41,6 +42,6 @@ export default async function BuyerOrderPage({ params }: Props) {
       <BuyerReferralPrompt order={order} referralCode={referral?.code ?? null} />
       <BuyerWhatsAppBar order={order} />
       <BuyerFooter />
-    </div>
+    </BuyerPageShell>
   )
 }

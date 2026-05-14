@@ -150,7 +150,7 @@ export default function LiveDemoSection() {
           <h2 className="section-intro-title">Decouvrez UGZIO en action.</h2>
 
           <p className="section-intro-desc">
-            Basculez entre les profils clients. Découvrez comment UGZIO analyse, décide et protège votre chiffre d'affaires en temps réel.
+            Basculez entre les profils clients. Découvrez comment UGZIO analyse, décide et protège votre chiffre d&apos;affaires en temps réel.
           </p>
         </div>
 

@@ -382,7 +382,7 @@ export default function StoreSetupWizard() {
                             key={i}
                             className="aspect-square rounded-[1px]"
                             style={{
-                              backgroundColor: Math.random() > 0.5 ? "var(--text-primary)" : "transparent",
+                              backgroundColor: (i % 2 === 0) ? "var(--text-primary)" : "transparent",
                               opacity: 0.3,
                             }}
                           />

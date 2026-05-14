@@ -49,7 +49,6 @@ export default function UgcTemplateSettingsClient() {
   const [formIsActive, setFormIsActive] = useState(true);
 
   async function loadTemplates() {
-    setLoading(true);
     try {
       const res = await fetch("/api/v1/settings/ugc-templates");
       if (res.ok) {
@@ -64,6 +63,7 @@ export default function UgcTemplateSettingsClient() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadTemplates();
   }, []);
 

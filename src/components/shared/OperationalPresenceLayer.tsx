@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 interface Props {
   children: React.ReactNode
@@ -9,15 +9,19 @@ interface Props {
 const IDLE_TIMEOUT_MS = 30000
 const ACTIVITY_RESET_MS = 2000
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
+}
+
 export default function OperationalPresenceLayer({ children }: Props) {
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsClient()
   const [idle, setIdle] = useState(false)
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const activityTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   useEffect(() => {
     if (!mounted) return

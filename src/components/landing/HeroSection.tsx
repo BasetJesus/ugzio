@@ -1,6 +1,7 @@
-import WhatsAppFlowFeed from "./WhatsAppFlowFeed"
 import RevealOnScroll from "./RevealOnScroll"
 import TrackedCTA from "./TrackedCTA"
+import FloatingPhone from "./FloatingPhone"
+import AnimatedWhatsAppMessage from "./AnimatedWhatsAppMessage"
 
 export default function HeroSection() {
   return (
@@ -20,14 +21,14 @@ export default function HeroSection() {
 
               <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white text-balance text-break-safe">
                 <span className="block">Les annulations tuent</span>
-                <span className="block landing-text-gradient">votre ecommerce.</span>
+                <span className="block gradient-brand-text">votre ecommerce.</span>
               </h1>
 
               <p className="mt-5 text-sm sm:text-base leading-relaxed text-white/50 content-narrow">
-                30% d'annulations. Fausses commandes. Silence acheteur. Budget qui part en RTS. Stress quotidien.
+                30% d&apos;annulations. Fausses commandes. Silence acheteur. Budget qui part en RTS. Stress quotidien.
               </p>
               <p className="mt-2 text-sm leading-relaxed text-white/40 content-narrow">
-                UGZIO analyse, confirme et sécurise chaque commande avant l'envoi — et reduit les annulations.
+                UGZIO analyse, confirme et sécurise chaque commande avant l&apos;envoi — et reduit les annulations.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-3">
@@ -63,25 +64,59 @@ export default function HeroSection() {
           </RevealOnScroll>
 
           <RevealOnScroll delay={200}>
-            <div className="relative lg:mt-0">
-              <div className="flex flex-col gap-4">
-                <WhatsAppFlowFeed />
+            <div className="relative lg:mt-0 flex flex-col items-center gap-6">
+              <FloatingPhone badge="En direct">
+                <div className="flex flex-col gap-2 pt-4 pb-6">
+                  <div className="flex items-center gap-2 px-3 mb-3">
+                    <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse-ring" />
+                    <span className="text-[10px] text-green-400/60 font-medium tracking-wide">UGZIO • Live</span>
+                  </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="landing-glass rounded-xl p-3 sm:p-4 text-center animate-hero-float-1 hover:scale-[1.03] transition-transform duration-300">
-                    <p className="text-lg sm:text-xl font-bold text-purple-400">94</p>
-                    <p className="text-[10px] text-white/40 uppercase tracking-wider">Risk Score</p>
-                  </div>
-                  <div className="landing-glass rounded-xl p-3 sm:p-4 text-center animate-hero-float-2 hover:scale-[1.03] transition-transform duration-300" style={{ animationDelay: "1s" }}>
-                    <p className="text-lg sm:text-xl font-bold text-green-400">85</p>
-                    <p className="text-[10px] text-white/40 uppercase tracking-wider">TND Saved</p>
-                  </div>
-                  <div className="landing-glass rounded-xl p-3 sm:p-4 text-center animate-hero-float-3 hover:scale-[1.03] transition-transform duration-300" style={{ animationDelay: "2s" }}>
-                    <p className="text-lg sm:text-xl font-bold text-amber-400">23</p>
-                    <p className="text-[10px] text-white/40 uppercase tracking-wider">Trust Score</p>
+                  <AnimatedWhatsAppMessage
+                    text="Nouvelle commande #4821 — 85 TND — Premier achat"
+                    time="10:32"
+                    align="left"
+                    color="bg-zinc-800"
+                    icon="📦"
+                    delay={0}
+                  />
+
+                  <AnimatedWhatsAppMessage
+                    text="Analyse du risque... Trust score: 23/100 ⚠️"
+                    time="10:32"
+                    align="right"
+                    delay={1.2}
+                    typing
+                  />
+
+                  <AnimatedWhatsAppMessage
+                    text="Salem Ahmed! Votre commande a bien été reçue ✓ On vous confirme tout ça dans 5 min"
+                    time="10:33"
+                    align="right"
+                    delay={2.4}
+                  />
+
+                  <AnimatedWhatsAppMessage
+                    text="C'est bon, je confirme! Merci 😊"
+                    time="10:38"
+                    align="left"
+                    color="bg-zinc-800"
+                    delay={3.6}
+                  />
+
+                  <AnimatedWhatsAppMessage
+                    text="✅ Commande confirmée • 85 TND sécurisés"
+                    time="10:38"
+                    align="right"
+                    delay={4.8}
+                  />
+
+                  <div className="mt-2 mx-3 rounded-lg bg-gradient-to-r from-purple-600/20 to-green-500/20 border border-purple-500/10 px-3 py-2">
+                    <p className="text-[10px] font-semibold text-green-400">+85 TND protégés</p>
+                    <p className="text-[8px] text-white/30">RTS évité • Marge préservée</p>
                   </div>
                 </div>
-              </div>
+              </FloatingPhone>
             </div>
           </RevealOnScroll>
         </div>

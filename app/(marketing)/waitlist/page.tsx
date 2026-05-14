@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from "react"
+import Link from "next/link"
 import Navbar from "@/components/landing/Navbar"
 import Footer from "@/components/landing/Footer"
 
@@ -93,13 +94,13 @@ export default function WaitlistPage() {
                   Accès prioritaire et support dédié garantis.
                 </p>
               </div>
-              <a
+              <Link
                 href="/"
                 className="mt-6 inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] landing-glow-purple"
                 style={{ backgroundColor: "#7c3aed" }}
               >
                 ← Retour à l&apos;accueil
-              </a>
+              </Link>
             </div>
           </div>
         </main>

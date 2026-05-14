@@ -16,15 +16,15 @@ const Ctx = createContext<LangCtx>({
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("tun");
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "tun"
+    const v = localStorage.getItem("ugzio_lang");
+    return (v === "tun" || v === "fr" || v === "en") ? v : "tun"
+  });
 
   useEffect(() => {
-    const v = localStorage.getItem("ugzio_lang");
-    if (v === "tun" || v === "fr" || v === "en") {
-      setLangState(v);
-      document.documentElement.dir = v === "tun" ? "rtl" : "ltr";
-    }
-  }, []);
+    document.documentElement.dir = lang === "tun" ? "rtl" : "ltr";
+  }, [lang]);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);

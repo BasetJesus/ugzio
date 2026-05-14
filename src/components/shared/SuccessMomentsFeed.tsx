@@ -33,14 +33,13 @@ const MOMENT_VERBS: Record<string, string> = {
 }
 
 export default function SuccessMomentsFeed({ moments }: Props) {
-  const [visible, setVisible] = useState<SuccessMoment[]>([])
+  const [extraVisible, setExtraVisible] = useState<SuccessMoment[]>([])
   const [animating, setAnimating] = useState<string | null>(null)
+  const visible = [...moments.slice(0, 3), ...extraVisible]
 
   useEffect(() => {
-    setVisible(moments.slice(0, 3))
-  }, [moments])
-
-  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setExtraVisible([])
     if (moments.length <= 1) return
     let idx = 3
     let timer: ReturnType<typeof setTimeout> | null = null
@@ -52,7 +51,7 @@ export default function SuccessMomentsFeed({ moments }: Props) {
         const next = moments[idx]
         idx++
         setAnimating(next.id)
-        setVisible((prev) => [...prev, next])
+        setExtraVisible((prev) => [...prev, next])
         setTimeout(() => setAnimating(null), 600)
         scheduleNext()
       }, delay)

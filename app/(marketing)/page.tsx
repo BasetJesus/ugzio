@@ -8,6 +8,8 @@ import OutcomeSection from "@/components/landing/OutcomeSection"
 import PricingSection from "@/components/landing/PricingSection"
 import FinalCtaSection from "@/components/landing/FinalCtaSection"
 import Footer from "@/components/landing/Footer"
+import PsychFlowSection from "@/components/landing/PsychFlowSection"
+import TrustMetricsSection from "@/components/landing/TrustMetricsSection"
 
 export default function LandingPage() {
   return (
@@ -15,12 +17,14 @@ export default function LandingPage() {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        <PsychFlowSection />
         <RealitySection />
         <LiveDemoSection />
         <PsychologySection />
         <UgcSection />
         <OutcomeSection />
         <PricingSection />
+        <TrustMetricsSection />
         <FinalCtaSection />
       </main>
       <Footer />

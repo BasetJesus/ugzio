@@ -32,7 +32,6 @@ export default function DeliverySettingsClient() {
   const [formIsDefault, setFormIsDefault] = useState(false);
 
   async function loadProviders() {
-    setLoading(true);
     try {
       const res = await fetch("/api/v1/settings/delivery");
       if (res.ok) {
@@ -47,6 +46,7 @@ export default function DeliverySettingsClient() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadProviders();
   }, []);
 
