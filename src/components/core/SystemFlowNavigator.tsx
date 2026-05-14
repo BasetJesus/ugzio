@@ -61,7 +61,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         })}
       </div>
 
-      <div className="pt-panel border-t border-[var(--nav-border)]">
+      <div className="pt-panel border-t border-[var(--nav-border)] space-y-1">
         <Link
           href="/inbox"
           className={`group rounded-lg px-3 py-2 text-xs font-medium transition flex items-center gap-3 ${
@@ -72,6 +72,17 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         >
           <span className="text-sm">📸</span>
           <span>{t("nav.inbox")}</span>
+        </Link>
+        <Link
+          href="/growth"
+          className={`group rounded-lg px-3 py-2 text-xs font-medium transition flex items-center gap-3 ${
+            pathname.startsWith("/growth")
+              ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+              : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
+          }`}
+        >
+          <span className="text-sm">📈</span>
+          <span>Growth</span>
         </Link>
       </div>
 

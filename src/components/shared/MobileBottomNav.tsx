@@ -16,6 +16,7 @@ const ITEMS: NavItem[] = [
   { href: "/overview", labelKey: "nav.overview", stateKey: "LIVE", icon: "\u25CF" },
   { href: "/confirm", labelKey: "nav.confirm", stateKey: "DECISION", icon: "\u25C6" },
   { href: "/inbox", labelKey: "nav.inbox", stateKey: null, icon: "\uD83D\uDCF8" },
+  { href: "/growth", labelKey: "nav.growth", stateKey: null, icon: "\uD83D\uDCC8" },
   { href: "/orders", labelKey: "nav.orders", stateKey: "HISTORY", icon: "\u25B8" },
 ]
 

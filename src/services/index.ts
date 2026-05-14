@@ -207,6 +207,11 @@ export type {
 } from "./ugc-template.service";
 
 export {
+  getGrowthMetrics,
+} from "./growth.service";
+export type { GrowthMetrics } from "./growth.service";
+
+export {
   getSellerContext,
   getDailyMomentum,
 } from "./seller-context.service";

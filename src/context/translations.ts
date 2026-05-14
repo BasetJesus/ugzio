@@ -120,6 +120,7 @@ const dict: Dict = {
   "nav.confirm": { tun: "تأكيد", fr: "Confirmer", en: "Confirm" },
   "nav.collect": { tun: "تجميع", fr: "COLLECTER", en: "COLLECT" },
   "nav.inbox": { tun: "الوارد", fr: "Boîte", en: "Inbox" },
+  "nav.growth": { tun: "نمو", fr: "Croissance", en: "Growth" },
   "nav.track": { tun: "تتبّع", fr: "SUIVRE", en: "TRACK" },
   "nav.zioshield": { tun: "ZioShield", fr: "ZioShield", en: "ZioShield" },
   "nav.success": { tun: "النجاح", fr: "Succès", en: "Success" },
