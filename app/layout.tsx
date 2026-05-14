@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono, Fraunces } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
+import { SessionProvider } from "@/lib/auth/session-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body className="min-h-dvh bg-[var(--bg-base)] text-[var(--text-primary)]">
         <ThemeProvider>
           <LanguageProvider>
-            {children}
+            <SessionProvider>
+              {children}
+            </SessionProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>
