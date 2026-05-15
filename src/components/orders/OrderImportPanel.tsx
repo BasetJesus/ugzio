@@ -2,6 +2,7 @@
 
 import { useState, useRef, DragEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 export interface ImportValidationError {
   row: number;
@@ -18,7 +19,7 @@ const REQUIRED_COLUMNS = [
   "deliveryProvider",
 ] as const;
 
-type ImportMode = "csv" | "sheets";
+type ImportMode = "csv" | "sheets" | "excel";
 type Step = "idle" | "validating" | "ready" | "importing" | "success" | "error";
 
 interface ValidationResult {
@@ -168,6 +169,55 @@ export default function OrderImportPanel() {
     }
   }
 
+  async function handleExcelFile(file: File) {
+    const name = file.name.toLowerCase();
+    if (!name.endsWith(".xlsx") && !name.endsWith(".xls")) {
+      setError("Veuillez uploader un fichier Excel (.xlsx ou .xls)");
+      return;
+    }
+
+    setFileName(file.name);
+    setError("");
+    setStep("validating");
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const csvText = XLSX.utils.sheet_to_csv(sheet);
+
+      if (csvText.length < 10) throw new Error("Le fichier semble vide");
+
+      setFileContent(csvText);
+
+      const formData = new FormData();
+      formData.append("file", new Blob([csvText], { type: "text/csv" }), file.name.replace(/\.xlsx?$/, ".csv"));
+
+      const res = await fetch("/api/v1/orders/import", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.validation) {
+        setValidation({
+          valid: data.validation.valid,
+          rowCount: data.validation.rowCount,
+          errors: data.validation.errors || [],
+        });
+        setStep(data.validation.valid ? "ready" : "error");
+      } else if (res.ok && data.importedCount !== undefined) {
+        setResult(data);
+        setStep("success");
+        router.refresh();
+      } else {
+        setError(data.error || "Échec de la validation");
+        setStep("error");
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Erreur de lecture";
+      setError(msg.includes("fetch") ? "Impossible de lire le fichier" : msg);
+      setStep("error");
+    }
+  }
+
   async function handleImport() {
     setStep("importing");
 
@@ -223,7 +273,7 @@ export default function OrderImportPanel() {
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 sm:p-8">
         <div className="text-center mb-6">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">Importer des commandes</h2>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">Ajoute tes commandes depuis un fichier ou ton Google Sheets</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">Ajoute tes commandes depuis un fichier CSV, Excel ou Google Sheets</p>
         </div>
 
         <div className="flex rounded-lg border border-[var(--border)] overflow-hidden mb-6">
@@ -246,6 +296,16 @@ export default function OrderImportPanel() {
             }`}
           >
             Google Sheets
+          </button>
+          <button
+            onClick={() => { setMode("excel"); reset(); }}
+            className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
+              mode === "excel"
+                ? "bg-[var(--accent)] text-white"
+                : "bg-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
+            }`}
+          >
+            Excel
           </button>
         </div>
 
@@ -272,6 +332,37 @@ export default function OrderImportPanel() {
               <div className="text-4xl mb-3">📄</div>
               <p className="text-sm font-medium text-[var(--text-primary)]">Dépose ton fichier CSV ici, ou clique pour naviguer</p>
               <p className="text-xs text-[var(--text-tertiary)] mt-1">Supporte : .csv</p>
+            </div>
+
+            {error && (
+              <div className="mt-4 rounded-lg border border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)] px-4 py-2 text-sm text-[var(--risk-red)]">
+                {error}
+              </div>
+            )}
+          </>
+        ) : mode === "excel" ? (
+          <>
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => { e.preventDefault(); setDragOver(false); const file = e.dataTransfer.files[0]; if (file) handleExcelFile(file); }}
+              onClick={() => fileInputRef.current?.click()}
+              className={`rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
+                dragOver
+                  ? "border-[var(--accent)] bg-[var(--accent)]/5"
+                  : "border-[var(--border)] hover:border-[var(--border)]/70"
+              }`}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={(e) => { const file = e.target.files?.[0]; if (file) handleExcelFile(file); }}
+                className="hidden"
+              />
+              <div className="text-4xl mb-3">📊</div>
+              <p className="text-sm font-medium text-[var(--text-primary)]">Dépose ton fichier Excel ici, ou clique pour naviguer</p>
+              <p className="text-xs text-[var(--text-tertiary)] mt-1">Supporte : .xlsx, .xls</p>
             </div>
 
             {error && (

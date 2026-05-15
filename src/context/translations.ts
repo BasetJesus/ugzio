@@ -126,6 +126,8 @@ const dict: Dict = {
   "nav.success": { tun: "النجاح", fr: "Succès", en: "Success" },
   "nav.blacklist": { tun: "القائمة السودا", fr: "Liste noire", en: "Blacklist" },
   "nav.overview": { tun: "نظرة عامة", fr: "Aperçu", en: "Overview" },
+  "nav.import": { tun: "استيراد", fr: "Importer", en: "Import" },
+  "nav.settings": { tun: "الإعدادات", fr: "Paramètres", en: "Settings" },
   "nav.logout": { tun: "تسجيل الخروج", fr: "Déconnexion", en: "Logout" },
   "nav.onboarding": { tun: "البداية ({n}/4)", fr: "Onboarding ({n}/4)", en: "Setup ({n}/4)" },
 

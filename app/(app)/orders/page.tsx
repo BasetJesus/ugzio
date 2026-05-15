@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
@@ -25,7 +26,15 @@ export default async function OrdersPage() {
 
   return (
     <div data-state="history" className="space-y-section">
-      <h1 className="text-display text-[var(--text-primary)]">Historique des commandes</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-display text-[var(--text-primary)]">Historique des commandes</h1>
+        <Link
+          href="/orders/import"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent)]/90"
+        >
+          Importer
+        </Link>
+      </div>
       <OrdersHeader stats={data.stats} />
       <OrdersPageClient orders={data.orders} />
     </div>
