@@ -27,8 +27,8 @@ export default function OrdersTable({ orders, totalCount }: Props) {
         <div className="h-12 w-12 rounded-full flex items-center justify-center mb-4 bg-[var(--bg-card)]">
           <span className="text-base text-[var(--text-tertiary)]">—</span>
         </div>
-        <p className="text-base font-medium text-[var(--text-primary)]">No orders yet</p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Orders will appear here once created.</p>
+        <p className="text-base font-medium text-[var(--text-primary)]">Aucune commande</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Les commandes apparaîtront ici une fois créées.</p>
       </div>
     )
   }
@@ -65,7 +65,7 @@ export default function OrdersTable({ orders, totalCount }: Props) {
           {/* Trust score + payment + delivery */}
           <div className="flex items-center justify-between gap-3 pt-3 border-t border-[var(--border)]">
             <div className="flex-1">
-              <p className="text-xs text-[var(--text-tertiary)] mb-1">Trust</p>
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">Confiance</p>
               <TrustScoreMeter score={order.trustScore} />
             </div>
             <div className="text-right">
@@ -81,7 +81,7 @@ export default function OrdersTable({ orders, totalCount }: Props) {
       ))}
 
       <p className="text-center text-sm text-[var(--text-tertiary)] pt-2">
-        {totalCount} order{totalCount !== 1 ? "s" : ""}
+        {totalCount} commande{totalCount !== 1 ? "s" : ""}
       </p>
     </div>
   )

@@ -25,7 +25,7 @@ export default async function OrdersPage() {
 
   return (
     <div data-state="history" className="space-y-section">
-      <h1 className="text-display text-[var(--text-primary)]">Order History</h1>
+      <h1 className="text-display text-[var(--text-primary)]">Historique des commandes</h1>
       <OrdersHeader stats={data.stats} />
       <OrdersPageClient orders={data.orders} />
     </div>

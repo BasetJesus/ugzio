@@ -16,11 +16,11 @@ interface UgcTemplate {
 }
 
 const REQUEST_TYPES: { value: string; label: string }[] = [
-  { value: "photo_review", label: "Photo Review" },
-  { value: "instagram_story", label: "Instagram Story" },
-  { value: "tiktok_unboxing", label: "TikTok Unboxing" },
-  { value: "written_testimonial", label: "Written Testimonial" },
-  { value: "whatsapp_feedback", label: "WhatsApp Feedback" },
+  { value: "photo_review", label: "Avis photo" },
+  { value: "instagram_story", label: "Story Instagram" },
+  { value: "tiktok_unboxing", label: "Déballage TikTok" },
+  { value: "written_testimonial", label: "Témoignage écrit" },
+  { value: "whatsapp_feedback", label: "Avis WhatsApp" },
 ];
 
 const REQUEST_TYPE_ICONS: Record<string, string> = {
@@ -56,7 +56,7 @@ export default function UgcTemplateSettingsClient() {
         setTemplates(data.templates || []);
       }
     } catch {
-      setError("Failed to load templates");
+      setError("Échec du chargement des modèles");
     } finally {
       setLoading(false);
     }
@@ -94,8 +94,8 @@ export default function UgcTemplateSettingsClient() {
   }
 
   async function handleCreate() {
-    if (!formName.trim()) { setError("Template name is required"); return; }
-    if (!formMessageBody.trim()) { setError("Message body is required"); return; }
+    if (!formName.trim()) { setError("Le nom du modèle est requis"); return; }
+    if (!formMessageBody.trim()) { setError("Le message est requis"); return; }
 
     setSaving(true);
     setError("");
@@ -116,7 +116,7 @@ export default function UgcTemplateSettingsClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Failed to create template");
+        setError(data.error || "Échec de création du modèle");
         return;
       }
 
@@ -124,14 +124,14 @@ export default function UgcTemplateSettingsClient() {
       loadTemplates();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleUpdate() {
-    if (!selectedId || !formName.trim()) { setError("Template name is required"); return; }
+    if (!selectedId || !formName.trim()) { setError("Le nom du modèle est requis"); return; }
 
     setSaving(true);
     setError("");
@@ -151,7 +151,7 @@ export default function UgcTemplateSettingsClient() {
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to update template");
+        setError(data.error || "Échec de mise à jour du modèle");
         return;
       }
 
@@ -159,14 +159,14 @@ export default function UgcTemplateSettingsClient() {
       loadTemplates();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this template?")) return;
+    if (!confirm("Supprimer ce modèle ?")) return;
 
     try {
       const res = await fetch(`/api/v1/settings/ugc-templates/${id}`, {
@@ -175,22 +175,22 @@ export default function UgcTemplateSettingsClient() {
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to delete");
+        setError(data.error || "Échec de suppression");
         return;
       }
 
       loadTemplates();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     }
   }
 
   const VARIABLE_BUTTONS = [
-    { label: "Buyer Name", value: "buyerName" },
-    { label: "Product", value: "product" },
-    { label: "Order Amount", value: "orderAmount" },
-    { label: "Incentive", value: "incentive" },
+    { label: "Nom acheteur", value: "buyerName" },
+    { label: "Produit", value: "product" },
+    { label: "Montant commande", value: "orderAmount" },
+    { label: "Incitation", value: "incentive" },
   ];
 
   if (view === "create" || view === "edit") {
@@ -198,13 +198,13 @@ export default function UgcTemplateSettingsClient() {
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-            {view === "create" ? "Add UGC Template" : "Edit Template"}
+            {view === "create" ? "Ajouter un modèle" : "Modifier le modèle"}
           </h2>
           <button
             onClick={() => setView("list")}
             className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
           >
-            ← Back
+            ← Retour
           </button>
         </div>
 
@@ -217,20 +217,20 @@ export default function UgcTemplateSettingsClient() {
         <div className="space-y-4 max-w-[32rem]">
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Template Name *
+              Nom du modèle *
             </label>
             <input
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              placeholder="e.g., Photo with 15 TND incentive"
+              placeholder="ex: Photo avec 15 TND d'incitation"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Request Type *
+              Type de demande *
             </label>
             <select
               value={formRequestType}
@@ -247,7 +247,7 @@ export default function UgcTemplateSettingsClient() {
 
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Message Body *
+              Message *
             </label>
             <div className="flex flex-wrap gap-1 mb-2">
               {VARIABLE_BUTTONS.map((v) => (
@@ -272,13 +272,13 @@ export default function UgcTemplateSettingsClient() {
 
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Incentive (optional)
+              Incitation (optionnel)
             </label>
             <input
               type="text"
               value={formIncentive}
               onChange={(e) => setFormIncentive(e.target.value)}
-              placeholder="e.g., 15 TND, 20 TND, shoutout"
+              placeholder="ex: 15 TND, 20 TND, mention"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
             />
           </div>
@@ -290,7 +290,7 @@ export default function UgcTemplateSettingsClient() {
               onChange={(e) => setFormIsActive(e.target.checked)}
               className="rounded border-[var(--border)] bg-[var(--bg-surface)]"
             />
-            <span className="text-sm text-[var(--text-secondary)]">Active (used as default for new orders)</span>
+            <span className="text-sm text-[var(--text-secondary)]">Actif (utilisé par défaut pour les nouvelles commandes)</span>
           </label>
 
           <div className="flex gap-3 pt-2">
@@ -298,14 +298,14 @@ export default function UgcTemplateSettingsClient() {
               onClick={() => setView("list")}
               className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--border)]/30 transition-colors"
             >
-              Cancel
+              Annuler
             </button>
             <button
               onClick={view === "create" ? handleCreate : handleUpdate}
               disabled={saving}
               className="flex-1 rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
             >
-              {saving ? "Saving..." : view === "create" ? "Create Template" : "Update"}
+              {saving ? "Enregistrement..." : view === "create" ? "Créer le modèle" : "Mettre à jour"}
             </button>
           </div>
         </div>
@@ -317,16 +317,16 @@ export default function UgcTemplateSettingsClient() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">UGC Request Templates</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Modèles de demande UGC</h2>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-            Customize the WhatsApp messages sent to buyers 72h after delivery
+            Personnalisez les messages WhatsApp envoyés aux acheteurs 72h après la livraison
           </p>
         </div>
         <button
           onClick={openCreate}
           className="rounded-lg bg-[var(--accent)] px-4 py-2 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
         >
-          + Add Template
+          + Ajouter un modèle
         </button>
       </div>
 
@@ -339,23 +339,23 @@ export default function UgcTemplateSettingsClient() {
       {loading ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="animate-pulse text-xl text-[var(--text-tertiary)]">◎</div>
-          <p className="text-sm text-[var(--text-tertiary)] mt-2">Loading...</p>
+          <p className="text-sm text-[var(--text-tertiary)] mt-2">Chargement...</p>
         </div>
       ) : templates.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="text-4xl mb-3 text-[var(--text-tertiary)]">💬</div>
-          <h3 className="text-base font-semibold text-[var(--text-primary)]">No UGC templates configured</h3>
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">Aucun modèle UGC configuré</h3>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Create templates to customize the WhatsApp message buyers receive 72h after delivery
+            Créez des modèles pour personnaliser le message WhatsApp des acheteurs 72h après la livraison
           </p>
           <button
             onClick={openCreate}
             className="mt-4 rounded-lg bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
           >
-            Create Your First Template
+            Créer votre premier modèle
           </button>
           <p className="text-xs text-[var(--text-tertiary)] mt-3">
-            Uses hardcoded default message if no templates are configured
+            Utilise un message par défaut si aucun modèle n'est configuré
           </p>
         </div>
       ) : (
@@ -376,7 +376,7 @@ export default function UgcTemplateSettingsClient() {
                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{t.name}</h3>
                     {t.isActive && (
                       <span className="rounded-full bg-[var(--accent)]/20 px-2 py-0.5 text-[9px] font-medium text-[var(--accent)]">
-                        Active
+                        Actif
                       </span>
                     )}
                   </div>
@@ -397,13 +397,15 @@ export default function UgcTemplateSettingsClient() {
                     onClick={() => openEdit(t)}
                     className="rounded px-3 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--border)] transition-colors"
                   >
-                    Edit
+Modifier
+                    
                   </button>
                   <button
                     onClick={() => handleDelete(t.id)}
                     className="rounded px-3 py-1 text-xs text-[var(--risk-red)] hover:bg-[var(--kpi-red-bg)] transition-colors"
                   >
-                    Delete
+Supprimer
+                    
                   </button>
                 </div>
               </div>
@@ -414,13 +416,13 @@ export default function UgcTemplateSettingsClient() {
 
       <div className="rounded-lg bg-[var(--bg-surface)] p-4">
         <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-          Template variables
+          Variables du modèle
         </p>
         <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
-          <li>• <code className="text-[var(--accent)]">{`{{buyerName}}`}</code> — Buyer&apos;s name (e.g., Mohamed)</li>
-          <li>• <code className="text-[var(--accent)]">{`{{product}}`}</code> — Product name (e.g., TV Samsung 55&quot;)</li>
-          <li>• <code className="text-[var(--accent)]">{`{{orderAmount}}`}</code> — Order amount (e.g., 1200)</li>
-          <li>• <code className="text-[var(--accent)]">{`{{incentive}}`}</code> — Incentive value from this template</li>
+          <li>• <code className="text-[var(--accent)]">{`{{buyerName}}`}</code> — Nom de l'acheteur (ex: Mohamed)</li>
+          <li>• <code className="text-[var(--accent)]">{`{{product}}`}</code> — Nom du produit (ex: TV Samsung 55&quot;)</li>
+          <li>• <code className="text-[var(--accent)]">{`{{orderAmount}}`}</code> — Montant de la commande (ex: 1200)</li>
+          <li>• <code className="text-[var(--accent)]">{`{{incentive}}`}</code> — Valeur de l'incitation de ce modèle</li>
         </ul>
       </div>
     </div>

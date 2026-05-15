@@ -49,7 +49,7 @@ export default function RegisterPage() {
             <span className="text-[var(--text-primary)]">UGZIO</span>
           </span>
         </p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Create your account</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Crée ton compte</p>
       </div>
 
       {error && (
@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
       <div>
         <label htmlFor="name" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
-          Name
+          Nom
         </label>
         <input
           id="name"
@@ -69,13 +69,13 @@ export default function RegisterPage() {
           required
           autoComplete="name"
           className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
-          placeholder="Your name"
+          placeholder="Ton nom"
         />
       </div>
 
       <div>
         <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
-          Email
+          Adresse email
         </label>
         <input
           id="email"
@@ -84,13 +84,13 @@ export default function RegisterPage() {
           required
           autoComplete="email"
           className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
-          placeholder="you@example.com"
+          placeholder="email@exemple.com"
         />
       </div>
 
       <div>
         <label htmlFor="password" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
-          Password
+          Mot de passe
         </label>
         <input
           id="password"
@@ -108,13 +108,13 @@ export default function RegisterPage() {
         disabled={loading}
         className="w-full rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
       >
-        {loading ? "Creating account..." : "Create account"}
+        {loading ? "Création du compte..." : "Créer mon compte"}
       </button>
 
       <p className="text-center text-xs text-[var(--text-tertiary)]">
-        Already have an account?{" "}
+        Déjà un compte ?{" "}
         <Link href="/login" className="text-[var(--accent)] hover:underline">
-          Sign in
+          Se connecter
         </Link>
       </p>
     </form>

@@ -39,7 +39,7 @@ export default function DeliverySettingsClient() {
         setProviders(data.providers || []);
       }
     } catch {
-      setError("Failed to load providers");
+      setError("Échec du chargement des transporteurs");
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function DeliverySettingsClient() {
 
   async function handleCreate() {
     if (!formName.trim()) {
-      setError("Provider name is required");
+      setError("Le nom du transporteur est requis");
       return;
     }
 
@@ -95,7 +95,7 @@ export default function DeliverySettingsClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Failed to create provider");
+        setError(data.error || "Échec de création du transporteur");
         return;
       }
 
@@ -111,7 +111,7 @@ export default function DeliverySettingsClient() {
       loadProviders();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     } finally {
       setSaving(false);
     }
@@ -119,7 +119,7 @@ export default function DeliverySettingsClient() {
 
   async function handleUpdate() {
     if (!selectedId || !formName.trim()) {
-      setError("Provider name is required");
+      setError("Le nom du transporteur est requis");
       return;
     }
 
@@ -141,7 +141,7 @@ export default function DeliverySettingsClient() {
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to update provider");
+        setError(data.error || "Échec de mise à jour du transporteur");
         return;
       }
 
@@ -149,14 +149,14 @@ export default function DeliverySettingsClient() {
       loadProviders();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this delivery provider?")) return;
+    if (!confirm("Supprimer ce transporteur ?")) return;
 
     try {
       const res = await fetch(`/api/v1/settings/delivery/${id}`, {
@@ -165,14 +165,14 @@ export default function DeliverySettingsClient() {
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to delete");
+        setError(data.error || "Échec de suppression");
         return;
       }
 
       loadProviders();
       router.refresh();
     } catch {
-      setError("Network error");
+      setError("Erreur réseau");
     }
   }
 
@@ -181,13 +181,13 @@ export default function DeliverySettingsClient() {
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-            {view === "create" ? "Add Delivery Provider" : "Edit Provider"}
+            {view === "create" ? "Ajouter un transporteur" : "Modifier le transporteur"}
           </h2>
           <button
             onClick={() => setView("list")}
             className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
           >
-            ← Back
+            ← Retour
           </button>
         </div>
 
@@ -200,13 +200,13 @@ export default function DeliverySettingsClient() {
         <div className="space-y-4 max-w-[28rem]">
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Provider Name *
+              Nom du transporteur *
             </label>
             <input
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              placeholder="e.g., Aramex, Poste Tunisienne"
+              placeholder="ex: Aramex, Poste Tunisienne"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
             />
           </div>
@@ -225,7 +225,7 @@ export default function DeliverySettingsClient() {
             </div>
             <div>
               <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-                Avg Delivery Days
+                Jours livraison moy.
               </label>
               <input
                 type="number"
@@ -238,13 +238,13 @@ export default function DeliverySettingsClient() {
 
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-              Contact Success Rate (%) (optional)
+              Taux de succès contact (%) (optionnel)
             </label>
             <input
               type="number"
               value={formSuccessRate}
               onChange={(e) => setFormSuccessRate(e.target.value)}
-              placeholder="e.g., 75"
+              placeholder="ex: 75"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]"
             />
           </div>
@@ -256,7 +256,7 @@ export default function DeliverySettingsClient() {
               onChange={(e) => setFormIsDefault(e.target.checked)}
               className="rounded border-[var(--border)] bg-[var(--bg-surface)]"
             />
-            <span className="text-sm text-[var(--text-secondary)]">Set as default provider</span>
+            <span className="text-sm text-[var(--text-secondary)]">Définir comme transporteur par défaut</span>
           </label>
 
           <div className="flex gap-3 pt-2">
@@ -264,14 +264,14 @@ export default function DeliverySettingsClient() {
               onClick={() => setView("list")}
               className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--border)]/30 transition-colors"
             >
-              Cancel
+              Annuler
             </button>
             <button
               onClick={view === "create" ? handleCreate : handleUpdate}
               disabled={saving}
               className="flex-1 rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
             >
-              {saving ? "Saving..." : view === "create" ? "Create Provider" : "Update"}
+              {saving ? "Enregistrement..." : view === "create" ? "Créer le transporteur" : "Mettre à jour"}
             </button>
           </div>
         </div>
@@ -283,16 +283,16 @@ export default function DeliverySettingsClient() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Delivery Providers</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Transporteurs</h2>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-            Configure your delivery economics for accurate revenue at risk calculations
+            Configurez vos coûts de livraison pour des calculs précis du revenu en risque
           </p>
         </div>
         <button
           onClick={openCreate}
           className="rounded-lg bg-[var(--accent)] px-4 py-2 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
         >
-          + Add Provider
+          + Ajouter un transporteur
         </button>
       </div>
 
@@ -305,23 +305,23 @@ export default function DeliverySettingsClient() {
       {loading ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="animate-pulse text-xl text-[var(--text-tertiary)]">◎</div>
-          <p className="text-sm text-[var(--text-tertiary)] mt-2">Loading...</p>
+          <p className="text-sm text-[var(--text-tertiary)] mt-2">Chargement...</p>
         </div>
       ) : providers.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="text-4xl mb-3 text-[var(--text-tertiary)]">◇</div>
-          <h3 className="text-base font-semibold text-[var(--text-primary)]">No delivery providers configured</h3>
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">Aucun transporteur configuré</h3>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Add your delivery providers to calculate accurate RTS costs
+            Ajoutez vos transporteurs pour calculer les coûts RTS précis
           </p>
           <button
             onClick={openCreate}
             className="mt-4 rounded-lg bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
           >
-            Add Your First Provider
+            Ajouter votre premier transporteur
           </button>
           <p className="text-xs text-[var(--text-tertiary)] mt-3">
-            Using default: 15 TND RTS cost, 3 day delivery
+            Valeurs par défaut : 15 TND coût RTS, 3 jours livraison
           </p>
         </div>
       ) : (
@@ -341,27 +341,27 @@ export default function DeliverySettingsClient() {
                     <h3 className="text-sm font-semibold text-[var(--text-primary)]">{p.name}</h3>
                     {p.isDefault && (
                       <span className="rounded-full bg-[var(--accent)]/20 px-2 py-0.5 text-[9px] font-medium text-[var(--accent)]">
-                        Default
+Défaut
                       </span>
                     )}
                   </div>
                   <div className="flex flex-wrap gap-4 mt-2">
                     <div>
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">RTS Cost</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Coût RTS</p>
                       <p className="text-sm font-medium text-[var(--text-primary)]">{p.rtsCostPerFailure} TND</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Delivery</p>
-                      <p className="text-sm font-medium text-[var(--text-primary)]">{p.avgDeliveryDays} days</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Livraison</p>
+                      <p className="text-sm font-medium text-[var(--text-primary)]">{p.avgDeliveryDays} jours</p>
                     </div>
                     {p.contactSuccessRate !== null && (
                       <div>
-                        <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Success Rate</p>
+                        <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Taux succès</p>
                         <p className="text-sm font-medium text-[var(--text-primary)]">{p.contactSuccessRate}%</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Linked Orders</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Commandes liées</p>
                       <p className="text-sm font-medium text-[var(--text-primary)]">{p.orderCount}</p>
                     </div>
                   </div>
@@ -371,14 +371,14 @@ export default function DeliverySettingsClient() {
                     onClick={() => openEdit(p)}
                     className="rounded px-3 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--border)] transition-colors"
                   >
-                    Edit
+Modifier
                   </button>
                   {p.orderCount === 0 && (
                     <button
                       onClick={() => handleDelete(p.id)}
                       className="rounded px-3 py-1 text-xs text-[var(--risk-red)] hover:bg-[var(--kpi-red-bg)] transition-colors"
                     >
-                      Delete
+Supprimer
                     </button>
                   )}
                 </div>
@@ -390,12 +390,12 @@ export default function DeliverySettingsClient() {
 
       <div className="rounded-lg bg-[var(--bg-surface)] p-4">
         <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-          How this is used
+          Comment c'est utilisé
         </p>
         <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
-          <li>• RTS Cost = amount you lose per return-to-sender (shipping + packaging)</li>
-          <li>• Used to calculate &ldquo;estimated loss prevented&rdquo; when you cancel risky orders</li>
-          <li>• Used with risk score to calculate &ldquo;revenue at risk&rdquo; for each order</li>
+          <li>• Coût RTS = montant perdu par retour (transport + emballage)</li>
+          <li>• Utilisé pour calculer les &ldquo;pertes évitées&rdquo; quand vous annulez des commandes risquées</li>
+          <li>• Utilisé avec le score de risque pour calculer le &ldquo;revenu en risque&rdquo; de chaque commande</li>
         </ul>
       </div>
     </div>

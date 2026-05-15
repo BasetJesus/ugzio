@@ -58,20 +58,20 @@ export default async function ConfirmPage() {
     <OperationalPresenceLayer>
     <div data-state="decision" className="space-y-section">
       <SystemNarrative
-        title={needsAttention ? "Orders need you" : "Decision Queue"}
+        title={needsAttention ? "Commandes en attente" : "File de décision"}
         narrative={
           needsAttention
-            ? `${queue.pendingCount} orders pending — ${highRiskItems.length} at high risk, ${revenueAtRisk.toFixed(0)} TND exposed`
-            : "All orders have been reviewed — no pending decisions"
+            ? `${queue.pendingCount} commandes en attente — ${highRiskItems.length} à risque élevé, ${revenueAtRisk.toFixed(0)} TND exposés`
+            : "Toutes les commandes ont été vérifiées — aucune décision en attente"
         }
         emotion={needsAttention ? "tense" : "calm"}
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label="Revenue at risk" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" emotion="tense" />
-        <MiniKpiCard label="High risk orders" value={highRiskItems.length} tier="medium" />
-        <MiniKpiCard label="Pending confirmation" value={queue.pendingCount} tier="neutral" />
-        <MiniKpiCard label="Loss prevented" value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
+        <MiniKpiCard label="Revenu en risque" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" emotion="tense" />
+        <MiniKpiCard label="Commandes à risque" value={highRiskItems.length} tier="medium" />
+        <MiniKpiCard label="En attente" value={queue.pendingCount} tier="neutral" />
+        <MiniKpiCard label="Pertes évitées" value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
       </div>
 
       <ConfirmationPanel

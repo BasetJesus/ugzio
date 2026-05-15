@@ -91,44 +91,44 @@ export default async function OverviewPage() {
     <OperationalPresenceLayer>
     <div className="space-y-section" data-state="live">
       <SystemNarrative
-        title={tense ? "Revenue at risk" : "Live Revenue Stream"}
+        title={tense ? "Revenu en risque" : "Revenu en direct"}
         narrative={
           tense
-            ? `${revenueAtRisk.toFixed(0)} TND exposed — ${needsAction} orders need your attention`
+            ? `${revenueAtRisk.toFixed(0)} TND exposés — ${needsAction} commandes nécessitent votre attention`
             : hasOutcomes
-            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protected today — ${needsAction} orders in queue`
-            : sellerContext?.narrative ?? "No active risks — system monitoring incoming orders"
+            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protégés aujourd'hui — ${needsAction} commandes en attente`
+            : sellerContext?.narrative ?? "Aucun risque actif — le système surveille les nouvelles commandes"
         }
         emotion={tense ? "tense" : "protective"}
         sellerStyle={sellerStyle}
       />
 
-      <SectionHeader icon="🛡️" label="Protect" subtitle={revenueAtRisk > 0 ? `${revenueAtRisk.toFixed(0)} TND at risk` : undefined} />
+      <SectionHeader icon="🛡️" label="Protection" subtitle={revenueAtRisk > 0 ? `${revenueAtRisk.toFixed(0)} TND en risque` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-panel">
         <KpiCard
-          label="Revenue at risk"
+          label="Revenu en risque"
           value={`${revenueAtRisk.toFixed(0)} TND`}
           tier="high"
           emotion={tense ? "tense" : "calm"}
         >
-          {tense && <p className="text-[10px] text-red-400/60 mt-1">⚡ Needs immediate attention</p>}
+          {tense && <p className="text-[10px] text-red-400/60 mt-1">⚡ Nécessite une action immédiate</p>}
         </KpiCard>
         <KpiCard
-          label="Orders needing action"
+          label="Commandes à traiter"
           value={needsAction}
           tier={needsAction > 0 ? "medium" : "low"}
           emotion={needsAction > 0 ? "tense" : "calm"}
         >
-          {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">⚠️ Pending decisions</p>}
+          {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">⚠️ Décisions en attente</p>}
         </KpiCard>
         <KpiCard
-          label="Protection status"
+          label="État de protection"
           value={revenueAtRisk > 0 ? "Active" : "Stable"}
           tier={revenueAtRisk > 0 ? "low" : "neutral"}
           emotion={revenueAtRisk > 0 ? "protective" : "calm"}
         >
-          {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">🛡️ All protected</p>}
+          {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">🛡️ Tout est protégé</p>}
         </KpiCard>
       </div>
 
@@ -142,12 +142,12 @@ export default async function OverviewPage() {
 
       {hasOutcomes && (
         <div>
-          <p className="text-caption text-[var(--text-tertiary)] mb-3">Today&apos;s Outcomes</p>
+          <p className="text-caption text-[var(--text-tertiary)] mb-3">Résultats du jour</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-            <MiniKpiCard label="Revenue Protected" value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
-            <MiniKpiCard label="RTS Loss Prevented" value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
-            <MiniKpiCard label="Confirmation Rate" value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
-            <MiniKpiCard label="Actions Taken" value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
+            <MiniKpiCard label="Revenu protégé" value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
+            <MiniKpiCard label="Pertes RTS évitées" value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
+            <MiniKpiCard label="Taux de confirmation" value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
+            <MiniKpiCard label="Actions prises" value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
           </div>
         </div>
       )}
@@ -159,12 +159,12 @@ export default async function OverviewPage() {
           </div>
           <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            <Link href="/confirm" className="text-[var(--success-green)] hover:underline">Go to confirmation queue</Link> to start protecting revenue
+            <Link href="/confirm" className="text-[var(--success-green)] hover:underline">Va à la file de confirmation</Link> pour commencer à protéger ton revenu
           </p>
         </div>
       )}
 
-      <SectionHeader icon="⚡" label="Act" subtitle={needsAction > 0 ? `${needsAction} pending` : undefined} />
+      <SectionHeader icon="⚡" label="Agir" subtitle={needsAction > 0 ? `${needsAction} en attente` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
         {sellerContext && (
@@ -193,7 +193,7 @@ export default async function OverviewPage() {
         </div>
       </div>
 
-      <SectionHeader icon="📈" label="Grow" />
+      <SectionHeader icon="📈" label="Croissance" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
         {sellerContext && (

@@ -77,8 +77,8 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
     return (
       <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 text-center">
         <p className="text-lg mb-1">🎤</p>
-        <p className="text-xs font-medium text-[var(--success-green)]">Voice note sent to {buyerName}</p>
-        <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{orderAmount.toFixed(0)} TND order</p>
+        <p className="text-xs font-medium text-[var(--success-green)]">Note vocale envoyée à {buyerName}</p>
+        <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{orderAmount.toFixed(0)} TND</p>
       </div>
     )
   }
@@ -89,7 +89,7 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
         <div className="flex items-center gap-2">
           <span className="text-sm">🎤</span>
           <div>
-            <p className="text-xs font-medium text-[var(--text-primary)]">Voice confirmation</p>
+            <p className="text-xs font-medium text-[var(--text-primary)]">Confirmation vocale</p>
             <p className="text-[9px] text-[var(--text-tertiary)]">{buyerName} · {orderAmount.toFixed(0)} TND</p>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
             </div>
           )}
           {!recording && (
-            <p className="text-xs text-[var(--text-tertiary)]">Tap to record a voice confirmation</p>
+            <p className="text-xs text-[var(--text-tertiary)]">Appuyez pour enregistrer une confirmation vocale</p>
           )}
         </div>
       )}
@@ -135,14 +135,14 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
               onClick={() => { setAudioUrl(null); chunks.current = []; setDuration(0); }}
               className="rounded-lg border border-[var(--border)] py-2 text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
             >
-              Re-record
+              Ré-enregistrer
             </button>
             <button
               onClick={handleSend}
               disabled={sending}
               className="rounded-lg bg-emerald-600 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-60 transition-all"
             >
-              {sending ? "Sending..." : "Send as voice"}
+              {sending ? "Envoi..." : "Envoyer"}
             </button>
           </div>
         </div>

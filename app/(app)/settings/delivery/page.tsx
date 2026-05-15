@@ -21,26 +21,26 @@ export default async function DeliverySettingsPage() {
           href="/overview"
           className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
         >
-          ← Back to Overview
-        </Link>
-      </div>
+          ← Retour au tableau de bord
+          </Link>
+        </div>
 
       <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">Settings</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">Configure your delivery economics</p>
+        <h1 className="text-xl font-bold text-[var(--text-primary)]">Paramètres</h1>
+        <p className="text-xs text-[var(--text-secondary)] mt-0.5">Configure tes coûts de livraison</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 px-4 py-3">
-          <p className="text-[10px] text-[var(--accent)] uppercase tracking-wider font-medium">Active</p>
-          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Delivery Providers</p>
+          <p className="text-[10px] text-[var(--accent)] uppercase tracking-wider font-medium">Actif</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Transporteurs</p>
         </div>
         <Link
           href="/orders/import"
           className="rounded-lg bg-[var(--bg-card)] border border-[var(--border)] px-4 py-3 hover:border-[var(--border)]/70 transition-colors"
         >
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Import</p>
-          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Orders CSV</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Commandes CSV</p>
         </Link>
       </div>
 

@@ -10,9 +10,9 @@ function LoginForm() {
   const urlError = searchParams.get("error");
   const [error, setError] = useState(
     urlError === "CredentialsSignin"
-      ? "Invalid email or password"
+      ? "Email ou mot de passe incorrect"
       : urlError
-        ? "Authentication failed. Please try again."
+        ? "Échec de l'authentification. Veuillez réessayer."
         : "",
   );
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ function LoginForm() {
             <span className="text-[var(--text-primary)]">UGZIO</span>
           </span>
         </p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Sign in to your account</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Connecte-toi à ton compte</p>
       </div>
 
       {error && (
@@ -68,7 +68,7 @@ function LoginForm() {
 
       <div>
         <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
-          Email
+          Adresse email
         </label>
         <input
           id="email"
@@ -77,13 +77,13 @@ function LoginForm() {
           required
           autoComplete="email"
           className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition focus:border-[var(--accent)]"
-          placeholder="you@example.com"
+          placeholder="email@exemple.com"
         />
       </div>
 
       <div>
         <label htmlFor="password" className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
-          Password
+          Mot de passe
         </label>
         <input
           id="password"
@@ -101,13 +101,13 @@ function LoginForm() {
         disabled={loading}
         className="w-full rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
       >
-        {loading ? "Signing in..." : "Sign in"}
+        {loading ? "Connexion..." : "Se connecter"}
       </button>
 
       <p className="text-center text-xs text-[var(--text-tertiary)]">
-        Don&apos;t have an account?{" "}
+        Pas encore de compte ?{" "}
         <Link href="/register" className="text-[var(--accent)] hover:underline">
-          Register
+          Créer un compte
         </Link>
       </p>
     </form>

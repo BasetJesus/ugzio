@@ -21,13 +21,13 @@ export default async function UgcSettingsPage() {
           href="/overview"
           className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
         >
-          ← Back to Overview
-        </Link>
-      </div>
+          ← Retour au tableau de bord
+          </Link>
+        </div>
 
       <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">Settings</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">Manage your UGC request templates</p>
+        <h1 className="text-xl font-bold text-[var(--text-primary)]">Paramètres</h1>
+        <p className="text-xs text-[var(--text-secondary)] mt-0.5">Gère tes templates de demande UGC</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -35,12 +35,12 @@ export default async function UgcSettingsPage() {
           href="/settings/delivery"
           className="rounded-lg bg-[var(--bg-card)] border border-[var(--border)] px-4 py-3 hover:border-[var(--border)]/70 transition-colors"
         >
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Delivery</p>
-          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Providers</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Livraison</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Transporteurs</p>
         </Link>
         <div className="rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 px-4 py-3">
-          <p className="text-[10px] text-[var(--accent)] uppercase tracking-wider font-medium">Active</p>
-          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">UGC Templates</p>
+          <p className="text-[10px] text-[var(--accent)] uppercase tracking-wider font-medium">Actif</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Templates UGC</p>
         </div>
       </div>
 

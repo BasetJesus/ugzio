@@ -25,10 +25,10 @@ function initials(name: string): string {
 
 function impactMessage(action: string, item: ConfirmationQueueItem): string {
   switch (action) {
-    case "confirm": return `+${item.amount.toFixed(0)} TND secured`;
-    case "retry": return "Risk neutralized";
-    case "cancel": return "Revenue protected";
-    default: return "Action completed";
+    case "confirm": return `+${item.amount.toFixed(0)} TND sécurisés`;
+    case "retry": return "Risque neutralisé";
+    case "cancel": return "Revenu protégé";
+    default: return "Action terminée";
   }
 }
 
@@ -44,18 +44,18 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
 
   if (item.riskLevel === "high") {
     signals.push({
-      label: "Risk score",
-      detail: item.trustScore < 40 ? "High — first-time buyer pattern detected" : "High — multiple risk signals",
+      label: "Score de risque",
+      detail: item.trustScore < 40 ? "Élevé — profil de premier achat détecté" : "Élevé — multiples signaux de risque",
     });
     if (item.amount > 150) {
-      signals.push({ label: "Amount threshold", detail: "Order value exceeds 150 TND safe threshold" });
+      signals.push({ label: "Seuil de montant", detail: "La commande dépasse le seuil de sécurité de 150 TND" });
     }
-    signals.push({ label: "Delivery risk", detail: "Above average RTS probability based on buyer profile" });
+    signals.push({ label: "Risque livraison", detail: "Probabilité RTS au-dessus de la moyenne" });
   } else if (item.riskLevel === "medium") {
-    signals.push({ label: "Risk score", detail: "Moderate — some risk indicators present" });
-    signals.push({ label: "Delivery risk", detail: "Standard delivery profile with moderate concerns" });
+    signals.push({ label: "Score de risque", detail: "Modéré — quelques indicateurs de risque présents" });
+    signals.push({ label: "Risque livraison", detail: "Profil de livraison standard avec quelques préoccupations" });
   } else {
-    signals.push({ label: "Risk score", detail: "Low — no significant risk signals" });
+    signals.push({ label: "Score de risque", detail: "Faible — aucun signal de risque significatif" });
   }
 
   return (
@@ -89,10 +89,10 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
 
             <div className="rounded-xl border p-4 border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]">
               <p className="text-[10px] text-[var(--risk-red)] font-medium uppercase tracking-wider mb-1">
-                If you do nothing
+                Si tu ne fais rien
               </p>
               <p className="text-sm font-semibold text-[var(--risk-red)]">
-                Estimated loss: {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
+                Perte estimée : {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
               </p>
             </div>
 
@@ -159,19 +159,19 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
                 onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
                 className="rounded-lg bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Secure
+                Sécuriser
               </button>
               <button
                 onClick={() => { onAction(item.orderId, "retry"); onClose(); }}
                 className="rounded-lg border border-amber-500/30 py-3 text-sm font-semibold text-amber-400 hover:bg-amber-500/10 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Re-contact
+                Re-contacter
               </button>
               <button
                 onClick={() => { onAction(item.orderId, "cancel"); onClose(); }}
                 className="rounded-lg border border-red-500/30 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Cancel
+                Annuler
               </button>
             </div>
           </div>
@@ -230,7 +230,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           <span className="text-lg">🛡️</span>
         </div>
         <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
-        <p className="text-xs text-[var(--text-tertiary)] mt-1">No orders at risk. UGZIO is monitoring.</p>
+        <p className="text-xs text-[var(--text-tertiary)] mt-1">Aucune commande en risque. UGZIO surveille.</p>
       </div>
     );
   }
@@ -242,13 +242,13 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           onClick={() => setFilter("all")}
           className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "all" ? "bg-emerald-600 text-white" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
-          All ({total})
+          Toutes ({total})
         </button>
         <button
           onClick={() => setFilter("pending_confirmation")}
           className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "pending_confirmation" ? "bg-[var(--state-recovering-bg)] text-[var(--warning-amber)]" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
-          Pending ({pendingCount})
+          En attente ({pendingCount})
         </button>
         <button
           onClick={() => setFilter("contacted")}
@@ -261,7 +261,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       {pendingOutcomes && pendingOutcomes.length > 0 && (
         <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 mb-4">
           <p className="text-[10px] font-medium text-[var(--success-green)] uppercase tracking-wider mb-3">
-            Delivery pending ({pendingOutcomes.length})
+            Livraison en attente ({pendingOutcomes.length})
           </p>
           <div className="space-y-2">
             {pendingOutcomes.map((o) => (
@@ -284,14 +284,14 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                     disabled={submitting === o.orderId + "_delivered"}
                     className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_delivered" ? "..." : "✅ Delivered"}
+                    {submitting === o.orderId + "_delivered" ? "..." : "✅ Livré"}
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
                     disabled={submitting === o.orderId + "_refused"}
                     className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_refused" ? "..." : "🗑️ Refused"}
+                    {submitting === o.orderId + "_refused" ? "..." : "🗑️ Refusé"}
                   </button>
                 </div>
               </div>

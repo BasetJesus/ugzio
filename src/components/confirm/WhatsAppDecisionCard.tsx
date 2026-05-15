@@ -124,7 +124,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
                   )}
                 </div>
                 <p className="text-[11px] text-green-200/70 leading-relaxed line-clamp-2">
-                  {psychology?.previewMessage ?? "No preview available"}
+                  {psychology?.previewMessage ?? "Aperçu non disponible"}
                 </p>
                 <div className="flex items-center gap-1 mt-1 justify-end">
                   <svg className="h-2.5 w-2.5 text-green-400/60" viewBox="0 0 16 11" fill="currentColor">
@@ -146,7 +146,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
                 <span className={`text-[10px] font-semibold shrink-0 ${
                   pct > 60 ? "text-red-400" : pct > 30 ? "text-amber-400" : "text-emerald-400"
                 }`}>
-                  {pct}% failure
+                  {pct}% échec
                 </span>
               </div>
             </div>
@@ -175,21 +175,21 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
               disabled={sub === `${item.orderId}_confirm`}
               className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_confirm` ? "..." : "Secure"}
+              {sub === `${item.orderId}_confirm` ? "..." : "Sécuriser"}
             </button>
             <button
               onClick={(e) => handleAction(e, "retry")}
               disabled={sub === `${item.orderId}_retry`}
               className="rounded-lg border border-amber-500/30 py-2.5 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_retry` ? "..." : "Retry"}
+              {sub === `${item.orderId}_retry` ? "..." : "Re-contacter"}
             </button>
             <button
               onClick={(e) => handleAction(e, "cancel")}
               disabled={sub === `${item.orderId}_cancel`}
               className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_cancel` ? "..." : "Prevent"}
+              {sub === `${item.orderId}_cancel` ? "..." : "Annuler"}
             </button>
           </div>
         </div>

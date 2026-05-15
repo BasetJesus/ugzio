@@ -37,34 +37,34 @@ export default async function GrowthPage() {
   return (
     <div className="space-y-section">
       <SystemNarrative
-        title="Growth"
-        narrative={hasData ? "Your UGC collection engine performance" : "Start collecting UGC to see growth metrics here"}
+        title="Croissance"
+        narrative={hasData ? "Performances de ton moteur de collecte UGC" : "Commence à collecter des UGC pour voir tes métriques de croissance"}
         emotion={hasData ? "achievement" : "calm"}
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label="Requests sent" value={metrics.requestsSent} tier="neutral" />
+        <MiniKpiCard label="Demandes envoyées" value={metrics.requestsSent} tier="neutral" />
         <MiniKpiCard
-          label="Response rate"
+          label="Taux de réponse"
           value={`${metrics.responseRate}%`}
           tier={metrics.responseRate >= 50 ? "low" : metrics.responseRate >= 20 ? "medium" : "neutral"}
           emotion={metrics.responseRate >= 50 ? "protective" : undefined}
         />
-        <MiniKpiCard label="Total collected" value={stats.total} tier="neutral" />
-        <MiniKpiCard label="Approved for repost" value={metrics.totalApproved} tier={metrics.totalApproved > 0 ? "low" : "neutral"} emotion={metrics.totalApproved > 0 ? "achievement" : undefined} />
+        <MiniKpiCard label="Total collecté" value={stats.total} tier="neutral" />
+        <MiniKpiCard label="Approuvés" value={metrics.totalApproved} tier={metrics.totalApproved > 0 ? "low" : "neutral"} emotion={metrics.totalApproved > 0 ? "achievement" : undefined} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-card">
-        <MiniKpiCard label="Rejected" value={metrics.totalRejected} tier={metrics.totalRejected > 0 ? "medium" : "neutral"} />
-        <MiniKpiCard label="Approval rate" value={`${metrics.approvalRate}%`} tier={metrics.approvalRate >= 60 ? "low" : "neutral"} />
-        <KpiCard label="Revenue from UGC buyers" value={`${metrics.ugcRevenue.toFixed(0)} TND`} tier={metrics.ugcRevenue > 0 ? "low" : "neutral"} emotion={metrics.ugcRevenue > 0 ? "protective" : undefined}>
-          <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Total value of orders that submitted UGC</p>
+        <MiniKpiCard label="Rejetés" value={metrics.totalRejected} tier={metrics.totalRejected > 0 ? "medium" : "neutral"} />
+        <MiniKpiCard label="Taux d'approbation" value={`${metrics.approvalRate}%`} tier={metrics.approvalRate >= 60 ? "low" : "neutral"} />
+        <KpiCard label="Revenu des clients UGC" value={`${metrics.ugcRevenue.toFixed(0)} TND`} tier={metrics.ugcRevenue > 0 ? "low" : "neutral"} emotion={metrics.ugcRevenue > 0 ? "protective" : undefined}>
+          <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Valeur totale des commandes avec UGC</p>
         </KpiCard>
       </div>
 
       {metrics.topProducts.length > 0 && (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Top UGC products</h3>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Top produits UGC</h3>
           <div className="space-y-2">
             {metrics.topProducts.map((p, i) => (
               <div key={p.product} className="flex items-center justify-between">
@@ -84,13 +84,13 @@ export default async function GrowthPage() {
           href="/inbox"
           className="rounded-lg bg-[var(--accent)] px-4 py-2 text-xs font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
         >
-          View UGC Inbox
+          Voir la boîte UGC
         </Link>
         <Link
           href="/settings/ugc"
           className="rounded-lg border border-[var(--border)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--border)]/30 transition-colors"
         >
-          Configure Templates
+          Configurer les templates
         </Link>
       </div>
     </div>

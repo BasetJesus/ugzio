@@ -17,7 +17,7 @@ export default function OrdersFilters({ search, onSearchChange, statusFilter, on
     <div className="space-y-2 mb-4">
       <input
         type="text"
-        placeholder="Search customer, phone, or ID..."
+        placeholder="Rechercher client, téléphone ou ID..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-colors focus:border-[var(--accent)]/50"
@@ -28,7 +28,7 @@ export default function OrdersFilters({ search, onSearchChange, statusFilter, on
           onChange={(e) => onStatusFilterChange(e.target.value)}
           className="flex-1 min-w-0 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-3 text-sm text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent)]/50"
         >
-          <option value="">All Status</option>
+          <option value="">Tous les statuts</option>
           {STATUSES.map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
@@ -38,7 +38,7 @@ export default function OrdersFilters({ search, onSearchChange, statusFilter, on
           onChange={(e) => onRiskFilterChange(e.target.value)}
           className="flex-1 min-w-0 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-3 text-sm text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent)]/50"
         >
-          <option value="">All Risk</option>
+          <option value="">Tous les risques</option>
           {RISKS.map((r) => (
             <option key={r} value={r}>{r.toUpperCase()}</option>
           ))}
