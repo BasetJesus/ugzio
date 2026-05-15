@@ -11,7 +11,7 @@ export async function enforcePlanGate(orgId: string, featureKey: string): Promis
   if (!flag?.planGate) return true; // no gate = allowed
 
   const plan = org.subscription.plan;
-  const tiers = ["free", "croissance"];
+  const tiers = ["free", "essentiel", "croissance"];
   const orgTier = tiers.indexOf(plan.name);
   const requiredTier = tiers.indexOf(flag.planGate);
   if (requiredTier === -1) return true;

@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const limitReached = await checkFreePlanLimit(orgId, org.subscriptionStatus, org.maxOrdersPerMonth);
     if (limitReached) {
       return NextResponse.json(
-        { error: "Limite mensuelle atteinte. Passe à Croissance (129 TND/mois)." },
+        { error: "Limite mensuelle atteinte. Passe à Essentiel (49 TND/mois) ou Croissance (139 TND/mois)." },
         { status: 403 },
       );
     }

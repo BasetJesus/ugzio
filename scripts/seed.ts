@@ -24,6 +24,25 @@ async function main() {
     },
   });
 
+  const essentiel = await prisma.plan.upsert({
+    where: { name: "essentiel" },
+    update: {},
+    create: {
+      name: "essentiel",
+      maxOrdersPerMonth: 500,
+      maxUsersPerOrg: 1,
+      hasZioConfirm: true,
+      hasZioBrain: true,
+      hasZioConnect: false,
+      hasZioFlow: false,
+      hasZioNetwork: false,
+      aiInsightsPerMonth: 500,
+      verificationsPerMonth: 500,
+      price: 49,
+      currency: "TND",
+    },
+  });
+
   const croissance = await prisma.plan.upsert({
     where: { name: "croissance" },
     update: {},
@@ -33,17 +52,17 @@ async function main() {
       maxUsersPerOrg: 3,
       hasZioConfirm: true,
       hasZioBrain: true,
-      hasZioConnect: false,
-      hasZioFlow: false,
+      hasZioConnect: true,
+      hasZioFlow: true,
       hasZioNetwork: false,
       aiInsightsPerMonth: 99999,
       verificationsPerMonth: 99999,
-      price: 129,
+      price: 139,
       currency: "TND",
     },
   });
 
-  console.log("Seeded plans:", { free: free.name, croissance: croissance.name });
+  console.log("Seeded plans:", { free: free.name, essentiel: essentiel.name, croissance: croissance.name });
 
   // ── Feature Flags ──
   const flags = [

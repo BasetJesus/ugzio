@@ -29,7 +29,7 @@ Alternate: `INTELLIGENT_CANCEL`, `PENDING_RESCHEDULE`, `REFUSED`
 - Every recommendation creates an `AIEvaluation` record
 
 ## Subscription
-- Free: 3 orders/month | Croissance: 129 TND/month unlimited
+- Free: 3 orders/month | Essentiel: 49 TND/month (500 orders) | Croissance: 139 TND/month unlimited
 - Konnect payment only (no Stripe)
 
 ## Design
@@ -249,6 +249,31 @@ Before making ANY changes, read these:
 9. **`docs/architecture-rules.md`** — Stability rules
 10. **`docs/schema-change-checklist.md`** — Prisma migrations
 11. **`docs/prisma-migration-rules.md`** — Database safety
+
+---
+
+---
+
+# 🧠 Session 1 Feature Spec (from memory — verify before implementing)
+
+## Magic Link (Buyer Experience)
+- **Buyers never download** — No app. Everything via branded magic link
+- **Seller branding** — Magic link shows seller name/logo, not UGZIO
+- **CTA** — Clear action button (confirm, track, etc.)
+- **Product suggestion** — Recommandation produit sur la page magic link
+- **First wow moment** — La première expérience du buyer doit être impressionnante (emotion, confiance, célébration)
+
+## Post-Registration Popup
+- Après une nouvelle inscription → popup pour:
+  - Décrire la marque (brand description)
+  - Connecter les réseaux sociaux
+  - Connecter WhatsApp
+- (Current onboarding only asks for shop name + phone — incomplete)
+
+## Pricing (MUST FIX)
+- **Current**: Free (0dt) + Croissance (129dt)
+- **Should be**: Free (0dt) + 49dt + 139dt (3 plans, not 2)
+- Missing middle tier at 49dt
 
 ---
 
