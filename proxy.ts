@@ -13,7 +13,11 @@ export async function proxy(request: NextRequest) {
     "/waitlist",
   ];
 
-  const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith("/order/");
+  const isPublicRoute =
+    publicRoutes.includes(pathname) ||
+    pathname.startsWith("/order/") ||
+    pathname.startsWith("/opengraph-image") ||
+    pathname.startsWith("/twitter-image");
 
   if (isPublicRoute) {
     return NextResponse.next();
