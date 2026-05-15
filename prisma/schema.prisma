@@ -93,6 +93,8 @@ model Organization {
   ordersThisMonth   Int                @default(0)
   sellerPhone       String?
   sellerName        String?
+  brandDescription  String?
+  socialLinks       String?            @default("{}")
   whatsappConnection WhatsAppConnection?
   ugcTemplates      UgcRequestTemplate[]
   createdAt         DateTime           @default(now())

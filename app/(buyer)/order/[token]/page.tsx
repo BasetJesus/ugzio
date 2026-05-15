@@ -13,6 +13,7 @@ import BuyerCelebration from "@/components/buyer/BuyerCelebration"
 import BuyerUGCPrompt from "@/components/buyer/BuyerUGCPrompt"
 import BuyerFeedback from "@/components/buyer/BuyerFeedback"
 import BuyerReferralPrompt from "@/components/buyer/BuyerReferralPrompt"
+import BuyerProductSuggestion from "@/components/buyer/BuyerProductSuggestion"
 import BuyerWhatsAppBar from "@/components/buyer/BuyerWhatsAppBar"
 import BuyerFooter from "@/components/buyer/BuyerFooter"
 
@@ -34,6 +35,7 @@ export default async function BuyerOrderPage({ params }: Props) {
       <BuyerTrustBadge sellerName={order.sellerName} trustScore={order.trustScore} />
       <BuyerOrderInfo order={order} />
       <BuyerConfirmationButton orderId={order.orderId} />
+      <BuyerProductSuggestion order={order} />
       <BuyerDeliveryTimeline order={order} />
       <BuyerDeliveryExpectation estimatedDays={order.estimatedDeliveryDays} phase={order.phase} />
       <BuyerCelebration order={order} />

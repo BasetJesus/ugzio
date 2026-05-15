@@ -10,7 +10,7 @@ const PHASE_CONFIG = {
   pre_confirmation: {
     icon: "🛡️",
     title: "Commande sécurisée",
-    subtitle: "Votre commande est enregistrée chez un vendeur vérifié",
+    subtitle: "Votre commande est enregistrée",
     gradient: "from-indigo-500/20 via-purple-500/10 to-transparent",
   },
   confirmed: {
@@ -39,6 +39,22 @@ const PHASE_CONFIG = {
   },
 }
 
+function SocialIcon({ url, label }: { url: string; label: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border)] text-sm hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 transition-colors"
+      title={label}
+    >
+      {label === "Instagram" && "📸"}
+      {label === "Facebook" && "👍"}
+      {label === "TikTok" && "🎵"}
+    </a>
+  )
+}
+
 export default function BuyerHero({ order }: Props) {
   const cfg = PHASE_CONFIG[order.phase]
 
@@ -47,12 +63,27 @@ export default function BuyerHero({ order }: Props) {
       className={`relative overflow-hidden rounded-2xl bg-gradient-to-b ${cfg.gradient} p-6 pb-8`}
     >
       <div className="relative z-10">
-        <div className="text-3xl mb-3">{cfg.icon}</div>
+        <div className="flex items-start justify-between mb-3">
+          <div className="text-3xl">{cfg.icon}</div>
+          {order.socialLinks && Object.values(order.socialLinks).some(Boolean) && (
+            <div className="flex items-center gap-1.5">
+              {order.socialLinks.instagram && (
+                <SocialIcon url={order.socialLinks.instagram} label="Instagram" />
+              )}
+              {order.socialLinks.facebook && (
+                <SocialIcon url={order.socialLinks.facebook} label="Facebook" />
+              )}
+              {order.socialLinks.tiktok && (
+                <SocialIcon url={order.socialLinks.tiktok} label="TikTok" />
+              )}
+            </div>
+          )}
+        </div>
         <h1 className="text-xl font-bold text-[var(--text-primary)] leading-tight mb-1 text-balance">
-          {cfg.title}
+          {order.sellerName}
         </h1>
         <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-          {cfg.subtitle}
+          {order.brandDescription || cfg.subtitle}
         </p>
       </div>
     </div>

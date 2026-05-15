@@ -40,14 +40,24 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
 
   if (status === "confirmed") {
     return (
-      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-center animate-scale-in">
-        <div className="text-2xl mb-2">✅</div>
-        <p className="text-sm font-medium text-emerald-400">
-          Commande confirmée avec succès !
-        </p>
-        <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Le vendeur va préparer votre colis
-        </p>
+      <div className="relative overflow-hidden rounded-xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/15 to-emerald-500/5 p-6 text-center animate-scale-in">
+        <div className="absolute -top-4 -right-4 text-4xl opacity-30 animate-pulse">✨</div>
+        <div className="absolute -bottom-2 -left-2 text-3xl opacity-20 animate-bounce">🎊</div>
+        <div className="relative z-10">
+          <div className="text-4xl mb-3 animate-bounce">🎉</div>
+          <h2 className="text-lg font-bold text-emerald-400 mb-1">
+            Commande confirmée avec succès !
+          </h2>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Le vendeur a été notifié et va préparer votre colis inchallah
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="text-xs text-[var(--text-tertiary)]">Transaction sécurisée par</span>
+            <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+              UGZIO ✓
+            </span>
+          </div>
+        </div>
       </div>
     )
   }

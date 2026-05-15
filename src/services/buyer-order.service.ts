@@ -18,6 +18,8 @@ export interface BuyerOrderView {
   trustScore: number
   estimatedDeliveryDays: number
   createdAt: string
+  brandDescription: string | null
+  socialLinks: { instagram?: string; facebook?: string; tiktok?: string }
 }
 
 export type BuyerAction = "confirm" | "question"
@@ -28,7 +30,7 @@ export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | n
       where: { id: orderId, deletedAt: null },
       include: {
         organization: {
-          select: { name: true, sellerName: true, deliveryProviders: { take: 1 } },
+          select: { name: true, sellerName: true, brandDescription: true, socialLinks: true, deliveryProviders: { take: 1 } },
         },
       },
     })
@@ -37,6 +39,11 @@ export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | n
     const phase = derivePhase(order.status)
     const sellerName = order.organization.sellerName ?? order.organization.name
     const deliveryDays = order.organization.deliveryProviders[0]?.avgDeliveryDays ?? 3
+
+    let socialLinks: { instagram?: string; facebook?: string; tiktok?: string } = {}
+    try {
+      if (order.organization.socialLinks) socialLinks = JSON.parse(order.organization.socialLinks)
+    } catch {}
 
     return {
       orderId: order.id,
@@ -51,6 +58,8 @@ export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | n
       trustScore: order.trustScore,
       estimatedDeliveryDays: deliveryDays,
       createdAt: order.createdAt.toISOString(),
+      brandDescription: order.organization.brandDescription,
+      socialLinks,
     }
   } catch {
     return null
