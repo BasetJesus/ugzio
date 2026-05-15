@@ -45,7 +45,7 @@ export default function LiveSystemHeader({ orgName, planName, orgId, revenueAtRi
             <span className="text-xs font-semibold text-[var(--risk-red)]">{revenueAtRisk.toFixed(0)} TND</span>
           </div>
           <Link
-            href="/settings/delivery"
+            href="/settings"
             className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--text-tertiary)] transition hover:text-[var(--text-secondary)]"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

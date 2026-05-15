@@ -110,7 +110,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
 
       <div className="px-3 pt-2 border-t border-[var(--nav-border)] space-y-0.5">
         <Link
-          href="/settings/delivery"
+          href="/settings"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-[var(--text-tertiary)] transition hover:text-[var(--text-secondary)]"
         >
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
