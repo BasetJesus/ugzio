@@ -19,6 +19,11 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({ instagram: "", facebook: "", tiktok: "" })
   const [saving, setSaving] = useState(false)
   const [whatsappStatus, setWhatsappStatus] = useState<"checking" | "connected" | "disconnected">("checking")
+  const [whatsappPhoneNumberId, setWhatsappPhoneNumberId] = useState("")
+  const [whatsappAccessToken, setWhatsappAccessToken] = useState("")
+  const [whatsappPhoneNumber, setWhatsappPhoneNumber] = useState("")
+  const [whatsappSaving, setWhatsappSaving] = useState(false)
+  const [whatsappError, setWhatsappError] = useState("")
 
   useEffect(() => {
     if (!open) return
@@ -26,6 +31,10 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
     setBrandDescription("")
     setSocialLinks({ instagram: "", facebook: "", tiktok: "" })
     setWhatsappStatus("checking")
+    setWhatsappPhoneNumberId("")
+    setWhatsappAccessToken("")
+    setWhatsappPhoneNumber("")
+    setWhatsappError("")
 
     fetch("/api/v1/seller-profile")
       .then((r) => r.json())
@@ -45,6 +54,8 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
       .then((r) => r.json())
       .then((data) => {
         setWhatsappStatus(data.status === "connected" ? "connected" : "disconnected")
+        if (data.phoneNumberId) setWhatsappPhoneNumberId(data.phoneNumberId)
+        if (data.phoneNumber) setWhatsappPhoneNumber(data.phoneNumber)
       })
       .catch(() => setWhatsappStatus("disconnected"))
   }, [open])
@@ -76,7 +87,32 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
   }
 
   function handleSkip() {
-    onClose()
+    if (step === "brand") setStep("socials")
+    else if (step === "socials") setStep("whatsapp")
+    else onClose()
+  }
+
+  async function handleSaveWhatsApp() {
+    setWhatsappSaving(true)
+    setWhatsappError("")
+    try {
+      const res = await fetch("/api/v1/whatsapp/connection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: whatsappPhoneNumberId && whatsappAccessToken ? "connected" : "disconnected",
+          phoneNumber: whatsappPhoneNumber || undefined,
+          phoneNumberId: whatsappPhoneNumberId || undefined,
+          accessToken: whatsappAccessToken || undefined,
+        }),
+      })
+      if (!res.ok) throw new Error("Erreur de sauvegarde")
+      setWhatsappStatus("connected")
+    } catch {
+      setWhatsappError("Erreur de sauvegarde. Vérifie les champs et réessaie.")
+    } finally {
+      setWhatsappSaving(false)
+    }
   }
 
   if (!open) return null
@@ -162,40 +198,78 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
               </p>
             </div>
 
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-4">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[var(--text-secondary)]">Statut</span>
-                <div className="flex items-center gap-1.5">
-                  <span className={`h-2 w-2 rounded-full ${
-                    whatsappStatus === "connected" ? "bg-[var(--success-green)]" : "bg-[var(--text-tertiary)]"
-                  }`} />
-                  <span className={`text-xs font-semibold ${
-                    whatsappStatus === "connected" ? "text-[var(--success-green)]" : "text-[var(--text-tertiary)]"
-                  }`}>
-                    {whatsappStatus === "checking" ? "Vérification..." : whatsappStatus === "connected" ? "Connecté" : "Déconnecté"}
-                  </span>
-                </div>
+            {whatsappStatus === "checking" ? (
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-6 text-center">
+                <p className="text-xs text-[var(--text-tertiary)]">Vérification de la connexion...</p>
               </div>
-              {whatsappStatus !== "connected" && (
+            ) : whatsappStatus === "connected" ? (
+              <>
+                <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 text-center">
+                  <div className="text-2xl mb-1">✅</div>
+                  <p className="text-sm font-semibold text-[var(--success-green)]">WhatsApp connecté</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">Tes messages seront envoyés automatiquement</p>
+                </div>
                 <button
-                  onClick={() => window.open("https://business.facebook.com/wa/manage/", "_blank")}
-                  className="w-full rounded-lg bg-[var(--accent)] py-2.5 text-xs font-semibold text-white hover:bg-[var(--accent-hover)] transition-colors"
+                  onClick={handleFinish}
+                  className="w-full rounded-xl bg-[var(--accent)] py-3 text-sm font-semibold text-white hover:bg-[var(--accent-hover)] transition-colors"
                 >
-                  Connecter WhatsApp Business
+                  Terminer
                 </button>
-              )}
-            </div>
+              </>
+            ) : (
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-4 space-y-3">
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-relaxed">
+                  Entre les credentials de ton WhatsApp Business Account. Tu les trouves dans{" "}
+                  <a href="https://business.facebook.com/wa/manage/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--accent)]">
+                    Meta Business Manager
+                  </a>.
+                </p>
+                <div>
+                  <label className="text-[10px] font-medium text-[var(--text-secondary)]">Phone Number ID</label>
+                  <input
+                    type="text"
+                    value={whatsappPhoneNumberId}
+                    onChange={(e) => setWhatsappPhoneNumberId(e.target.value)}
+                    placeholder="123456789012345"
+                    className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]/50 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-[var(--text-secondary)]">Access Token</label>
+                  <input
+                    type="password"
+                    value={whatsappAccessToken}
+                    onChange={(e) => setWhatsappAccessToken(e.target.value)}
+                    placeholder="EAAx..."
+                    className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]/50 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-medium text-[var(--text-secondary)]">Numéro WhatsApp (optionnel)</label>
+                  <input
+                    type="text"
+                    value={whatsappPhoneNumber}
+                    onChange={(e) => setWhatsappPhoneNumber(e.target.value)}
+                    placeholder="+216 XX XXX XXX"
+                    className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] outline-none focus:border-[var(--accent)]/50"
+                  />
+                </div>
+                {whatsappError && (
+                  <p className="text-[10px] text-[var(--risk-red)]">{whatsappError}</p>
+                )}
+                <button
+                  onClick={handleSaveWhatsApp}
+                  disabled={whatsappSaving || !whatsappPhoneNumberId || !whatsappAccessToken}
+                  className="w-full rounded-lg bg-[var(--accent)] py-2.5 text-xs font-semibold text-white hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors"
+                >
+                  {whatsappSaving ? "Connexion..." : "Connecter"}
+                </button>
+              </div>
+            )}
 
             <p className="text-[10px] text-[var(--text-tertiary)] text-center leading-relaxed">
               Tu pourras toujours modifier ces informations depuis les paramètres
             </p>
-
-            <button
-              onClick={handleFinish}
-              className="w-full rounded-xl bg-[var(--accent)] py-3 text-sm font-semibold text-white hover:bg-[var(--accent-hover)] transition-colors"
-            >
-              Terminer
-            </button>
           </div>
         )}
 
@@ -204,7 +278,7 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
           onClick={handleSkip}
           className="mt-4 w-full text-center text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
         >
-          {step === "whatsapp" ? "Passer" : "Passer cette étape →"}
+          {step === "whatsapp" ? "Terminer plus tard" : "Passer cette étape →"}
         </button>
       </div>
     </div>

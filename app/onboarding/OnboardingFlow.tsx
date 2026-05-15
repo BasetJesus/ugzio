@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import PostRegistrationPopup from "@/components/onboarding/PostRegistrationPopup";
 
@@ -22,6 +22,12 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
     highRiskCount: number;
   } | null>(null);
   const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    if (step !== "ready") return;
+    const t = setTimeout(() => setShowPopup(true), 1200);
+    return () => clearTimeout(t);
+  }, [step]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
