@@ -20,7 +20,8 @@ export default function BuyerReferralPrompt({ order, referralCode }: Props) {
   const handleShare = () => {
     trackReferralClick(order.orderId, { method: "whatsapp_share", hasCode: !!referralCode })
     trackWhatsAppClick("referral_share", { orderId: order.orderId, referralCode })
-    window.open(`https://wa.me/?text=${encodeURIComponent(rewardMessage)}`, "_blank")
+    const phone = (order.sellerPhone ?? "").replace(/\s/g, "")
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rewardMessage)}`, "_blank")
     setDismissed(true)
   }
 

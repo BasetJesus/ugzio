@@ -39,6 +39,7 @@ export const TIMELINE_EVENTS = {
 // ── Plan Tiers ──
 export const PLANS = {
   FREE: "free",
+  ESSENTIEL: "essentiel",
   CROISSANCE: "croissance",
 } as const;
 

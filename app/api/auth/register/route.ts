@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   const orgSlug = `${slug}-${user.id.slice(0, 6)}`;
   const org = await prisma.organization.create({
-    data: { name, slug: orgSlug },
+    data: { name, slug: orgSlug, sellerName: name },
   });
 
   await prisma.organizationMember.create({

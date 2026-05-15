@@ -7,13 +7,17 @@ import type { ScoreResult, RiskDashboardStats, RecentRiskOrder, BlacklistEntry, 
 import type { RiskLevel } from "@/types/order";
 
 async function ensureActivationEvent(orgId: string, eventType: string) {
-  const existing = await prisma.activationEvent.findFirst({
-    where: { organizationId: orgId, eventType },
-  });
-  if (!existing) {
-    await prisma.activationEvent.create({
-      data: { organizationId: orgId, eventType },
+  try {
+    const existing = await prisma.activationEvent.findFirst({
+      where: { organizationId: orgId, eventType },
     });
+    if (!existing) {
+      await prisma.activationEvent.create({
+        data: { organizationId: orgId, eventType },
+      });
+    }
+  } catch {
+    // non-critical, silently ignore
   }
 }
 
@@ -21,7 +25,11 @@ async function ensureActivationEvent(orgId: string, eventType: string) {
 export { determineRiskLevel } from "@/lib/risk/config";
 
 export async function scorePhone(orgId: string, phone: string, excludeOrderId?: string): Promise<ScoreResult> {
-  return computeScore(phone, orgId, excludeOrderId);
+  try {
+    return await computeScore(phone, orgId, excludeOrderId);
+  } catch {
+    return { score: 50, riskLevel: "medium", signals: [] };
+  }
 }
 
 export async function scoreAndPersist(
@@ -30,18 +38,22 @@ export async function scoreAndPersist(
   buyerName: string,
   orderId: string,
 ): Promise<ScoreResult> {
-  const result = await computeAndAlert(phone, orgId, buyerName, orderId);
+  try {
+    const result = await computeAndAlert(phone, orgId, buyerName, orderId);
 
-  emit("RISK_CALCULATED", {
-    orderId,
-    orgId,
-    riskScore: result.score,
-    riskLevel: result.riskLevel,
-    trustScore: 100 - result.score,
-    signals: result.signals,
-  });
+    emit("RISK_CALCULATED", {
+      orderId,
+      orgId,
+      riskScore: result.score,
+      riskLevel: result.riskLevel,
+      trustScore: 100 - result.score,
+      signals: result.signals,
+    });
 
-  return result;
+    return result;
+  } catch {
+    return { score: 50, riskLevel: "medium", signals: [] };
+  }
 }
 
 // ─── Core Risk Intelligence ───
@@ -134,111 +146,135 @@ export function explainRiskReason(riskLevel: RiskLevel, signals: RiskSignal[]): 
 // ─── Aggregation / Query Methods ───
 
 export async function getHighRiskAlerts(orgId: string, limit = 10): Promise<RiskAlertItem[]> {
-  const orders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
-    orderBy: { trustScore: "asc" },
-    take: limit,
-  });
-
-  return orders.map((o) => {
-    const signals = generateRiskSignals({
-      amount: Number(o.amount),
-      status: o.status,
-      buyerWilaya: o.buyerWilaya,
-      riskLevel: o.riskLevel,
-      trustScore: o.trustScore,
+  try {
+    const orders = await prisma.order.findMany({
+      where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
+      orderBy: { trustScore: "asc" },
+      take: limit,
     });
-    const primarySignal = signals.find((s) => s.detected)?.type ?? "first-time-order";
 
-    return {
-      id: `alert_${o.id}`,
-      buyerName: o.buyerName,
-      buyerPhone: o.buyerPhone,
-      amount: Number(o.amount),
-      riskLevel: o.riskLevel as RiskLevel,
-      trustScore: o.trustScore,
-      signal: primarySignal,
-      orderId: o.id,
-    };
-  });
+    return orders.map((o) => {
+      const signals = generateRiskSignals({
+        amount: Number(o.amount),
+        status: o.status,
+        buyerWilaya: o.buyerWilaya,
+        riskLevel: o.riskLevel,
+        trustScore: o.trustScore,
+      });
+      const primarySignal = signals.find((s) => s.detected)?.type ?? "first-time-order";
+
+      return {
+        id: `alert_${o.id}`,
+        buyerName: o.buyerName,
+        buyerPhone: o.buyerPhone,
+        amount: Number(o.amount),
+        riskLevel: o.riskLevel as RiskLevel,
+        trustScore: o.trustScore,
+        signal: primarySignal,
+        orderId: o.id,
+      };
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getAggregateRiskStats(orgId: string): Promise<RiskAggregateStats> {
-  const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  try {
+    const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-  const [totalOrders, highRiskCount, averageScoreAgg, todayOrders, revenueAtRisk] = await Promise.all([
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, riskLevel: "high" } }),
-    prisma.order.aggregate({
-      where: { organizationId: orgId, deletedAt: null },
-      _avg: { trustScore: true },
-    }),
-    prisma.order.count({
-      where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } },
-    }),
-    prisma.order.aggregate({
-      where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
-      _sum: { amount: true },
-    }),
-  ]);
+    const [totalOrders, highRiskCount, averageScoreAgg, todayOrders, revenueAtRisk] = await Promise.all([
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, riskLevel: "high" } }),
+      prisma.order.aggregate({
+        where: { organizationId: orgId, deletedAt: null },
+        _avg: { trustScore: true },
+      }),
+      prisma.order.count({
+        where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } },
+      }),
+      prisma.order.aggregate({
+        where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
+        _sum: { amount: true },
+      }),
+    ]);
 
-  return {
-    averageScore: totalOrders > 0 ? (averageScoreAgg._avg.trustScore ?? 50) : 50,
-    highRiskCount,
-    todayOrders,
-    totalOrders,
-    revenueAtRisk: Math.round(Number(revenueAtRisk._sum.amount ?? 0)),
-  };
+    return {
+      averageScore: totalOrders > 0 ? (averageScoreAgg._avg.trustScore ?? 50) : 50,
+      highRiskCount,
+      todayOrders,
+      totalOrders,
+      revenueAtRisk: Math.round(Number(revenueAtRisk._sum.amount ?? 0)),
+    };
+  } catch {
+    return { averageScore: 50, highRiskCount: 0, todayOrders: 0, totalOrders: 0, revenueAtRisk: 0 };
+  }
 }
 
 export async function getOrderCountsByRisk(orgId: string): Promise<{ total: number; highRisk: number; todayOrders: number }> {
-  const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  try {
+    const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-  const [total, highRisk, todayOrders] = await Promise.all([
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, riskLevel: "high" } }),
-    prisma.order.count({
-      where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } },
-    }),
-  ]);
+    const [total, highRisk, todayOrders] = await Promise.all([
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, riskLevel: "high" } }),
+      prisma.order.count({
+        where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } },
+      }),
+    ]);
 
-  return { total, highRisk, todayOrders };
+    return { total, highRisk, todayOrders };
+  } catch {
+    return { total: 0, highRisk: 0, todayOrders: 0 };
+  }
 }
 
 export async function getRevenueAtRisk(orgId: string): Promise<number> {
-  const result = await prisma.order.aggregate({
-    where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
-    _sum: { amount: true },
-  });
-  return Math.round(Number(result._sum.amount ?? 0) * 0.3);
+  try {
+    const result = await prisma.order.aggregate({
+      where: { organizationId: orgId, deletedAt: null, riskLevel: "high" },
+      _sum: { amount: true },
+    });
+    return Math.round(Number(result._sum.amount ?? 0) * 0.3);
+  } catch {
+    return 0;
+  }
 }
 
 export async function getNeedsConfirmCount(orgId: string): Promise<number> {
-  return prisma.order.count({
-    where: { organizationId: orgId, deletedAt: null, status: "CREATED", riskLevel: "high" },
-  });
+  try {
+    return await prisma.order.count({
+      where: { organizationId: orgId, deletedAt: null, status: "CREATED", riskLevel: "high" },
+    });
+  } catch {
+    return 0;
+  }
 }
 
 export async function getHighRiskCreatedOrders(orgId: string, limit = 5) {
-  const orders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null, riskLevel: "high", status: "CREATED" },
-    orderBy: { trustScore: "asc" },
-    take: limit,
-    select: { id: true, buyerName: true, buyerPhone: true, amount: true, riskLevel: true, trustScore: true, status: true, product: true, organizationId: true, createdAt: true },
-  });
+  try {
+    const orders = await prisma.order.findMany({
+      where: { organizationId: orgId, deletedAt: null, riskLevel: "high", status: "CREATED" },
+      orderBy: { trustScore: "asc" },
+      take: limit,
+      select: { id: true, buyerName: true, buyerPhone: true, amount: true, riskLevel: true, trustScore: true, status: true, product: true, organizationId: true, createdAt: true },
+    });
 
-  return orders.map((o) => ({
-    id: o.id,
-    buyerName: o.buyerName,
-    buyerPhone: o.buyerPhone,
-    amount: Number(o.amount),
-    riskLevel: o.riskLevel,
-    trustScore: o.trustScore,
-    status: o.status,
-    product: o.product,
-    organizationId: o.organizationId,
-    createdAt: o.createdAt,
-  }));
+    return orders.map((o) => ({
+      id: o.id,
+      buyerName: o.buyerName,
+      buyerPhone: o.buyerPhone,
+      amount: Number(o.amount),
+      riskLevel: o.riskLevel,
+      trustScore: o.trustScore,
+      status: o.status,
+      product: o.product,
+      organizationId: o.organizationId,
+      createdAt: o.createdAt,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 // ─── Existing Dashboard / Blacklist Methods ───

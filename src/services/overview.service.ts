@@ -52,19 +52,23 @@ export interface OverviewData {
 }
 
 export async function getOverviewData(orgId: string): Promise<OverviewData> {
-  const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-  const weekStart = new Date();
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-  weekStart.setHours(0, 0, 0, 0);
+  try {
+    const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    weekStart.setHours(0, 0, 0, 0);
 
-  const [stats, liveOrders, riskAlerts, ugcOpportunities] = await Promise.all([
-    loadStats(orgId, dayStart, weekStart),
-    loadLiveOrders(orgId),
-    getHighRiskAlerts(orgId, 5),
-    loadUGCOpportunities(orgId),
-  ]);
+    const [stats, liveOrders, riskAlerts, ugcOpportunities] = await Promise.all([
+      loadStats(orgId, dayStart, weekStart),
+      loadLiveOrders(orgId),
+      getHighRiskAlerts(orgId, 5),
+      loadUGCOpportunities(orgId),
+    ]);
 
-  return { stats, liveOrders, riskAlerts, ugcOpportunities };
+    return { stats, liveOrders, riskAlerts, ugcOpportunities };
+  } catch {
+    return { stats: { ordersToday: 0, ordersThisWeek: 0, revenueToday: 0, revenueThisWeek: 0, atRiskOrders: 0, pendingVerifications: 0, ugcReceived: 0, deliveredRate: 0 }, liveOrders: [], riskAlerts: [], ugcOpportunities: [] };
+  }
 }
 
 async function loadStats(orgId: string, dayStart: Date, weekStart: Date): Promise<OverviewStats> {

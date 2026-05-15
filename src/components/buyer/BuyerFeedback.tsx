@@ -37,7 +37,7 @@ export default function BuyerFeedback({ order }: Props) {
       await fetch("/api/buyer/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.orderId, satisfaction: selected, note }),
+        body: JSON.stringify({ token: order.token, satisfaction: selected, note }),
       })
       trackFeedback(order.orderId, selected, { note: note || null })
       setSubmitted(true)

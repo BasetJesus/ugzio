@@ -10,10 +10,9 @@ interface Props {
 export default function BuyerWhatsAppBar({ order }: Props) {
   const handleContact = () => {
     trackWhatsAppClick("help_bar", { orderId: order.orderId })
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(`Salem, j'ai une question sur ma commande ${order.orderId.slice(0, 8)}`)}`,
-      "_blank",
-    )
+    const phone = order.sellerPhone?.replace(/\s/g, "") || ""
+    const text = encodeURIComponent(`Salem, j'ai une question sur ma commande ${order.orderId.slice(0, 8)}`)
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank")
   }
 
   return (

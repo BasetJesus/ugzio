@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 
 export interface SellerProfile {
   brandDescription: string | null
+  sellerPhone: string | null
   socialLinks: SocialLinks
 }
 
@@ -15,15 +16,16 @@ export async function getSellerProfile(orgId: string): Promise<SellerProfile> {
   try {
     const org = await prisma.organization.findUnique({
       where: { id: orgId },
-      select: { brandDescription: true, socialLinks: true },
+      select: { brandDescription: true, sellerPhone: true, socialLinks: true },
     });
-    if (!org) return { brandDescription: null, socialLinks: {} };
+    if (!org)     return { brandDescription: null, sellerPhone: null, socialLinks: {} };
     return {
       brandDescription: org.brandDescription,
+      sellerPhone: org.sellerPhone,
       socialLinks: parseSocialLinks(org.socialLinks),
     };
   } catch {
-    return { brandDescription: null, socialLinks: {} };
+    return { brandDescription: null, sellerPhone: null, socialLinks: {} };
   }
 }
 

@@ -13,7 +13,9 @@ export async function middleware(request: NextRequest) {
     "/waitlist",
   ];
 
-  if (publicRoutes.includes(pathname)) {
+  const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith("/order/");
+
+  if (isPublicRoute) {
     return NextResponse.next();
   }
 

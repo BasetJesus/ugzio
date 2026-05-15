@@ -1,1 +1,1 @@
-export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE ? process.env.NEXT_PUBLIC_DEMO_MODE === "true" : true;
+export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE ? process.env.NEXT_PUBLIC_DEMO_MODE === "true" : false;

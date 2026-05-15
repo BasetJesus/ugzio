@@ -19,8 +19,9 @@ export default function BuyerUGCPrompt({ order }: Props) {
   const handleWhatsApp = () => {
     trackUGCTrigger(order.orderId, { method: "whatsapp_photo" })
     trackWhatsAppClick("ugc_photo_share", { orderId: order.orderId })
+    const phone = (order.sellerPhone ?? "").replace(/\s/g, "")
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(ugcMessage)}`,
+      `https://wa.me/${phone}?text=${encodeURIComponent(ugcMessage)}`,
       "_blank",
     )
     setDismissed(true)

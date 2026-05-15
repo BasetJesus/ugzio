@@ -2,13 +2,14 @@
 
 import { useState, useCallback } from "react"
 import { trackConfirmation, trackWhatsAppClick } from "@/lib/analytics"
-import type { BuyerAction } from "@/services/buyer-order.service"
 
 interface Props {
+  token: string
   orderId: string
+  sellerPhone?: string | null
 }
 
-export default function BuyerConfirmationButton({ orderId }: Props) {
+export default function BuyerConfirmationButton({ token, orderId, sellerPhone }: Props) {
   const [status, setStatus] = useState<"idle" | "loading" | "confirmed" | "error">("idle")
   const [showQuestionField, setShowQuestionField] = useState(false)
   const [question, setQuestion] = useState("")
@@ -19,7 +20,7 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
       const res = await fetch("/api/buyer/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, action: "confirm" }),
+        body: JSON.stringify({ token, action: "confirm" }),
       })
       if (!res.ok) throw new Error("failed")
       setStatus("confirmed")
@@ -27,16 +28,17 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
     } catch {
       setStatus("error")
     }
-  }, [orderId])
+  }, [token, orderId])
 
   const handleQuestion = useCallback(async () => {
     trackWhatsAppClick("buyer_question", { orderId, hasQuestion: !!question.trim() })
+    const phone = (sellerPhone ?? "").replace(/\s/g, "")
     if (!question.trim()) {
-      window.open(`https://wa.me/?text=${encodeURIComponent("J'ai une question sur ma commande")}`, "_blank")
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent("J'ai une question sur ma commande")}`, "_blank")
       return
     }
-    window.open(`https://wa.me/?text=${encodeURIComponent(question)}`, "_blank")
-  }, [question, orderId])
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(question)}`, "_blank")
+  }, [question, sellerPhone, orderId])
 
   if (status === "confirmed") {
     return (

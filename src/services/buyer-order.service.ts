@@ -7,7 +7,9 @@ import type { OrderStatus } from "@/types/order";
 
 export interface BuyerOrderView {
   orderId: string
+  token: string
   sellerName: string
+  sellerPhone: string | null
   product: string | null
   amount: number
   currency: string
@@ -24,13 +26,13 @@ export interface BuyerOrderView {
 
 export type BuyerAction = "confirm" | "question"
 
-export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | null> {
+export async function getBuyerOrder(token: string): Promise<BuyerOrderView | null> {
   try {
     const order = await prisma.order.findFirst({
-      where: { id: orderId, deletedAt: null },
+      where: { token, deletedAt: null },
       include: {
         organization: {
-          select: { name: true, sellerName: true, brandDescription: true, socialLinks: true, deliveryProviders: { take: 1 } },
+          select: { name: true, sellerName: true, sellerPhone: true, brandDescription: true, socialLinks: true, deliveryProviders: { take: 1 } },
         },
       },
     })
@@ -47,7 +49,9 @@ export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | n
 
     return {
       orderId: order.id,
+      token: order.token,
       sellerName,
+      sellerPhone: order.organization.sellerPhone,
       product: order.product,
       amount: Number(order.amount),
       currency: order.currency,
@@ -67,26 +71,28 @@ export async function getBuyerOrder(orderId: string): Promise<BuyerOrderView | n
 }
 
 export async function buyerConfirmOrder(
-  orderId: string,
+  token: string,
   action: BuyerAction,
 ): Promise<{ success: boolean }> {
   try {
     const order = await prisma.order.findFirst({
-      where: { id: orderId, deletedAt: null },
+      where: { token, deletedAt: null },
     })
     if (!order) return { success: false }
 
     if (action === "confirm") {
-      await transitionOrderStatus(order.organizationId, orderId, "BUYER_CONFIRMED" as OrderStatus)
+      const transitioned = await transitionOrderStatus(order.organizationId, order.id, "BUYER_CONFIRMED" as OrderStatus)
+      if (!transitioned) return { success: false }
+
       await prisma.order.update({
-        where: { id: orderId },
+        where: { id: order.id },
         data: { confirmStatus: "confirmed" },
       })
-      await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
+      await recordJourneyEvent(order.organizationId, order.id, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
         channel: "buyer_page",
         source: "self_service",
       })
-      await addEvent(order.organizationId, orderId, "confirmed", "buyer", {
+      await addEvent(order.organizationId, order.id, "confirmed", "buyer", {
         method: "self_service",
         orderAmount: Number(order.amount),
       })
@@ -99,24 +105,24 @@ export async function buyerConfirmOrder(
 }
 
 export async function submitBuyerFeedback(
-  orderId: string,
+  token: string,
   satisfaction: number,
   note?: string,
 ): Promise<{ success: boolean }> {
   try {
     const order = await prisma.order.findFirst({
-      where: { id: orderId, deletedAt: null },
+      where: { token, deletedAt: null },
     })
     if (!order) return { success: false }
 
-    await addEvent(order.organizationId, orderId, "operator_note", "buyer", {
+    await addEvent(order.organizationId, order.id, "operator_note", "buyer", {
       satisfaction,
       note: note ?? null,
       orderAmount: Number(order.amount),
       feedbackChannel: "buyer_page",
     })
 
-    await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_RESPONDED, {
+    await recordJourneyEvent(order.organizationId, order.id, JOURNEY_EVENT_TYPES.BUYER_RESPONDED, {
       satisfaction,
       channel: "buyer_page",
     })

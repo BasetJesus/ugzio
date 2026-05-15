@@ -22,9 +22,29 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ugzio.vercel.app"),
   title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
   description:
     "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+  openGraph: {
+    title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
+    description:
+      "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+    url: "https://ugzio.vercel.app",
+    siteName: "UGZIO",
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
+    description:
+      "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +54,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="fr"
       className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       suppressHydrationWarning
     >

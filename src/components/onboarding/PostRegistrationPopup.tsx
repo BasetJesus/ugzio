@@ -36,6 +36,8 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
     setWhatsappPhoneNumber("")
     setWhatsappError("")
 
+    let prefilledPhone = "";
+
     fetch("/api/v1/seller-profile")
       .then((r) => r.json())
       .then((data) => {
@@ -47,15 +49,17 @@ export default function PostRegistrationPopup({ open, onClose }: Props) {
             tiktok: data.socialLinks.tiktok ?? "",
           })
         }
+        if (data.sellerPhone) prefilledPhone = data.sellerPhone
       })
       .catch(() => {})
 
     fetch("/api/v1/whatsapp/connection")
       .then((r) => r.json())
-      .then((data) => {
-        setWhatsappStatus(data.status === "connected" ? "connected" : "disconnected")
-        if (data.phoneNumberId) setWhatsappPhoneNumberId(data.phoneNumberId)
-        if (data.phoneNumber) setWhatsappPhoneNumber(data.phoneNumber)
+      .then((conn) => {
+        setWhatsappStatus(conn.status === "connected" ? "connected" : "disconnected")
+        if (conn.phoneNumberId) setWhatsappPhoneNumberId(conn.phoneNumberId)
+        if (conn.phoneNumber) setWhatsappPhoneNumber(conn.phoneNumber)
+        else if (prefilledPhone) setWhatsappPhoneNumber(prefilledPhone)
       })
       .catch(() => setWhatsappStatus("disconnected"))
   }, [open])

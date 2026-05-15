@@ -11,7 +11,7 @@ datasource db {
 
 model Plan {
   id                   String         @id @default(cuid())
-  name                 String         @unique // starter|grower|pro|scale
+  name                 String         @unique // free|essentiel|croissance
   maxOrdersPerMonth    Int
   maxUsersPerOrg       Int
   hasZioConfirm        Boolean        @default(false)
@@ -89,7 +89,7 @@ model Organization {
   waitlistEntries   WaitlistEntry[]
   activationEvents  ActivationEvent[]
   maxOrdersPerMonth  Int                @default(3)
-  subscriptionStatus String            @default("free")  // free|croissance
+  subscriptionStatus String            @default("free")  // free|essentiel|croissance
   ordersThisMonth   Int                @default(0)
   sellerPhone       String?
   sellerName        String?
@@ -180,6 +180,7 @@ model BuyerIdentity {
 // UGC_REQUESTED | UGC_RECEIVED | INTELLIGENT_CANCEL | PENDING_RESCHEDULE | REFUSED
 model Order {
   id                 String               @id @default(cuid())
+  token              String               @unique @default(uuid())
   organizationId     String
   organization       Organization         @relation(fields: [organizationId], references: [id])
   deliveryProviderId String?

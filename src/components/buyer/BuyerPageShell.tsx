@@ -1,7 +1,8 @@
 "use client"
 
-import { Children, type ReactNode, isValidElement } from "react"
+import { Children, type ReactNode, isValidElement, useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import ConfettiBurst from "@/components/shared/ConfettiBurst"
 
 interface Props {
   children: ReactNode
@@ -18,17 +19,27 @@ const fadeUp = {
 }
 
 export default function BuyerPageShell({ children, phase }: Props) {
+  const [showConfetti, setShowConfetti] = useState(false)
+
+  useEffect(() => {
+    if (phase === "pre_confirmation" || phase === "delivered" || phase === "completed") {
+      const t = setTimeout(() => setShowConfetti(true), 300)
+      return () => clearTimeout(t)
+    }
+  }, [phase])
+
   return (
-    <motion.div
-      className="space-y-4 relative"
-      initial="hidden"
-      animate="show"
-      variants={{
-        hidden: {},
-        show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
-      }}
-    >
-      {phase === "delivered" || phase === "completed" ? (
+    <>
+      <ConfettiBurst active={showConfetti} onComplete={() => setShowConfetti(false)} />
+      <motion.div
+        className="space-y-4 relative"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
+        }}
+      >
         <motion.div
           className="absolute top-0 left-0 right-0 h-0.5 rounded-full"
           style={{
@@ -38,15 +49,15 @@ export default function BuyerPageShell({ children, phase }: Props) {
           animate={{ backgroundPosition: ["0% 0%", "100% 0%", "0% 0%"] }}
           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         />
-      ) : null}
 
-      {Children.map(children, (child) =>
-        isValidElement(child) ? (
-          <motion.div variants={fadeUp}>{child}</motion.div>
-        ) : (
-          child
-        ),
-      )}
-    </motion.div>
+        {Children.map(children, (child) =>
+          isValidElement(child) ? (
+            <motion.div variants={fadeUp}>{child}</motion.div>
+          ) : (
+            child
+          ),
+        )}
+      </motion.div>
+    </>
   )
 }
