@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { handleIncomingMedia } from "@/lib/ugc/service";
-import { sendText } from "@/lib/whatsapp/client";
+import { sendWhatsApp } from "@/lib/events/queues";
 
 export interface UgcItemSummary {
   id: string
@@ -95,10 +95,12 @@ export async function approveUgcItem(orgId: string, itemId: string): Promise<{ s
       data: { status: "approved" },
     });
 
-    sendText(
-      item.order.buyerPhone,
-      `Merci ${item.order.buyerName}! On adore ta photo 📸✨ Elle sera bientôt partagée. Reviens nous voir pour ta prochaine commande 💜`,
-    ).catch((e) => console.error("[grow] failed to send approval notification:", e));
+    sendWhatsApp({
+      orgId,
+      to: item.order.buyerPhone,
+      type: "text",
+      content: { body: `Merci ${item.order.buyerName}! On adore ta photo 📸✨ Elle sera bientôt partagée. Reviens nous voir pour ta prochaine commande 💜` },
+    }).catch((e) => console.error("[grow] failed to send approval notification:", e));
 
     return { success: true };
   } catch {

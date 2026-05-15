@@ -17,7 +17,8 @@ const criticalWorker = new Worker(
     switch (job.name) {
       case "ORDER_CREATED":
         try {
-          await fetch("http://localhost:8000/consumers/order-created", {
+          const pythonUrl = process.env.PYTHON_API_URL || "http://localhost:8000";
+          await fetch(`${pythonUrl}/consumers/order-created`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(job.data),
@@ -59,23 +60,33 @@ const whatsappWorker = new Worker(
   "whatsapp-outbound",
   async (job) => {
     console.log(`[WhatsAppWorker] Sending message:`, job.data);
-    const { to, type, content } = job.data as {
+    const { orgId, to, type, content } = job.data as {
+      orgId: string;
       to: string;
       type: "text" | "interactive" | "media";
       content: unknown;
     };
 
+    let creds: { phoneNumberId: string; accessToken: string } | undefined;
+
+    if (orgId) {
+      const { getWhatsAppCreds } = await import("@/services/whatsapp-connection.service");
+      const orgCreds = await getWhatsAppCreds(orgId);
+      if (orgCreds) creds = orgCreds;
+    }
+
     const { sendText, sendButtons, sendMedia } = await import("@/lib/whatsapp/client");
 
     switch (type) {
       case "text":
-        await sendText(to, (content as { body: string }).body);
+        await sendText(to, (content as { body: string }).body, creds);
         break;
       case "interactive":
         await sendButtons(
           to,
           (content as { body: string; buttons: { id: string; title: string }[] }).body,
           (content as { buttons: { id: string; title: string }[] }).buttons,
+          creds,
         );
         break;
       case "media":
@@ -83,6 +94,7 @@ const whatsappWorker = new Worker(
           to,
           (content as { url: string }).url,
           (content as { mediaType: "image" | "video" }).mediaType,
+          creds,
         );
         break;
     }
@@ -100,10 +112,13 @@ const webhookWorker = startWebhookWorker();
 console.log("[Worker] All workers started");
 
 // Graceful shutdown
-process.on("SIGTERM", async () => {
+async function shutdown() {
   await criticalWorker.close();
   await messageWorker.close();
   await whatsappWorker.close();
   await webhookWorker.close();
   await redis.quit();
-});
+}
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

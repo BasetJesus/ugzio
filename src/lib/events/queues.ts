@@ -98,6 +98,7 @@ export const whatsappQueue = new Queue("whatsapp-outbound", {
 });
 
 export async function sendWhatsApp(payload: {
+  orgId: string;
   to: string;
   type: "text" | "interactive" | "media";
   content: unknown;

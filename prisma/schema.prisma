@@ -501,6 +501,8 @@ model WhatsAppConnection {
   organization    Organization @relation(fields: [organizationId], references: [id])
   status          String       // connected|disconnected|pending|expired
   phoneNumber     String?
+  phoneNumberId   String?
+  accessToken     String?
   connectedAt     DateTime?
   expiresAt       DateTime?
   updatedAt       DateTime     @updatedAt

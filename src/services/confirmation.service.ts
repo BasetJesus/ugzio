@@ -58,6 +58,7 @@ export async function getConfirmationQueue(orgId: string): Promise<ConfirmationQ
     where: {
       organizationId: orgId,
       deletedAt: null,
+      status: { notIn: ["DELIVERED", "REFUSED", "INTELLIGENT_CANCEL", "UGC_REQUESTED", "UGC_RECEIVED"] },
       OR: [
         { confirmStatus: "pending_confirmation" },
         { confirmStatus: "contacted" },

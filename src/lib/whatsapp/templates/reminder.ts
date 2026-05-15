@@ -9,19 +9,19 @@ export function reminderSequence(ctx: Ctx): MessageTemplate[] {
   return [
     {
       id: "rem_01",
-      text: `Rappel ${ctx.buyerName} — delivery planned. Please make sure someone can receive the package.`,
+      text: `Rappel ${ctx.buyerName} 🌙 — livraison programmée. Tawa9ed bli yjik l'livreur, khali wehed yest9bellek.`,
       delayHours: 0,
       tone: "operational",
     },
     {
       id: "rem_02",
-      text: "Heads up: delivery between 9h-18h tomorrow. We'll confirm 1 hour before arrival.",
+      text: "Rappel: livraison 9h-18h ghodwa. N'confirmiw 1h 9bal l'arrivée.",
       delayHours: 6,
       tone: "operational",
     },
     {
       id: "rem_03",
-      text: "Dernier rappel: confirm your availability for tomorrow's delivery. Reply OUI to confirm.",
+      text: "Dernier rappel: confirmi disponibilité mte3ek l'livraison mte3 ghodwa. Rad OUI bach tconfirmi.",
       delayHours: 20,
       tone: "soft_urgency",
     },

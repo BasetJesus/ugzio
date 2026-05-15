@@ -6,8 +6,8 @@ const plans = [
     price: "0",
     currency: "TND",
     period: "/mois",
-    desc: "Testez UGZIO avec 3 commandes, sans carte bancaire",
-    cta: "Commencer Gratuit",
+    desc: "Jareb UGZIO b 3 commandes, sans carte",
+    cta: "Nheb njareb",
     href: "/overview?demo=true",
     features: [
       { text: "3 commandes / mois", included: true },
@@ -27,8 +27,8 @@ const plans = [
     price: "49",
     currency: "TND",
     period: "/mois",
-    desc: "Pour les vendeurs qui commencent à monter en volume",
-    cta: "Choisir Essentiel",
+    desc: "Lazemlek volume, hakka taw yebda",
+    cta: "Nheb blassi",
     href: "/overview?demo=true",
     features: [
       { text: "Jusqu'à 500 commandes / mois", included: true },
@@ -48,8 +48,8 @@ const plans = [
     price: "139",
     currency: "TND",
     period: "/mois",
-    desc: "Protège ton revenue à grande échelle, commandes illimitées",
-    cta: "Choisir Croissance",
+    desc: "Koul chay illimité, taw njihou barcha",
+    cta: "Nheb nbadà tawa",
     href: "/overview?demo=true",
     features: [
       { text: "Commandes illimitées", included: true },
@@ -63,7 +63,7 @@ const plans = [
       { text: "Export données & rapports", included: true },
     ],
     highlight: true,
-    badge: "Le plus complet",
+    badge: "Barcha yhebbo",
   },
 ]
 
@@ -91,19 +91,19 @@ export default function PricingSection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro section-intro-center">
-            <p className="section-intro-label">Tarifs</p>
+            <p className="section-intro-label">Pricing</p>
             <h2 className="section-intro-title">
-              Un prix qui suit ton{" "}
-              <span className="landing-text-gradient">volume</span>.
+              Ch7al ykallef?{" "}
+              <span className="landing-text-gradient">9ad ma t7eb</span>
             </h2>
             <p className="section-intro-desc">
-              Commencez gratuitement, passez à Croissance quand votre volume augmente.
-              <span className="block text-white/30 text-xs mt-1">Pas de contrat. Pas de surprise. Pas de frais cachés.</span>
+              Ebed b Free, khater Croissance ki tkabar. Sahl.
+              <span className="block text-white/30 text-xs mt-1">Mouch contrat. Mouch surprise. Mouch frais kbouria.</span>
             </p>
           </div>
         </RevealOnScroll>
 
-        <div className="grid gap-6 md:grid-cols-2 md:max-w-3xl mx-auto items-start">
+        <div className="grid gap-6 md:grid-cols-3 lg:max-w-5xl mx-auto items-start">
           {plans.map((plan, i) => (
             <RevealOnScroll key={plan.name} delay={i * 150}>
               <div
@@ -166,7 +166,7 @@ export default function PricingSection() {
           <div className="mt-10 text-center">
             <div className="landing-glass rounded-2xl p-6 sm:p-8 inline-block mx-auto max-w-[32rem]">
               <p className="text-sm text-white/70 font-medium mb-2">
-                🎯 Tous les plans incluent
+                🎯 Koul plan yjib
               </p>
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-white/40">
                 <span>✓ Analyse risque en 3 secondes</span>
@@ -176,7 +176,7 @@ export default function PricingSection() {
                 <span>✓ Mise à jour gratuites</span>
               </div>
               <p className="text-[10px] text-white/20 mt-4">
-                Pas de carte bancaire requise pour le plan Free. Annulation à tout moment.
+                Mouch carte bancaire lel plan Free. Tbadelt rayk? Tna7 f ay wa9t.
               </p>
             </div>
           </div>

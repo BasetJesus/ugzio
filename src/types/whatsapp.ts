@@ -8,6 +8,8 @@ export type ConnectionStatus = "connected" | "disconnected" | "pending" | "expir
 export interface WhatsAppConnectionState {
   status: ConnectionStatus
   phoneNumber?: string
+  phoneNumberId?: string
+  hasAccessToken?: boolean
   connectedAt?: string
   expiresAt?: string
 }

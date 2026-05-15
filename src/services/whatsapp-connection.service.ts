@@ -10,6 +10,8 @@ export async function getConnectionStatus(orgId: string): Promise<WhatsAppConnec
     return {
       status: conn.status as ConnectionStatus,
       phoneNumber: conn.phoneNumber ?? undefined,
+      phoneNumberId: conn.phoneNumberId ?? undefined,
+      hasAccessToken: !!conn.accessToken,
       connectedAt: conn.connectedAt?.toISOString(),
       expiresAt: conn.expiresAt?.toISOString(),
     }
@@ -20,7 +22,7 @@ export async function getConnectionStatus(orgId: string): Promise<WhatsAppConnec
 
 export async function updateConnectionStatus(
   orgId: string,
-  data: { status: ConnectionStatus; phoneNumber?: string; expiresAt?: Date }
+  data: { status: ConnectionStatus; phoneNumber?: string; phoneNumberId?: string; accessToken?: string; expiresAt?: Date }
 ): Promise<{ success: boolean }> {
   try {
     const existing = await prisma.whatsAppConnection.findUnique({ where: { organizationId: orgId } })
@@ -31,6 +33,8 @@ export async function updateConnectionStatus(
         data: {
           status: data.status,
           phoneNumber: data.phoneNumber,
+          phoneNumberId: data.phoneNumberId,
+          accessToken: data.accessToken,
           connectedAt: data.status === "connected" ? new Date() : undefined,
           expiresAt: data.expiresAt,
         },
@@ -41,6 +45,8 @@ export async function updateConnectionStatus(
           organizationId: orgId,
           status: data.status,
           phoneNumber: data.phoneNumber,
+          phoneNumberId: data.phoneNumberId,
+          accessToken: data.accessToken,
           connectedAt: data.status === "connected" ? new Date() : undefined,
           expiresAt: data.expiresAt,
         },
@@ -50,6 +56,16 @@ export async function updateConnectionStatus(
     return { success: true }
   } catch {
     return { success: false }
+  }
+}
+
+export async function getWhatsAppCreds(orgId: string): Promise<{ phoneNumberId: string; accessToken: string } | null> {
+  try {
+    const conn = await prisma.whatsAppConnection.findUnique({ where: { organizationId: orgId } })
+    if (!conn?.phoneNumberId || !conn?.accessToken) return null
+    return { phoneNumberId: conn.phoneNumberId, accessToken: conn.accessToken }
+  } catch {
+    return null
   }
 }
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { safeString } from "@/lib/core/safe-render";
+import { sendWhatsApp } from "@/lib/events/queues";
 
 export type ContactMethod = "manual_call" | "whatsapp" | "sms";
 export type ContactOutcome = "confirmed" | "unreachable" | "suspicious" | "no_answer" | "failed";
@@ -11,57 +11,66 @@ export interface ContactAttemptRecord {
   outcome: ContactOutcome;
   notes: string | null;
   attemptedBy: string | null;
-  mockData?: {
-    messageTemplate?: string;
-    deliveryStatus?: string;
-    readAt?: string;
-  };
   createdAt: string;
 }
 
-export interface MockContactResult {
+export interface ContactResult {
   success: boolean;
   method: ContactMethod;
   outcome: ContactOutcome;
-  messageId?: string;
   error?: string;
 }
+
+const TEMPLATES: Record<string, (name: string, amount: number) => string> = {
+  confirm: (name, amount) =>
+    `Salem ${name} 🌙 Merci pour ta commande ${amount} TND. T'es toujours disponible pour la livraison ? Confirme-moi stp 🙏`,
+  reminder: (name) =>
+    `Rappel ${name} ⏰ Ta commande mazelha en attente de confirmation. Radd houne bach n'planifioulivraison.`,
+  risk_alert: (name) =>
+    `Salem ${name} ⚠️ On a besoin de vérifier quelques infos pour ta commande. Tu peux nous confirmer tes coordonnées ? Merci 🙏`,
+};
 
 export async function attemptContact(
   orgId: string,
   orderId: string,
   method: ContactMethod,
   operator?: string,
-  notes?: string
-): Promise<MockContactResult> {
+  notes?: string,
+): Promise<ContactResult> {
   try {
     const order = await prisma.order.findFirst({
       where: { id: orderId, organizationId: orgId, deletedAt: null },
-      select: { buyerPhone: true, buyerName: true },
+      select: { buyerPhone: true, buyerName: true, amount: true },
     });
 
     if (!order) {
       return { success: false, method, outcome: "failed", error: "Order not found" };
     }
 
-    const outcome = simulateContactOutcome(method);
+    if (method === "whatsapp" || method === "sms") {
+      const templateKey = notes?.includes("Template:") ? notes.replace("Template: ", "").trim() : "confirm";
+      const text = TEMPLATES[templateKey]?.(order.buyerName, Number(order.amount))
+        ?? TEMPLATES.confirm(order.buyerName, Number(order.amount));
+
+      await sendWhatsApp({
+        orgId,
+        to: order.buyerPhone,
+        type: "text",
+        content: { body: text },
+      });
+    }
 
     await prisma.confirmationAttempt.create({
       data: {
         order: { connect: { id: orderId } },
         method,
-        outcome,
+        outcome: "no_answer",
         notes: notes ?? null,
         attemptedBy: operator ?? null,
       },
     });
 
-    return {
-      success: outcome !== "failed",
-      method,
-      outcome,
-      messageId: method === "whatsapp" ? `mock_wamid_${Date.now()}` : undefined,
-    };
+    return { success: true, method, outcome: "no_answer" };
   } catch (e) {
     return {
       success: false,
@@ -72,34 +81,9 @@ export async function attemptContact(
   }
 }
 
-function simulateContactOutcome(method: ContactMethod): ContactOutcome {
-  const roll = Math.random();
-
-  switch (method) {
-    case "whatsapp":
-      if (roll < 0.55) return "confirmed";
-      if (roll < 0.75) return "no_answer";
-      if (roll < 0.9) return "unreachable";
-      return "suspicious";
-
-    case "sms":
-      if (roll < 0.35) return "confirmed";
-      if (roll < 0.65) return "no_answer";
-      if (roll < 0.85) return "unreachable";
-      return "suspicious";
-
-    case "manual_call":
-    default:
-      if (roll < 0.65) return "confirmed";
-      if (roll < 0.8) return "no_answer";
-      if (roll < 0.92) return "unreachable";
-      return "suspicious";
-  }
-}
-
 export async function getContactHistory(
   orgId: string,
-  orderId: string
+  orderId: string,
 ): Promise<ContactAttemptRecord[]> {
   try {
     const attempts = await prisma.confirmationAttempt.findMany({
@@ -127,21 +111,15 @@ export async function getContactHistory(
 export async function mockSendWhatsApp(
   orgId: string,
   orderId: string,
-  templateType: "confirm" | "reminder" | "risk_alert" = "confirm"
-): Promise<MockContactResult> {
-  const templates: Record<string, string> = {
-    confirm: "Bonjour {{name}}! Merci pour votre commande de {{amount}} TND. Pourriez-vous confirmer que vous êtes bien disponible pour la livraison ?",
-    reminder: "Rappel : Votre commande est en attente de confirmation. Merci de nous répondre pour planifier la livraison.",
-    risk_alert: "Attention : Nous avons détecté quelques éléments à vérifier pour votre commande. Pourriez-vous nous confirmer vos coordonnées ?",
-  };
-
+  templateType: "confirm" | "reminder" | "risk_alert" = "confirm",
+): Promise<ContactResult> {
   return attemptContact(orgId, orderId, "whatsapp", undefined, `Template: ${templateType}`);
 }
 
 export async function mockSendSMS(
   orgId: string,
-  orderId: string
-): Promise<MockContactResult> {
+  orderId: string,
+): Promise<ContactResult> {
   return attemptContact(orgId, orderId, "sms");
 }
 
@@ -150,7 +128,7 @@ export async function mockLogManualCall(
   orderId: string,
   outcome: ContactOutcome,
   operator: string,
-  notes?: string
+  notes?: string,
 ): Promise<{ success: boolean }> {
   try {
     await prisma.confirmationAttempt.create({

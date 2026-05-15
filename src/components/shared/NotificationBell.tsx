@@ -40,7 +40,7 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
           <p className="text-xs font-semibold text-[var(--risk-red)]">{count} commande à haut risque{count !== 1 ? "s" : ""}</p>
           <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Nécessite votre attention</p>
           <Link
-            href="/shield"
+            href="/overview"
             onClick={() => setShow(false)}
             className="mt-2 block rounded-md bg-[var(--accent)] px-3 py-1.5 text-center text-xs font-semibold text-white"
           >

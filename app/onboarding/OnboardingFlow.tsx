@@ -184,7 +184,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
         open={showPopup}
         onClose={() => {
           setShowPopup(false)
-          router.push("/operations")
+          router.push("/overview")
         }}
       />
     </>

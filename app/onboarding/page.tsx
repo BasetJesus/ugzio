@@ -41,16 +41,16 @@ export default async function OnboardingPage() {
     return (
       <div className="mx-auto max-w-[32rem] p-4 sm:p-0 mt-12">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-          <h1 className="text-xl font-bold text-[var(--text-primary)]">Your shop is ready</h1>
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">Boutique prête</h1>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
-            {activation.completedSteps} of {activation.totalSteps} steps completed
+            {activation.completedSteps}/{activation.totalSteps} étapes complétées
           </p>
           <div className="mt-4">
             <a
-              href="/operations"
+              href="/overview"
               className="inline-block rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
             >
-              Go to operations
+              Voir le tableau de bord
             </a>
           </div>
         </div>
@@ -58,5 +58,5 @@ export default async function OnboardingPage() {
     );
   }
 
-  redirect("/operations");
+  redirect("/overview");
 }

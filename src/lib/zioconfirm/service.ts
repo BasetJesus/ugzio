@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
-import { scheduleMessage } from "@/lib/events/queues";
-import { sendText, sendButtons } from "@/lib/whatsapp/client";
+import { scheduleMessage, sendWhatsApp } from "@/lib/events/queues";
 import { alertSeller, cancelAlert } from "@/lib/alerts/seller";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
@@ -115,7 +114,12 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
     });
 
     const confirmWithLink = `${CONFIRM_MESSAGE}\n\n${orderLink(order.id)}`;
-    await sendButtons(order.buyerPhone, confirmWithLink, CONFIRM_BUTTONS);
+    await sendWhatsApp({
+      orgId: order.organizationId,
+      to: order.buyerPhone,
+      type: "interactive",
+      content: { body: confirmWithLink, buttons: CONFIRM_BUTTONS },
+    });
 
     await prisma.messageTimelineEntry.updateMany({
       where: { orderId, eventType: "pre_delivery_confirm" },
@@ -160,7 +164,12 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
 
   if (!text) return;
 
-  await sendText(order.buyerPhone, text);
+  await sendWhatsApp({
+    orgId: order.organizationId,
+    to: order.buyerPhone,
+    type: "text",
+    content: { body: text },
+  });
 
   await prisma.messageTimelineEntry.updateMany({
     where: { orderId, eventType },
@@ -174,13 +183,22 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) return;
 
+  const reply = async (text: string) => {
+    await sendWhatsApp({
+      orgId: order.organizationId,
+      to: order.buyerPhone,
+      type: "text",
+      content: { body: text },
+    });
+  };
+
   switch (buttonId) {
     case "confirm":
       await prisma.order.update({
         where: { id: orderId },
         data: { status: "BUYER_CONFIRMED" },
       });
-      await sendText(order.buyerPhone, "Merci! Ta commande est confirmée ✅");
+      await reply("Merci! Ta commande est confirmée ✅");
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
         channel: "whatsapp",
         source: "button_reply",
@@ -192,7 +210,7 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
         where: { id: orderId },
         data: { status: "INTELLIGENT_CANCEL" },
       });
-      await sendText(order.buyerPhone, "Pas de problème. Commande annulée.");
+      await reply("Pas de problème. Commande annulée.");
       await alertSeller(order.organizationId, cancelAlert(order.buyerName, order.product ?? "produit"));
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.ORDER_CANCELLED, {
         channel: "whatsapp",
@@ -205,7 +223,7 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
         where: { id: orderId },
         data: { status: "PENDING_RESCHEDULE" },
       });
-      await sendText(order.buyerPhone, "Pas de souci! On te renvoie un message plus tard.");
+      await reply("Pas de souci! On te renvoie un message plus tard.");
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_REQUESTED_DELAY, {
         channel: "whatsapp",
         source: "button_reply",

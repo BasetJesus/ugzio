@@ -9,19 +9,19 @@ export function reassuranceSequence(ctx: Ctx): MessageTemplate[] {
   return [
     {
       id: "rea_01",
-      text: `Salem ${ctx.buyerName} ✓ Your order is secure. No payment needed upfront — you pay when it arrives.`,
+      text: `Salem ${ctx.buyerName} ✓ Commande sécurisée. Mouch payement mousbak — tkhales ki touslek.`,
       delayHours: 0,
       tone: "reassuring",
     },
     {
       id: "rea_02",
-      text: "The seller has confirmed your order. If you have questions, reply here and we'll help.",
+      text: "Le vendeur confirmi commande mte3ek. 3andek question? Radd houne w n'jewbek.",
       delayHours: 6,
       tone: "reassuring",
     },
     {
       id: "rea_03",
-      text: "Delivery is fully tracked. You'll know exactly when to expect your package. Trusted service, guaranteed.",
+      text: "Livraison suivie. Twa9a3 f sa3tha — service fiable, garanti.",
       delayHours: 24,
       tone: "reassuring",
     },

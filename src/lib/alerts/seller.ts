@@ -1,4 +1,4 @@
-import { sendText } from "@/lib/whatsapp/client";
+import { sendWhatsApp } from "@/lib/events/queues";
 
 export async function alertSeller(orgId: string, message: string) {
   const { prisma } = await import("@/lib/db");
@@ -6,7 +6,12 @@ export async function alertSeller(orgId: string, message: string) {
   if (!org?.sellerPhone) return;
 
   try {
-    await sendText(org.sellerPhone, message);
+    await sendWhatsApp({
+      orgId,
+      to: org.sellerPhone,
+      type: "text",
+      content: { body: message },
+    });
   } catch (err) {
     console.error(`[SellerAlert] Failed to send to ${org.sellerPhone}:`, err);
   }
@@ -21,7 +26,7 @@ export function ugcReceivedAlert(buyerName: string) {
 }
 
 export function refusedAlert(buyerName: string) {
-  return `⚠️ Livraison refusée par ${buyerName}. RTS score updated.`;
+  return `⚠️ Livraison refusée par ${buyerName}. Score RTS mis à jour.`;
 }
 
 export function highRiskAlert(buyerName: string, score: number) {
