@@ -33,7 +33,7 @@ function UgcMediaCard({ item, onAction, acting }: {
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
-      <div className="aspect-[4/3] bg-zinc-900 flex items-center justify-center overflow-hidden">
+      <div className="aspect-[4/3] bg-[var(--bg-surface)] flex items-center justify-center overflow-hidden">
         {item.mediaType === "image" ? (
           <img
             src={item.mediaUrl}

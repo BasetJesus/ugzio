@@ -48,10 +48,10 @@ export default function BuyerHero({ order }: Props) {
     >
       <div className="relative z-10">
         <div className="text-3xl mb-3">{cfg.icon}</div>
-        <h1 className="text-xl font-bold text-white leading-tight mb-1 text-balance">
+        <h1 className="text-xl font-bold text-[var(--text-primary)] leading-tight mb-1 text-balance">
           {cfg.title}
         </h1>
-        <p className="text-sm text-zinc-400 leading-relaxed">
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
           {cfg.subtitle}
         </p>
       </div>

@@ -26,7 +26,7 @@ export default function BuyerDeliveryTimeline({ order }: Props) {
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-      <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-4">
+      <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-4">
         Statut de la commande
       </p>
       <div className="space-y-0">
@@ -39,7 +39,7 @@ export default function BuyerDeliveryTimeline({ order }: Props) {
                     ? "bg-emerald-500/20 text-emerald-400"
                     : stage.current
                       ? "bg-purple-500/20 text-purple-400 ring-1 ring-purple-500/30"
-                      : "bg-zinc-800 text-zinc-600"
+                      : "bg-[var(--bg-card)] text-[var(--text-tertiary)]"
                 }`}
               >
                 {stage.done ? "✓" : stage.current ? "●" : "○"}
@@ -47,7 +47,7 @@ export default function BuyerDeliveryTimeline({ order }: Props) {
               {i < stages.length - 1 && (
                 <div
                   className={`w-px h-6 ${
-                    stage.done ? "bg-emerald-500/20" : "bg-zinc-800"
+                    stage.done ? "bg-emerald-500/20" : "bg-[var(--bg-card)]"
                   }`}
                 />
               )}
@@ -59,13 +59,13 @@ export default function BuyerDeliveryTimeline({ order }: Props) {
                     ? "text-emerald-400 font-medium"
                     : stage.current
                       ? "text-purple-300 font-medium"
-                      : "text-zinc-600"
+                      : "text-[var(--text-tertiary)]"
                 }`}
               >
                 {stage.label}
               </p>
               {stage.current && (
-                <p className="text-[10px] text-zinc-500 mt-0.5">
+                <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">
                   {order.phase === "pre_confirmation" && "En attente de votre confirmation"}
                   {order.phase === "confirmed" && "Préparation en cours"}
                   {order.phase === "shipped" && "En route vers vous"}

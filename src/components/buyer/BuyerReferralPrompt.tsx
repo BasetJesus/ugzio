@@ -31,8 +31,8 @@ export default function BuyerReferralPrompt({ order, referralCode }: Props) {
           <span className="text-sm">🤝</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white">T7eb t3awen sa7bek ?</p>
-          <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">
+          <p className="text-sm font-medium text-[var(--text-primary)]">T7eb t3awen sa7bek ?</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">
             Partage cette expérience avec un ami qui vend aussi en ligne.
             Gagne <span className="text-amber-400 font-medium">5 TND</span> sur ta prochaine commande quand il s&apos;inscrit avec ton code.
           </p>
@@ -42,7 +42,7 @@ export default function BuyerReferralPrompt({ order, referralCode }: Props) {
               <div
                 className="flex-1 rounded-lg border border-dashed border-amber-500/30 bg-amber-500/5 px-3 py-2 text-center"
               >
-                <span className="text-xs text-zinc-400">Ton code</span>
+                <span className="text-xs text-[var(--text-secondary)]">Ton code</span>
                 <p className="text-sm font-mono font-bold text-amber-400 tracking-wider select-all">{referralCode}</p>
               </div>
             </div>
@@ -60,7 +60,7 @@ export default function BuyerReferralPrompt({ order, referralCode }: Props) {
                 trackReferralClick(order.orderId, { method: "dismiss", hasCode: !!referralCode })
                 setDismissed(true)
               }}
-              className="rounded-lg border border-[var(--border)] py-2.5 px-3 text-center text-xs text-zinc-500 hover:text-zinc-400 transition-colors"
+              className="rounded-lg border border-[var(--border)] py-2.5 px-3 text-center text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
             >
               Pas maintenant
             </button>

@@ -78,7 +78,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
 
   return (
     <div
-      className="rounded-xl border border-white/[0.06] bg-zinc-900/50 overflow-hidden transition-all duration-200 active:scale-[0.99] touch-manipulation hover:border-white/[0.1]"
+      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden transition-all duration-200 active:scale-[0.99] touch-manipulation hover:border-[var(--accent)]/20"
       onClick={handleSelect}
     >
       <div className="flex">
@@ -93,23 +93,23 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{item.buyerName}</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{item.buyerName}</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${
-                      item.riskLevel === "high" ? "text-red-400 border-red-500/20 bg-red-500/10" :
-                      item.riskLevel === "medium" ? "text-amber-400 border-amber-500/20 bg-amber-500/10" :
-                      "text-emerald-400 border-emerald-500/20 bg-emerald-500/10"
+                      item.riskLevel === "high" ? "text-[var(--risk-red)] border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]" :
+                      item.riskLevel === "medium" ? "text-[var(--warning-amber)] border-[var(--warning-amber-border)] bg-[var(--warning-amber-bg)]" :
+                      "text-[var(--success-green)] border-[var(--success-green-border)] bg-[var(--success-green-bg)]"
                     }`}>
                       {item.riskLevel}
                     </span>
                     {item.lastAttemptAt && (
-                      <span className="text-[10px] text-white/30">{timeSince(item.lastAttemptAt)}</span>
+                      <span className="text-[10px] text-[var(--text-tertiary)]">{timeSince(item.lastAttemptAt)}</span>
                     )}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-base font-bold text-white">{item.amount.toFixed(0)}</p>
-                  <p className="text-[9px] text-white/40 -mt-0.5">TND</p>
+                  <p className="text-base font-bold text-[var(--text-primary)]">{item.amount.toFixed(0)}</p>
+                  <p className="text-[9px] text-[var(--text-tertiary)] -mt-0.5">TND</p>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
           <div className={`grid grid-cols-4 gap-1.5 mt-3 ${confirming ? "animate-pulse" : ""}`}>
             <button
               onClick={(e) => { e.stopPropagation(); setShowVoice(v => !v); }}
-              className={`rounded-lg py-2.5 text-xs font-semibold transition-all active:scale-[0.97] touch-manipulation ${showVoice ? "bg-emerald-600 text-white" : "border border-white/15 text-white/50 hover:text-white hover:border-white/30"}`}
+              className={`rounded-lg py-2.5 text-xs font-semibold transition-all active:scale-[0.97] touch-manipulation ${showVoice ? "bg-emerald-600 text-white" : "border border-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/30"}`}
             >
               🎤
             </button>

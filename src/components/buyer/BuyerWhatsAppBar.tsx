@@ -23,8 +23,8 @@ export default function BuyerWhatsAppBar({ order }: Props) {
           <span className="text-sm">💬</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white">Besoin d&apos;aide ?</p>
-          <p className="text-xs text-zinc-500 mt-0.5">
+          <p className="text-sm font-medium text-[var(--text-primary)]">Besoin d&apos;aide ?</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Contactez-nous directement sur WhatsApp
           </p>
         </div>

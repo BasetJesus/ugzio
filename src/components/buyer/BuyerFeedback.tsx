@@ -25,8 +25,8 @@ export default function BuyerFeedback({ order }: Props) {
   if (submitted) {
     return (
       <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center animate-scale-in">
-        <p className="text-sm font-medium text-emerald-400">Merci pour votre avis ! 🙏</p>
-        <p className="text-xs text-zinc-500 mt-1">Votre retour aide les autres acheteurs</p>
+        <p className="text-sm font-medium text-[var(--success-green)]">Merci pour votre avis ! 🙏</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">Votre retour aide les autres acheteurs</p>
       </div>
     )
   }
@@ -49,7 +49,7 @@ export default function BuyerFeedback({ order }: Props) {
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-      <p className="text-sm font-medium text-white mb-3">
+      <p className="text-sm font-medium text-[var(--text-primary)] mb-3">
         Comment s&apos;est passée votre expérience ?
       </p>
       <div className="flex items-center justify-between gap-1">
@@ -59,12 +59,12 @@ export default function BuyerFeedback({ order }: Props) {
             onClick={() => setSelected(e.value)}
             className={`flex flex-col items-center gap-1 rounded-xl p-3 transition-all duration-150 ${
               selected === e.value
-                ? "bg-purple-500/20 ring-1 ring-purple-500/40 scale-105"
-                : "hover:bg-zinc-800/50 active:scale-95"
+                ? "bg-[var(--accent)]/20 ring-1 ring-[var(--accent)]/40 scale-105"
+                : "hover:bg-[var(--bg-surface)] active:scale-95"
             }`}
           >
             <span className="text-xl">{e.emoji}</span>
-            <span className="text-[9px] text-zinc-500">{e.label}</span>
+            <span className="text-[9px] text-[var(--text-tertiary)]">{e.label}</span>
           </button>
         ))}
       </div>
@@ -75,7 +75,7 @@ export default function BuyerFeedback({ order }: Props) {
             onChange={(e) => setNote(e.target.value)}
             placeholder="Un commentaire ? (optionnel)"
             rows={2}
-            className="w-full rounded-xl border border-[var(--border)] bg-zinc-900/50 p-3 text-sm text-white placeholder-zinc-600 resize-none focus:outline-none focus:border-purple-500/50"
+            className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:border-[var(--accent)]/50"
           />
           <button
             onClick={handleSubmit}

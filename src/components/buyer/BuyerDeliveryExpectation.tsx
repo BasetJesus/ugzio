@@ -16,11 +16,11 @@ export default function BuyerDeliveryExpectation({ estimatedDays, phase }: Props
           <span className="text-sm">📅</span>
         </div>
         <div>
-          <p className="text-sm font-medium text-white">Livraison estimée</p>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-sm font-medium text-[var(--text-primary)]">Livraison estimée</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Sous {minDays} à {maxDays} jours ouvrés
           </p>
-          <p className="text-[10px] text-zinc-600 mt-1">
+          <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
             Vous serez notifié par WhatsApp avant la livraison
           </p>
         </div>

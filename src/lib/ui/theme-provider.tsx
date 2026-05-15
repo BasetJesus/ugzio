@@ -58,7 +58,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   if (!mounted) {
-    return <div className="theme-dark" style={{ display: "contents" }}>{children}</div>
+    return <div style={{ display: "contents" }}>{children}</div>
   }
 
   return (

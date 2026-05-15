@@ -20,30 +20,27 @@ export default function OrdersFilters({ search, onSearchChange, statusFilter, on
         placeholder="Search customer, phone, or ID..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-white/30"
-        style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+        className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-colors focus:border-[var(--accent)]/50"
       />
       <div className="flex gap-2">
         <select
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
-          className="flex-1 min-w-0 rounded-xl border border-white/10 bg-transparent px-3 py-3 text-sm text-white outline-none transition-colors focus:border-white/30"
-          style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+          className="flex-1 min-w-0 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-3 text-sm text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent)]/50"
         >
-          <option value="" className="text-black">All Status</option>
+          <option value="">All Status</option>
           {STATUSES.map((s) => (
-            <option key={s} value={s} className="text-black">{s}</option>
+            <option key={s} value={s}>{s}</option>
           ))}
         </select>
         <select
           value={riskFilter}
           onChange={(e) => onRiskFilterChange(e.target.value)}
-          className="flex-1 min-w-0 rounded-xl border border-white/10 bg-transparent px-3 py-3 text-sm text-white outline-none transition-colors focus:border-white/30"
-          style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+          className="flex-1 min-w-0 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-3 text-sm text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent)]/50"
         >
-          <option value="" className="text-black">All Risk</option>
+          <option value="">All Risk</option>
           {RISKS.map((r) => (
-            <option key={r} value={r} className="text-black">{r.toUpperCase()}</option>
+            <option key={r} value={r}>{r.toUpperCase()}</option>
           ))}
         </select>
       </div>

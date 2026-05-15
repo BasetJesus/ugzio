@@ -33,8 +33,8 @@ export default function BuyerUGCPrompt({ order }: Props) {
           <span className="text-sm">📸</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white">T7eb tsa3edna ?</p>
-          <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">
+          <p className="text-sm font-medium text-[var(--text-primary)]">T7eb tsa3edna ?</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">
             Envoie-nous une photo de ton produit sur WhatsApp et gagne 15 TND
             de crédit pour ta prochaine commande 🎁
           </p>
@@ -50,7 +50,7 @@ export default function BuyerUGCPrompt({ order }: Props) {
                 trackUGCTrigger(order.orderId, { method: "dismiss" })
                 setDismissed(true)
               }}
-              className="rounded-lg border border-[var(--border)] py-2.5 px-3 text-center text-xs text-zinc-500 hover:text-zinc-400 transition-colors"
+              className="rounded-lg border border-[var(--border)] py-2.5 px-3 text-center text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
             >
               Plus tard
             </button>

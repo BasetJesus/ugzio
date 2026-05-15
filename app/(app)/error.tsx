@@ -14,7 +14,7 @@ export default function Error({
       <p className="mt-1 text-sm text-[var(--text-secondary)]">{error.message || "An unexpected error occurred."}</p>
       <button
         onClick={reset}
-        className="mt-4 rounded-md bg-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-green-500"
+        className="mt-4 rounded-md bg-[var(--btn-green)] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[var(--btn-green-hover)]"
       >
         Try again
       </button>

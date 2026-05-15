@@ -75,25 +75,25 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center">
+      <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 text-center">
         <p className="text-lg mb-1">🎤</p>
-        <p className="text-xs font-medium text-emerald-400">Voice note sent to {buyerName}</p>
-        <p className="text-[10px] text-white/40 mt-0.5">{orderAmount.toFixed(0)} TND order</p>
+        <p className="text-xs font-medium text-[var(--success-green)]">Voice note sent to {buyerName}</p>
+        <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{orderAmount.toFixed(0)} TND order</p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-sm">🎤</span>
           <div>
-            <p className="text-xs font-medium text-white">Voice confirmation</p>
-            <p className="text-[9px] text-white/40">{buyerName} · {orderAmount.toFixed(0)} TND</p>
+            <p className="text-xs font-medium text-[var(--text-primary)]">Voice confirmation</p>
+            <p className="text-[9px] text-[var(--text-tertiary)]">{buyerName} · {orderAmount.toFixed(0)} TND</p>
           </div>
         </div>
-        <button onClick={onClose} className="text-white/30 hover:text-white text-sm px-1">✕</button>
+        <button onClick={onClose} className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] text-sm px-1">✕</button>
       </div>
 
       {!audioUrl && (
@@ -116,24 +116,24 @@ export default function VoiceNoteRecorder({ buyerName, orderAmount, onSend, onCl
           {recording && (
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-sm font-mono text-white/70">{formatTime(duration)}</span>
+              <span className="text-sm font-mono text-[var(--text-secondary)]">{formatTime(duration)}</span>
             </div>
           )}
           {!recording && (
-            <p className="text-xs text-white/40">Tap to record a voice confirmation</p>
+            <p className="text-xs text-[var(--text-tertiary)]">Tap to record a voice confirmation</p>
           )}
         </div>
       )}
 
       {audioUrl && (
         <div className="space-y-3">
-          <div className="rounded-lg bg-white/5 p-3">
+          <div className="rounded-lg bg-[var(--skeleton-bg)] p-3">
             <audio src={audioUrl} controls className="w-full h-8" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => { setAudioUrl(null); chunks.current = []; setDuration(0); }}
-              className="rounded-lg border border-white/15 py-2 text-xs font-medium text-white/50 hover:text-white transition-colors"
+              className="rounded-lg border border-[var(--border)] py-2 text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
             >
               Re-record
             </button>

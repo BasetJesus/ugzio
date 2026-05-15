@@ -45,7 +45,7 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
         <p className="text-sm font-medium text-emerald-400">
           Commande confirmée avec succès !
         </p>
-        <p className="text-xs text-zinc-500 mt-1">
+        <p className="text-xs text-[var(--text-secondary)] mt-1">
           Le vendeur va préparer votre colis
         </p>
       </div>
@@ -74,9 +74,9 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
       {!showQuestionField ? (
         <button
           onClick={() => setShowQuestionField(true)}
-          className="w-full rounded-xl border border-[var(--border)] bg-zinc-900/50 py-3 px-4 text-center transition-all duration-150 hover:bg-zinc-800/50"
+          className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] py-3 px-4 text-center transition-all duration-150 hover:bg-[var(--bg-surface)]"
         >
-          <span className="text-xs text-zinc-400">❓ J&apos;ai une question</span>
+          <span className="text-xs text-[var(--text-secondary)]">❓ J&apos;ai une question</span>
         </button>
       ) : (
         <div className="space-y-2 animate-fade-in-up">
@@ -85,7 +85,7 @@ export default function BuyerConfirmationButton({ orderId }: Props) {
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Posez votre question ici..."
             rows={2}
-            className="w-full rounded-xl border border-[var(--border)] bg-zinc-900/50 p-3 text-sm text-white placeholder-zinc-600 resize-none focus:outline-none focus:border-purple-500/50"
+            className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none focus:outline-none focus:border-[var(--accent)]/50"
           />
           <button
             onClick={handleQuestion}

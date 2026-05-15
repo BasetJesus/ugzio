@@ -61,50 +61,50 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
   return (
       <div className="fixed inset-0 z-50 flex justify-end">
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div className="relative w-full max-w-[28rem] bg-zinc-900 border-l border-white/10 overflow-y-auto shadow-2xl animate-slide-in-right">
-          <div className="sticky top-0 bg-zinc-900 border-b border-white/10 px-5 py-3 flex items-center justify-between">
+        <div className="relative w-full max-w-[28rem] bg-[var(--bg-base)] border-l border-[var(--border)] overflow-y-auto shadow-2xl animate-slide-in-right">
+          <div className="sticky top-0 bg-[var(--bg-base)] border-b border-[var(--border)] px-5 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
                 <span className="text-xs font-bold text-white">{initials(item.buyerName)}</span>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-white">{item.buyerName}</h3>
-                <p className="text-[10px] text-white/40">{item.buyerPhone}</p>
+                <h3 className="text-sm font-semibold text-[var(--text-primary)]">{item.buyerName}</h3>
+                <p className="text-[10px] text-[var(--text-tertiary)]">{item.buyerPhone}</p>
               </div>
             </div>
-            <button onClick={onClose} className="text-white/40 hover:text-white text-lg leading-none px-2 py-1">&times;</button>
+            <button onClick={onClose} className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] text-lg leading-none px-2 py-1">&times;</button>
           </div>
 
           <div className="p-5 space-y-4">
             <div className="grid grid-cols-2 gap-2">
-              <div className="rounded-lg bg-zinc-800/50 p-3">
-                <p className="text-[10px] text-white/40 uppercase tracking-wider">Amount</p>
-                <p className="text-lg font-bold text-white">{item.amount.toFixed(0)} TND</p>
+              <div className="rounded-lg bg-[var(--bg-card)] p-3">
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Amount</p>
+                <p className="text-lg font-bold text-[var(--text-primary)]">{item.amount.toFixed(0)} TND</p>
               </div>
-              <div className="rounded-lg bg-zinc-800/50 p-3">
-                <p className="text-[10px] text-white/40 uppercase tracking-wider">Trust score</p>
-                <p className={`text-lg font-bold ${item.trustScore < 40 ? "text-red-400" : item.trustScore < 70 ? "text-amber-400" : "text-emerald-400"}`}>{item.trustScore}</p>
+              <div className="rounded-lg bg-[var(--bg-card)] p-3">
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Trust score</p>
+                <p className={`text-lg font-bold ${item.trustScore < 40 ? "text-[var(--risk-red)]" : item.trustScore < 70 ? "text-[var(--warning-amber)]" : "text-[var(--success-green)]"}`}>{item.trustScore}</p>
               </div>
             </div>
 
-            <div className="rounded-xl border p-4 border-red-500/20 bg-red-500/5">
-              <p className="text-[10px] text-red-400 font-medium uppercase tracking-wider mb-1">
+            <div className="rounded-xl border p-4 border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]">
+              <p className="text-[10px] text-[var(--risk-red)] font-medium uppercase tracking-wider mb-1">
                 If you do nothing
               </p>
-              <p className="text-sm font-semibold text-red-300">
+              <p className="text-sm font-semibold text-[var(--risk-red)]">
                 Estimated loss: {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
               </p>
             </div>
 
             <div>
-              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Risk signals</p>
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Risk signals</p>
               <ul className="space-y-1.5">
                 {signals.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-white/50">
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-white/20" />
+                  <li key={i} className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[var(--text-tertiary)]" />
                     <div>
-                      <p className="text-white font-medium">{s.label}</p>
-                      <p className="text-white/50">{s.detail}</p>
+                      <p className="text-[var(--text-primary)] font-medium">{s.label}</p>
+                      <p className="text-[var(--text-secondary)]">{s.detail}</p>
                     </div>
                   </li>
                 ))}
@@ -112,15 +112,15 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
             </div>
 
             <div>
-              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Buyer journey</p>
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Buyer journey</p>
               {timelineLoading ? (
                 <div className="space-y-2">
                   {[1,2,3].map((i) => (
                     <div key={i} className="flex gap-3 animate-pulse">
-                      <div className="h-2 w-2 rounded-full bg-white/10 mt-1" />
+                      <div className="h-2 w-2 rounded-full bg-[var(--skeleton-bg)] mt-1" />
                       <div className="flex-1 space-y-1 pb-2">
-                        <div className="h-3 w-24 bg-white/10 rounded" />
-                        <div className="h-2 w-16 bg-white/10 rounded" />
+                        <div className="h-3 w-24 bg-[var(--skeleton-bg)] rounded" />
+                        <div className="h-2 w-16 bg-[var(--skeleton-bg)] rounded" />
                       </div>
                     </div>
                   ))}
@@ -128,7 +128,7 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
               ) : timeline && timeline.events.length > 0 ? (
                 <JourneyTimelineComponent events={timeline.events} behaviorTags={timeline.behaviorTags} />
               ) : (
-                <p className="text-xs text-white/40">No journey data recorded yet</p>
+                <p className="text-xs text-[var(--text-tertiary)]">No journey data recorded yet</p>
               )}
             </div>
 
@@ -225,12 +225,12 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
 
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-white/10 bg-zinc-900/50 p-6 text-center">
-        <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+        <div className="w-12 h-12 rounded-full bg-[var(--state-protected-bg)] flex items-center justify-center mx-auto mb-3">
           <span className="text-lg">🛡️</span>
         </div>
-        <p className="text-sm font-medium text-white">Koul chay t7at l control</p>
-        <p className="text-xs text-white/40 mt-1">No orders at risk. UGZIO is monitoring.</p>
+        <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
+        <p className="text-xs text-[var(--text-tertiary)] mt-1">No orders at risk. UGZIO is monitoring.</p>
       </div>
     );
   }
@@ -240,39 +240,39 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
       <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar touch-manipulation">
         <button
           onClick={() => setFilter("all")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "all" ? "bg-emerald-600 text-white" : "bg-zinc-800 text-white/40 hover:text-white"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "all" ? "bg-emerald-600 text-white" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           All ({total})
         </button>
         <button
           onClick={() => setFilter("pending_confirmation")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "pending_confirmation" ? "bg-amber-500/20 text-amber-400" : "bg-zinc-800 text-white/40 hover:text-white"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "pending_confirmation" ? "bg-[var(--state-recovering-bg)] text-[var(--warning-amber)]" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           Pending ({pendingCount})
         </button>
         <button
           onClick={() => setFilter("contacted")}
-          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "contacted" ? "bg-emerald-500/20 text-emerald-400" : "bg-zinc-800 text-white/40 hover:text-white"}`}
+          className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "contacted" ? "bg-[var(--state-protected-bg)] text-[var(--success-green)]" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
           Contacted ({contactedCount})
         </button>
       </div>
 
       {pendingOutcomes && pendingOutcomes.length > 0 && (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 mb-4">
-          <p className="text-[10px] font-medium text-emerald-400 uppercase tracking-wider mb-3">
+        <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 mb-4">
+          <p className="text-[10px] font-medium text-[var(--success-green)] uppercase tracking-wider mb-3">
             Delivery pending ({pendingOutcomes.length})
           </p>
           <div className="space-y-2">
             {pendingOutcomes.map((o) => (
               <div
                 key={o.orderId}
-                className="rounded-lg bg-zinc-900/50 px-4 py-3 border border-white/10"
+                className="rounded-lg bg-[var(--bg-card)] px-4 py-3 border border-[var(--border)]"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-white truncate">{o.buyerName}</p>
-                    <p className="text-[10px] text-white/40">
+                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{o.buyerName}</p>
+                    <p className="text-[10px] text-[var(--text-tertiary)]">
                       {o.amount.toFixed(0)} TND
                       {o.product ? " — " + o.product : ""}
                     </p>

@@ -13,7 +13,7 @@ export default function BuyerTrustBadge({ sellerName, trustScore }: Props) {
         <span className="text-lg">{isHighTrust ? "🛡️" : "✓"}</span>
       </div>
       <div className="min-w-0">
-        <p className="text-sm font-medium text-white truncate">
+        <p className="text-sm font-medium text-[var(--text-primary)] truncate">
           {isVerified ? `${sellerName} — Vendeur vérifié` : sellerName}
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
@@ -28,7 +28,7 @@ export default function BuyerTrustBadge({ sellerName, trustScore }: Props) {
             </span>
           )}
           {!isVerified && (
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-zinc-500 bg-zinc-500/10 px-1.5 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-[var(--text-tertiary)] bg-[var(--bg-card)] px-1.5 py-0.5 rounded-full">
               Nouveau vendeur
             </span>
           )}

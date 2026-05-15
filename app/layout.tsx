@@ -35,9 +35,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased theme-dark`}
+      className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `(function(){try{var e=localStorage.getItem("ugzio-theme");if(!e||e==="dark"){document.documentElement.classList.add("theme-dark")}else{document.documentElement.classList.add("theme-light")}}catch(e){document.documentElement.classList.add("theme-dark")}})()`
+        }} />
+      </head>
       <body className="min-h-dvh bg-[var(--bg-base)] text-[var(--text-primary)]">
         <ThemeProvider>
           <LanguageProvider>
