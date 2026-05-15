@@ -42,6 +42,13 @@ export default async function DeliverySettingsPage() {
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Import</p>
           <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Commandes CSV</p>
         </Link>
+        <Link
+          href="/settings/ugc"
+          className="rounded-lg bg-[var(--bg-card)] border border-[var(--border)] px-4 py-3 hover:border-[var(--border)]/70 transition-colors"
+        >
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Contenu</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)] mt-1">Modèles UGC</p>
+        </Link>
       </div>
 
       <DeliverySettingsClient />

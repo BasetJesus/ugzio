@@ -59,6 +59,38 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         })}
       </nav>
 
+      <div className="px-3 py-1 border-t border-[var(--nav-border)]">
+        <p className="px-3 pb-1 text-[9px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">Protection</p>
+        <Link
+          href="/inbox"
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+            pathname === "/inbox"
+              ? "bg-[var(--accent)]/10 text-[var(--accent)] font-medium"
+              : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
+          }`}
+        >
+          <span className="w-4 text-center text-sm">📥</span>
+          <div className="flex flex-col">
+            <span>UGC</span>
+            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">Approbations</span>
+          </div>
+        </Link>
+        <Link
+          href="/blacklist"
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+            pathname === "/blacklist"
+              ? "bg-[var(--risk-red)]/10 text-[var(--risk-red)] font-medium"
+              : "text-[var(--text-tertiary)] hover:bg-[var(--border)]/20 hover:text-[var(--text-secondary)]"
+          }`}
+        >
+          <span className="w-4 text-center text-sm">⊘</span>
+          <div className="flex flex-col">
+            <span>Liste noire</span>
+            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">Numéros bloqués</span>
+          </div>
+        </Link>
+      </div>
+
       <div className="px-3 py-2 border-t border-[var(--nav-border)]" />
 
       {showOnboarding && (
