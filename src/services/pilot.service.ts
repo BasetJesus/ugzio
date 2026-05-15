@@ -64,16 +64,16 @@ export async function getQuickstartProgress(orgId: string): Promise<QuickstartPr
     const completed = steps.filter(Boolean).length
     const total = steps.length
 
-    let nextAction = "Connect your WhatsApp"
-    if (!ordersImported) nextAction = "Import your first orders"
-    else if (!firstConfirmationDone) nextAction = "Confirm your first buyer"
-    else if (!firstDeliveryProtected) nextAction = "Protect your first delivery"
-    else if (!firstUgcSent) nextAction = "Request your first UGC"
-    else nextAction = "All steps completed — you're operational"
+    let nextAction = "Connecter votre WhatsApp"
+    if (!ordersImported) nextAction = "Importer vos premières commandes"
+    else if (!firstConfirmationDone) nextAction = "Confirmer votre premier acheteur"
+    else if (!firstDeliveryProtected) nextAction = "Protéger votre première livraison"
+    else if (!firstUgcSent) nextAction = "Demander votre premier UGC"
+    else nextAction = "Toutes les étapes terminées — vous êtes opérationnel"
 
     return { whatsappConnected, ordersImported, firstConfirmationDone, firstDeliveryProtected, firstUgcSent, totalSteps: total, completedSteps: completed, nextAction }
   } catch {
-    return { whatsappConnected: false, ordersImported: false, firstConfirmationDone: false, firstDeliveryProtected: false, firstUgcSent: false, totalSteps: 5, completedSteps: 0, nextAction: "Set up your account" }
+    return { whatsappConnected: false, ordersImported: false, firstConfirmationDone: false, firstDeliveryProtected: false, firstUgcSent: false, totalSteps: 5, completedSteps: 0, nextAction: "Configurer votre compte" }
   }
 }
 
@@ -93,11 +93,11 @@ export async function getFirst48Hours(orgId: string): Promise<First48HoursData> 
     ])
 
     const milestones: Milestone[] = [
-      { id: "connect", label: "Connect WhatsApp", done: !!org.sellerPhone, value: org.sellerPhone ? "Connected" : "Not yet" },
-      { id: "import", label: "Import orders", done: orderCount > 0, value: orderCount + " orders" },
-      { id: "confirm", label: "First confirmation", done: confirmedCount > 0, value: confirmedCount > 0 ? "Done" : "Pending" },
-      { id: "protect", label: "First delivery protected", done: outcomeCount > 0, value: outcomeCount > 0 ? outcomeCount + " protected" : "Pending" },
-      { id: "ugc", label: "First UGC request", done: ugcCount > 0, value: ugcCount > 0 ? "Done" : "Not yet" },
+      { id: "connect", label: "Connecter WhatsApp", done: !!org.sellerPhone, value: org.sellerPhone ? "Connecté" : "Pas encore" },
+      { id: "import", label: "Importer commandes", done: orderCount > 0, value: orderCount + " commandes" },
+      { id: "confirm", label: "Première confirmation", done: confirmedCount > 0, value: confirmedCount > 0 ? "Fait" : "En attente" },
+      { id: "protect", label: "Première livraison protégée", done: outcomeCount > 0, value: outcomeCount > 0 ? outcomeCount + " protégée(s)" : "En attente" },
+      { id: "ugc", label: "Première demande UGC", done: ugcCount > 0, value: ugcCount > 0 ? "Fait" : "Pas encore" },
     ]
 
     return { hoursSinceOnboarding, milestones, isActive }
@@ -133,7 +133,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
           id: "outcome_" + o.id,
           type: "revenue_protected",
           amount: Number(o.estimatedRevenueSaved),
-          label: Number(o.estimatedRevenueSaved).toFixed(0) + " TND protected — " + o.order.buyerName,
+          label: Number(o.estimatedRevenueSaved).toFixed(0) + " TND protégé — " + o.order.buyerName,
           timestamp: o.createdAt.toISOString(),
         })
       }
@@ -145,7 +145,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
           id: "event_" + e.id,
           type: "buyer_confirmed",
           amount: 0,
-          label: "Buyer confirmed",
+          label: "Acheteur confirmé",
           timestamp: e.createdAt.toISOString(),
         })
       }
@@ -154,7 +154,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
           id: "ugc_" + e.id,
           type: "ugc_received",
           amount: 0,
-          label: "First UGC request sent",
+          label: "Première demande UGC envoyée",
           timestamp: e.createdAt.toISOString(),
         })
       }
@@ -163,7 +163,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
           id: "delivery_" + e.id,
           type: "revenue_protected",
           amount: 0,
-          label: "Delivery completed successfully",
+          label: "Livraison réussie",
           timestamp: e.createdAt.toISOString(),
         })
       }
@@ -174,7 +174,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
         id: "default_start",
         type: "first_action",
         amount: 0,
-        label: "Start operating — your first success will appear here",
+        label: "Commencez — votre premier succès apparaîtra ici",
         timestamp: new Date().toISOString(),
       })
     }
@@ -185,7 +185,7 @@ export async function getSuccessMoments(orgId: string, limit: number = 5): Promi
       id: "default_empty",
       type: "first_action",
       amount: 0,
-      label: "Start operating — your first success will appear here",
+      label: "Commencez — votre premier succès apparaîtra ici",
       timestamp: new Date().toISOString(),
     }]
   }

@@ -87,7 +87,7 @@ export default function SuccessMomentsFeed({ moments }: Props) {
         {visible.map((m) => {
           const icon = MOMENT_ICONS[m.type] ?? "•"
           const color = MOMENT_COLORS[m.type] ?? "var(--text-tertiary)"
-          const verb = MOMENT_VERBS[m.type] ?? "completed"
+          const verb = MOMENT_VERBS[m.type] ?? "terminé"
           const isNew = animating === m.id
 
           return (
