@@ -1,0 +1,30 @@
+{
+  "version": "6.9.0",
+  "steps": [
+    {
+      "tag": "CreateTable",
+      "table": "SocialConnection",
+      "columns": [
+        { "name": "id", "type": "Text", "default": { "name": "cuid" }, "auto": true },
+        { "name": "organizationId", "type": "Text" },
+        { "name": "platform", "type": "Text" },
+        { "name": "accountId", "type": "Text" },
+        { "name": "accountName", "type": "Text", "optional": true },
+        { "name": "accountPicture", "type": "Text", "optional": true },
+        { "name": "followersCount", "type": "Int", "optional": true },
+        { "name": "accessToken", "type": "Text", "optional": true },
+        { "name": "tokenExpiresAt", "type": "Timestamp", "optional": true },
+        { "name": "connectedAt", "type": "Timestamp", "default": { "name": "now" }, "optional": true },
+        { "name": "updatedAt", "type": "Timestamp", "auto": true },
+        { "name": "createdAt", "type": "Timestamp", "default": { "name": "now" } }
+      ],
+      "foreignKeys": [
+        { "columns": ["organizationId"], "refTable": "Organization", "refColumns": ["id"] }
+      ],
+      "primaryKey": { "columns": ["id"] },
+      "uniqueConstraints": [
+        { "name": "SocialConnection_organizationId_platform_key", "columns": ["organizationId", "platform"] }
+      ]
+    }
+  ]
+}

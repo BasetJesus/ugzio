@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import SocialConnectButton from "./SocialConnectButton";
 
 interface SocialLinks {
   instagram?: string
@@ -14,6 +15,15 @@ interface SellerProfile {
   socialLinks: SocialLinks
 }
 
+interface ConnectedAccount {
+  id: string
+  platform: string
+  accountName: string | null
+  accountPicture: string | null
+  followersCount: number | null
+  connectedAt: string | null
+}
+
 export default function BrandingSettingsClient() {
   const [profile, setProfile] = useState<SellerProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,6 +35,9 @@ export default function BrandingSettingsClient() {
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
   const [tiktok, setTiktok] = useState("");
+
+  const [connections, setConnections] = useState<ConnectedAccount[]>([]);
+  const [connectionsLoading, setConnectionsLoading] = useState(true);
 
   const load = useCallback(async () => {
     try {
@@ -42,6 +55,21 @@ export default function BrandingSettingsClient() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  async function loadConnections() {
+    try {
+      const res = await fetch("/api/v1/social-connections");
+      if (res.ok) {
+        const data = await res.json();
+        setConnections(data.connections || []);
+      }
+    } catch {}
+    finally { setConnectionsLoading(false); }
+  }
+
+  useEffect(() => { loadConnections(); }, []);
+
+  const getConnection = (platform: string) => connections.find((c) => c.platform === platform) ?? null;
 
   async function handleSave() {
     setSaving(true);
@@ -132,6 +160,43 @@ export default function BrandingSettingsClient() {
             />
           </div>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-[var(--text-primary)]">Connexions sociales</h3>
+        <p className="text-xs text-[var(--text-tertiary)]">
+          Connecte tes réseaux sociaux en un clic pour afficher ta preuve sociale sur le magic link.
+        </p>
+        {connectionsLoading ? (
+          <div className="text-xs text-[var(--text-tertiary)] py-2">Chargement...</div>
+        ) : (
+          <div className="space-y-3">
+            <SocialConnectButton
+              platform="instagram"
+              label="Instagram"
+              icon="📸"
+              color="#E4405F"
+              connection={getConnection("instagram")}
+              onDisconnect={() => loadConnections()}
+            />
+            <SocialConnectButton
+              platform="facebook"
+              label="Facebook"
+              icon="👍"
+              color="#1877F2"
+              connection={getConnection("facebook")}
+              onDisconnect={() => loadConnections()}
+            />
+            <SocialConnectButton
+              platform="tiktok"
+              label="TikTok"
+              icon="🎵"
+              color="#000000"
+              connection={getConnection("tiktok")}
+              onDisconnect={() => loadConnections()}
+            />
+          </div>
+        )}
       </div>
 
       <button
