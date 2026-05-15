@@ -32,7 +32,7 @@ const buyers: BuyerConfig[] = [
     messages: [
       { text: "Salam, 3malna analyse 3la commande mte3ek 🔍", time: "10:32" },
       { text: "Commandet 120 TND — confirmiha b OUI wala tet7at fel attente.", time: "10:32" },
-      { text: "⚠️ Don't miss out! Dernier appel avant annulation.", time: "10:35" },
+      { text: "⚠️ Dernier appel avant annulation.", time: "10:35" },
     ],
     outcome: "120 TND évités",
     outcomeIcon: "🛡️",
