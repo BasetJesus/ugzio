@@ -32,6 +32,7 @@ import SellerBusinessProfileCard from "@/components/shared/SellerBusinessProfile
 import MorningBriefCard from "@/components/shared/MorningBriefCard";
 import DailyMomentumCard from "@/components/shared/DailyMomentumCard";
 import Link from "next/link";
+import { getServerLang, st } from "@/lib/core/server-lang";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,8 @@ export default async function OverviewPage() {
 
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
+
+  const lang = await getServerLang();
 
   let [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as WeeklyStory | null, null as TrustMomentumData | null, null as QuickstartProgress | null, null as First48HoursData | null, [] as SuccessMoment[], null as SellerHealth | null, null as WhatsAppConnectionState | null, null as CommunicationPerformance | null, null as SellerContext | null, null as DailyMomentum | null];
   try {
@@ -91,44 +94,44 @@ export default async function OverviewPage() {
     <OperationalPresenceLayer>
     <div className="space-y-section" data-state="live">
       <SystemNarrative
-        title={tense ? "Revenu en risque" : "Revenu en direct"}
+        title={tense ? st(lang, "ov.revenue-at-risk") : st(lang, "ov.revenue-live")}
         narrative={
           tense
-            ? `${revenueAtRisk.toFixed(0)} TND exposés — ${needsAction} commandes nécessitent votre attention`
+            ? `${revenueAtRisk.toFixed(0)} TND exposés — ${needsAction} ${needsAction > 1 ? "commandes" : "commande"} nécessitent votre attention`
             : hasOutcomes
-            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protégés aujourd'hui — ${needsAction} commandes en attente`
+            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protégés aujourd'hui — ${needsAction} ${needsAction > 1 ? "commandes" : "commande"} en attente`
             : sellerContext?.narrative ?? "Aucun risque actif — le système surveille les nouvelles commandes"
         }
         emotion={tense ? "tense" : "protective"}
         sellerStyle={sellerStyle}
       />
 
-      <SectionHeader icon="🛡️" label="Protection" subtitle={revenueAtRisk > 0 ? `${revenueAtRisk.toFixed(0)} TND en risque` : undefined} />
+      <SectionHeader icon="🛡️" label={st(lang, "ov.section-protection")} subtitle={revenueAtRisk > 0 ? `${revenueAtRisk.toFixed(0)} TND ${st(lang, "ov.at-risk-amount").replace("{n}", "")}` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-panel">
         <KpiCard
-          label="Revenu en risque"
+          label={st(lang, "ov.revenue-at-risk")}
           value={`${revenueAtRisk.toFixed(0)} TND`}
           tier="high"
           emotion={tense ? "tense" : "calm"}
         >
-          {tense && <p className="text-[10px] text-red-400/60 mt-1">⚡ Nécessite une action immédiate</p>}
+          {tense && <p className="text-[10px] text-red-400/60 mt-1">{st(lang, "ov.needs-action")}</p>}
         </KpiCard>
         <KpiCard
-          label="Commandes à traiter"
+          label={st(lang, "ov.orders-to-process")}
           value={needsAction}
           tier={needsAction > 0 ? "medium" : "low"}
           emotion={needsAction > 0 ? "tense" : "calm"}
         >
-          {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">⚠️ Décisions en attente</p>}
+          {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">{st(lang, "ov.decisions-pending")}</p>}
         </KpiCard>
         <KpiCard
-          label="État de protection"
-          value={revenueAtRisk > 0 ? "Active" : "Stable"}
+          label={st(lang, "ov.protection-status")}
+          value={revenueAtRisk > 0 ? st(lang, "ov.active") : st(lang, "ov.stable")}
           tier={revenueAtRisk > 0 ? "low" : "neutral"}
           emotion={revenueAtRisk > 0 ? "protective" : "calm"}
         >
-          {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">🛡️ Tout est protégé</p>}
+          {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">{st(lang, "ov.all-protected")}</p>}
         </KpiCard>
       </div>
 
@@ -142,12 +145,12 @@ export default async function OverviewPage() {
 
       {hasOutcomes && (
         <div>
-          <p className="text-caption text-[var(--text-tertiary)] mb-3">Résultats du jour</p>
+          <p className="text-caption text-[var(--text-tertiary)] mb-3">{st(lang, "ov.results-today")}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-            <MiniKpiCard label="Revenu protégé" value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
-            <MiniKpiCard label="Pertes RTS évitées" value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
-            <MiniKpiCard label="Taux de confirmation" value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
-            <MiniKpiCard label="Actions prises" value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
+            <MiniKpiCard label={st(lang, "ov.protected-revenue")} value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
+            <MiniKpiCard label={st(lang, "ov.rts-prevented")} value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
+            <MiniKpiCard label={st(lang, "ov.confirmation-rate")} value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
+            <MiniKpiCard label={st(lang, "ov.actions-taken")} value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
           </div>
         </div>
       )}
@@ -157,14 +160,14 @@ export default async function OverviewPage() {
           <div className="w-12 h-12 rounded-full bg-[var(--state-protected-bg)] flex items-center justify-center mx-auto mb-3">
             <span className="text-lg">🛡️</span>
           </div>
-          <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
+          <p className="text-sm font-medium text-[var(--text-primary)]">{st(lang, "ov.empty-title")}</p>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            <Link href="/confirm" className="text-[var(--success-green)] hover:underline">Va à la file de confirmation</Link> pour commencer à protéger ton revenu
+            <Link href="/confirm" className="text-[var(--success-green)] hover:underline">{st(lang, "ov.empty-link")}</Link> {st(lang, "ov.empty-desc")}
           </p>
         </div>
       )}
 
-      <SectionHeader icon="⚡" label="Agir" subtitle={needsAction > 0 ? `${needsAction} en attente` : undefined} />
+      <SectionHeader icon="⚡" label={st(lang, "ov.section-act")} subtitle={needsAction > 0 ? `${needsAction} ${st(lang, "ov.pending-count").replace("{n}", "")}` : undefined} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
         {sellerContext && (
@@ -193,7 +196,7 @@ export default async function OverviewPage() {
         </div>
       </div>
 
-      <SectionHeader icon="📈" label="Croissance" />
+      <SectionHeader icon="📈" label={st(lang, "ov.section-growth")} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
         {sellerContext && (

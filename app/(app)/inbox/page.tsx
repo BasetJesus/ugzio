@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { getUgcItems, getUgcStats } from "@/services/grow.service";
 import UgcInboxClient from "@/components/grow/UgcInboxClient";
+import { getServerLang, st } from "@/lib/core/server-lang";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,8 @@ export default async function InboxPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
+  const lang = await getServerLang();
+
   const [items, stats] = await Promise.all([
     getUgcItems(orgId),
     getUgcStats(orgId),
@@ -22,7 +25,7 @@ export default async function InboxPage() {
   return (
     <div data-state="live" className="space-y-section">
       <div className="flex items-center justify-between">
-        <h1 className="text-display text-[var(--text-primary)]">Boîte UGC</h1>
+        <h1 className="text-display text-[var(--text-primary)]">{st(lang, "inbox.title")}</h1>
       </div>
       <UgcInboxClient initialItems={items} stats={stats} />
     </div>

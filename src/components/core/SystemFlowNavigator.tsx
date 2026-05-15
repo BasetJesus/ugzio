@@ -14,6 +14,18 @@ interface Props {
 
 const STATE_KEYS: SystemState[] = ["LIVE", "DECISION", "HISTORY"]
 
+const STATE_LABEL_KEYS: Record<string, string> = {
+  LIVE: "nav.state-live",
+  DECISION: "nav.state-decision",
+  HISTORY: "nav.state-history",
+}
+
+const STATE_DESC_KEYS: Record<string, string> = {
+  LIVE: "nav.state-live-desc",
+  DECISION: "nav.state-decision-desc",
+  HISTORY: "nav.state-history-desc",
+}
+
 export default function SystemFlowNavigator({ orgName, planName, completedCount }: Props) {
   const pathname = usePathname()
   const { t } = useLanguage()
@@ -51,8 +63,8 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
                 {cfg.icon}
               </span>
               <div className="flex flex-col">
-                <span>{cfg.label}</span>
-                <span className="text-[9px] leading-none text-[var(--text-tertiary)]">{cfg.description}</span>
+                <span>{t(STATE_LABEL_KEYS[key])}</span>
+                <span className="text-[9px] leading-none text-[var(--text-tertiary)]">{t(STATE_DESC_KEYS[key])}</span>
               </div>
             </Link>
           )
@@ -60,7 +72,7 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
       </nav>
 
       <div className="px-3 py-1 border-t border-[var(--nav-border)]">
-        <p className="px-3 pb-1 text-[9px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">Protection</p>
+        <p className="px-3 pb-1 text-[9px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">{t("nav.protection")}</p>
         <Link
           href="/inbox"
           className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
@@ -71,8 +83,8 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         >
           <span className="w-4 text-center text-sm">📥</span>
           <div className="flex flex-col">
-            <span>UGC</span>
-            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">Approbations</span>
+            <span>{t("nav.ugc")}</span>
+            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">{t("nav.ugc-desc")}</span>
           </div>
         </Link>
         <Link
@@ -85,8 +97,8 @@ export default function SystemFlowNavigator({ orgName, planName, completedCount 
         >
           <span className="w-4 text-center text-sm">⊘</span>
           <div className="flex flex-col">
-            <span>Liste noire</span>
-            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">Numéros bloqués</span>
+            <span>{t("nav.blacklist")}</span>
+            <span className="text-[9px] leading-none text-[var(--text-tertiary)]">{t("nav.blacklist-desc")}</span>
           </div>
         </Link>
       </div>

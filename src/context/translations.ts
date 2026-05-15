@@ -178,6 +178,64 @@ const dict: Dict = {
   /* ── Common ── */
   "common.new-order": { tun: "+ طلب جديد", fr: "+ Nouvelle commande", en: "+ New Order" },
   "common.no-orders": { tun: "ماكاش طلبات باش تتحقق", fr: "Aucune commande à vérifier", en: "No orders to verify" },
+  "common.import": { tun: "استيراد", fr: "Importer", en: "Import" },
+  "common.save": { tun: "حفظ", fr: "Enregistrer", en: "Save" },
+  "common.cancel": { tun: "إلغاء", fr: "Annuler", en: "Cancel" },
+  "common.back": { tun: "رجوع", fr: "Retour", en: "Back" },
+
+  /* ── Overview page ── */
+  "ov.revenue-at-risk": { tun: "الإيرادات المعرضة للخطر", fr: "Revenu en risque", en: "Revenue at Risk" },
+  "ov.revenue-live": { tun: "الإيرادات المباشرة", fr: "Revenu en direct", en: "Live Revenue" },
+  "ov.orders-to-process": { tun: "الطلبات للمعالجة", fr: "Commandes à traiter", en: "Orders to Process" },
+  "ov.protection-status": { tun: "حالة الحماية", fr: "État de protection", en: "Protection Status" },
+  "ov.active": { tun: "نشط", fr: "Active", en: "Active" },
+  "ov.stable": { tun: "مستقر", fr: "Stable", en: "Stable" },
+  "ov.needs-action": { tun: "⚡ يتطلب إجراء فوري", fr: "⚡ Nécessite une action immédiate", en: "⚡ Needs immediate action" },
+  "ov.decisions-pending": { tun: "⚠️ قرارات معلقة", fr: "⚠️ Décisions en attente", en: "⚠️ Decisions pending" },
+  "ov.all-protected": { tun: "🛡️ كل شيء محمي", fr: "🛡️ Tout est protégé", en: "🛡️ All protected" },
+  "ov.protected-revenue": { tun: "الإيرادات المحمية", fr: "Revenu protégé", en: "Protected Revenue" },
+  "ov.rts-prevented": { tun: "خسائر RTS المتفاداة", fr: "Pertes RTS évitées", en: "RTS Losses Prevented" },
+  "ov.confirmation-rate": { tun: "معدل التأكيد", fr: "Taux de confirmation", en: "Confirmation Rate" },
+  "ov.actions-taken": { tun: "الإجراءات المتخذة", fr: "Actions prises", en: "Actions Taken" },
+  "ov.empty-title": { tun: "كول شي تحت السيطرة", fr: "Koul chay t7at l control", en: "Everything under control" },
+  "ov.empty-link": { tun: "اذهب إلى قائمة التأكيد", fr: "Va à la file de confirmation", en: "Go to the confirmation queue" },
+  "ov.empty-desc": { tun: "لبدء حماية إيراداتك", fr: "pour commencer à protéger ton revenu", en: "to start protecting your revenue" },
+  "ov.section-protection": { tun: "حماية", fr: "Protection", en: "Protection" },
+  "ov.section-act": { tun: "تصرف", fr: "Agir", en: "Act" },
+  "ov.section-growth": { tun: "نمو", fr: "Croissance", en: "Growth" },
+  "ov.results-today": { tun: "نتائج اليوم", fr: "Résultats du jour", en: "Today's Results" },
+  "ov.at-risk-amount": { tun: "{n} TND في خطر", fr: "{n} TND en risque", en: "{n} TND at risk" },
+  "ov.pending-count": { tun: "{n} معلقة", fr: "{n} en attente", en: "{n} pending" },
+
+  /* ── Confirm page ── */
+  "cf.title-pending": { tun: "طلبات معلقة", fr: "Commandes en attente", en: "Pending Orders" },
+  "cf.title-idle": { tun: "قائمة القرار", fr: "File de décision", en: "Decision Queue" },
+  "cf.orders-at-risk": { tun: "طلبات خطيرة", fr: "Commandes à risque", en: "Orders at Risk" },
+  "cf.pending": { tun: "معلقة", fr: "En attente", en: "Pending" },
+  "cf.losses-prevented": { tun: "خسائر متفاداة", fr: "Pertes évitées", en: "Losses Prevented" },
+  "cf.all-clear": { tun: "كل الطلبات تم التحقق منها", fr: "Toutes les commandes ont été vérifiées", en: "All orders verified" },
+
+  /* ── Orders page ── */
+  "ord.title": { tun: "سجل الطلبات", fr: "Historique des commandes", en: "Order History" },
+
+  /* ── Blacklist page ── */
+  "bl.title": { tun: "القائمة السودا", fr: "Liste noire", en: "Blacklist" },
+  "bl.desc": { tun: "الأرقام في القائمة السودا سيتم حظرها عند إنشاء الطلب", fr: "Les numéros sur liste noire seront bloqués à la création de commande", en: "Blacklisted numbers will be blocked at order creation" },
+
+  /* ── Inbox page ── */
+  "inbox.title": { tun: "صندوق UGC", fr: "Boîte UGC", en: "UGC Inbox" },
+
+  /* ── Sidebar ── */
+  "nav.protection": { tun: "حماية", fr: "Protection", en: "Protection" },
+  "nav.ugc": { tun: "UGC", fr: "UGC", en: "UGC" },
+  "nav.ugc-desc": { tun: "الموافقات", fr: "Approbations", en: "Approvals" },
+  "nav.blacklist-desc": { tun: "الأرقام المحظورة", fr: "Numéros bloqués", en: "Blocked Numbers" },
+  "nav.state-live": { tun: "مباشر", fr: "Live", en: "Live" },
+  "nav.state-decision": { tun: "قرار", fr: "Décision", en: "Decision" },
+  "nav.state-history": { tun: "السجل", fr: "Historique", en: "History" },
+  "nav.state-live-desc": { tun: "ماذا يحدث الآن", fr: "En direct", en: "Live now" },
+  "nav.state-decision-desc": { tun: "ما يحتاج إلى إجراء", fr: "Actions requises", en: "Needs action" },
+  "nav.state-history-desc": { tun: "ماذا حدث", fr: "Ce qui s'est passé", en: "What happened" },
 };
 
 export const NICHE_KEYS = [

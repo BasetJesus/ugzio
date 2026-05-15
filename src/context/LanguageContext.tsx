@@ -29,6 +29,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
     localStorage.setItem("ugzio_lang", l);
+    document.cookie = `ugzio_lang=${l};path=/;max-age=31536000;SameSite=Lax`;
     document.documentElement.dir = l === "tun" ? "rtl" : "ltr";
   }, []);
 

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import BlacklistClient from "@/components/shared/BlacklistClient";
+import { getServerLang, st } from "@/lib/core/server-lang";
 
 export const dynamic = "force-dynamic";
 
@@ -13,14 +14,14 @@ export default async function BlacklistPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
+  const lang = await getServerLang();
+
   return (
     <div data-state="live" className="space-y-section">
       <div className="flex items-center justify-between">
-        <h1 className="text-display text-[var(--text-primary)]">Liste noire</h1>
+        <h1 className="text-display text-[var(--text-primary)]">{st(lang, "bl.title")}</h1>
       </div>
-      <p className="text-sm text-[var(--text-secondary)] -mt-4">
-        Les numéros sur liste noire seront bloqués à la création de commande
-      </p>
+      <p className="text-sm text-[var(--text-secondary)] -mt-4">{st(lang, "bl.desc")}</p>
       <BlacklistClient />
     </div>
   );

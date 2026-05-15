@@ -10,6 +10,7 @@ import { MiniKpiCard } from "@/components/shared/KpiCard";
 import SystemNarrative from "@/components/shared/SystemNarrative";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
 import OperationalPresenceLayer from "@/components/shared/OperationalPresenceLayer";
+import { getServerLang, st } from "@/lib/core/server-lang";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,8 @@ export default async function ConfirmPage() {
 
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
+
+  const lang = await getServerLang();
 
   let queue: { items: ConfirmationQueueItem[]; total: number; pendingCount: number; contactedCount: number } = { items: [], total: 0, pendingCount: 0, contactedCount: 0 };
   let pendingOutcomes: PendingOutcomeOrder[] = [];
@@ -53,25 +56,26 @@ export default async function ConfirmPage() {
   }
 
   const needsAttention = queue.pendingCount > 0;
+  const revenueLabel = `${revenueAtRisk.toFixed(0)} TND`;
 
   return (
     <OperationalPresenceLayer>
     <div data-state="decision" className="space-y-section">
       <SystemNarrative
-        title={needsAttention ? "Commandes en attente" : "File de décision"}
+        title={needsAttention ? st(lang, "cf.title-pending") : st(lang, "cf.title-idle")}
         narrative={
           needsAttention
-            ? `${queue.pendingCount} commandes en attente — ${highRiskItems.length} à risque élevé, ${revenueAtRisk.toFixed(0)} TND exposés`
-            : "Toutes les commandes ont été vérifiées — aucune décision en attente"
+            ? `${queue.pendingCount} ${st(lang, "cf.pending").toLowerCase()} — ${highRiskItems.length} ${st(lang, "cf.orders-at-risk").toLowerCase()}, ${revenueAtRisk.toFixed(0)} TND exposés`
+            : st(lang, "cf.all-clear")
         }
         emotion={needsAttention ? "tense" : "calm"}
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label="Revenu en risque" value={`${revenueAtRisk.toFixed(0)} TND`} tier="high" emotion="tense" />
-        <MiniKpiCard label="Commandes à risque" value={highRiskItems.length} tier="medium" />
-        <MiniKpiCard label="En attente" value={queue.pendingCount} tier="neutral" />
-        <MiniKpiCard label="Pertes évitées" value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
+        <MiniKpiCard label={st(lang, "ov.revenue-at-risk")} value={revenueLabel} tier="high" emotion="tense" />
+        <MiniKpiCard label={st(lang, "cf.orders-at-risk")} value={highRiskItems.length} tier="medium" />
+        <MiniKpiCard label={st(lang, "cf.pending")} value={queue.pendingCount} tier="neutral" />
+        <MiniKpiCard label={st(lang, "cf.losses-prevented")} value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
       </div>
 
       <ConfirmationPanel
