@@ -21,48 +21,48 @@ export default function CommunicationPerformanceCard({ data, emotionalState = "c
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 transition-all duration-300">
-      <p className="text-caption text-[var(--text-tertiary)] mb-card">Communication Performance</p>
+      <p className="text-caption text-[var(--text-tertiary)] mb-card">Performance de communication</p>
 
       {!hasData ? (
         <div className="text-center py-4">
-          <p className="text-xs text-[var(--text-secondary)]">No WhatsApp messages sent yet</p>
+          <p className="text-xs text-[var(--text-secondary)]">Aucun message WhatsApp envoyé</p>
           <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
-            Send your first message to see metrics
+            Envoyez votre premier message pour voir les métriques
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-3 mb-3">
           <div>
             <p className="text-lg font-extrabold text-[var(--text-primary)]">{pct(data.replyRate)}</p>
-            <p className="text-[10px] text-[var(--text-secondary)]">Reply rate</p>
+            <p className="text-[10px] text-[var(--text-secondary)]">Taux de réponse</p>
           </div>
           <div>
             <p className="text-lg font-extrabold" style={{ color: data.confirmationImprovement > 0 ? cfg.accent : "var(--text-primary)" }}>
               +{pct(data.confirmationImprovement)}
             </p>
-            <p className="text-[10px] text-[var(--text-secondary)]">Confirmation lift</p>
+            <p className="text-[10px] text-[var(--text-secondary)]">Hausse confirmation</p>
           </div>
           <div>
             <p className="text-lg font-extrabold" style={{ color: data.unreachableReduction > 0 ? cfg.accent : "var(--text-primary)" }}>
               -{pct(data.unreachableReduction)}
             </p>
-            <p className="text-[10px] text-[var(--text-secondary)]">Unreachable drop</p>
+            <p className="text-[10px] text-[var(--text-secondary)]">Baisse injoignables</p>
           </div>
         </div>
       )}
 
       <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[var(--text-secondary)]">RTS impact:</span>
+          <span className="text-[10px] text-[var(--text-secondary)]">Impact RTS :</span>
           <span className="text-sm font-bold" style={{ color: data.rtsImpact > 0 ? "var(--state-protected)" : "var(--text-tertiary)" }}>
             {tnd(data.rtsImpact)}
           </span>
-          <span className="text-[9px] text-[var(--text-tertiary)]">prevented</span>
+          <span className="text-[9px] text-[var(--text-tertiary)]">évités</span>
         </div>
         {hasData && (
           <div className="flex items-center gap-2 text-[9px] text-[var(--text-tertiary)]">
-            <span>{data.totalSent} sent</span>
-            <span>{data.totalReplied} replied</span>
+            <span>{data.totalSent} envoyés</span>
+            <span>{data.totalReplied} répondu</span>
           </div>
         )}
       </div>

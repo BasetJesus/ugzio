@@ -7,7 +7,7 @@ const plans = [
     currency: "TND",
     period: "/mois",
     desc: "Testez UGZIO avec 3 commandes, sans carte bancaire",
-    cta: "Start Free",
+    cta: "Commencer Gratuit",
     href: "/overview?demo=true",
     features: [
       { text: "3 commandes / mois", included: true },
@@ -28,7 +28,7 @@ const plans = [
     currency: "TND",
     period: "/mois",
     desc: "Protège ton revenue à grande échelle, commandes illimitées",
-    cta: "Get Started",
+    cta: "Commencer",
     href: "/overview?demo=true",
     features: [
       { text: "Commandes illimitées", included: true },
@@ -70,7 +70,7 @@ export default function PricingSection() {
       <div className="section-container">
         <RevealOnScroll>
           <div className="section-intro section-intro-center">
-            <p className="section-intro-label">Pricing</p>
+            <p className="section-intro-label">Tarifs</p>
             <h2 className="section-intro-title">
               Un prix qui suit ton{" "}
               <span className="landing-text-gradient">volume</span>.

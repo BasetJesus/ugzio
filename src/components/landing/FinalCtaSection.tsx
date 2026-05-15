@@ -31,7 +31,7 @@ export default function FinalCtaSection() {
               className="group inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple min-w-[200px] relative overflow-hidden"
               style={{ backgroundColor: "#7c3aed" }}
             >
-              <span className="relative z-10">🚀 Try Live Demo</span>
+              <span className="relative z-10">🚀 Démo Live</span>
               <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
             </TrackedCTA>
             <TrackedCTA
@@ -40,7 +40,7 @@ export default function FinalCtaSection() {
               eventName="final_cta_click"
               className="inline-flex items-center justify-center rounded-xl border border-white/15 px-8 py-4 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass min-w-[200px]"
             >
-              🇹🇳 Join Waitlist
+              🇹🇳 Rejoindre l'attente
             </TrackedCTA>
           </div>
 

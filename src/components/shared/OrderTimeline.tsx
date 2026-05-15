@@ -8,23 +8,23 @@ interface Props {
 }
 
 const EVENT_LABELS: Record<string, string> = {
-  sequence_selected: "Reassurance sequence sent",
-  whatsapp_opened: "Buyer opened WhatsApp",
-  whatsapp_message_sent: "WhatsApp message sent",
-  message_sent: "WhatsApp message sent",
-  buyer_replied: "Buyer replied",
-  buyer_confirmed: "Buyer confirmed order",
-  confirmed: "Order confirmed by operator",
-  delayed_request: "Buyer requested delay",
-  unreachable: "Buyer unreachable",
-  cancelled: "Order cancelled",
-  retry_scheduled: "Retry scheduled",
-  operator_note: "Operator note added",
-  ugc_request_sent: "UGC request triggered",
-  ugc_received: "UGC received from buyer",
-  delivery_completed: "Delivery completed",
-  customer_story_shared: "Customer shared story",
-  review_received: "Review received",
+  sequence_selected: "Séquence de réassurance envoyée",
+  whatsapp_opened: "Acheteur a ouvert WhatsApp",
+  whatsapp_message_sent: "Message WhatsApp envoyé",
+  message_sent: "Message WhatsApp envoyé",
+  buyer_replied: "Acheteur a répondu",
+  buyer_confirmed: "Acheteur a confirmé la commande",
+  confirmed: "Commande confirmée par l'opérateur",
+  delayed_request: "Acheteur a demandé un report",
+  unreachable: "Acheteur injoignable",
+  cancelled: "Commande annulée",
+  retry_scheduled: "Re-tentative planifiée",
+  operator_note: "Note opérateur ajoutée",
+  ugc_request_sent: "Demande UGC déclenchée",
+  ugc_received: "UGC reçu de l'acheteur",
+  delivery_completed: "Livraison terminée",
+  customer_story_shared: "Client a partagé son histoire",
+  review_received: "Avis reçu",
 }
 
 const DOT_STYLES: Record<string, string> = {
@@ -79,22 +79,22 @@ function formatTime(iso: string): string {
 function formatTimeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "just now"
+  if (mins < 1) return "à l'instant"
   if (mins < 60) return mins + "m"
   const hours = Math.floor(mins / 60)
   if (hours < 24) return hours + "h"
-  return Math.floor(hours / 24) + "d"
+  return Math.floor(hours / 24) + "j"
 }
 
 function revenueLabel(event: OperationEventRecord, orderAmount?: number): string | null {
   if (event.type === "confirmed" && orderAmount) {
-    return "Revenue protected: " + orderAmount.toFixed(0) + " TND"
+    return "Revenu protégé : " + orderAmount.toFixed(0) + " TND"
   }
   if (event.type === "delivery_completed" && orderAmount) {
-    return "Revenue secured: " + orderAmount.toFixed(0) + " TND"
+    return "Revenu sécurisé : " + orderAmount.toFixed(0) + " TND"
   }
   if (event.metadata?.revenueProtected) {
-    return "Revenue protected: " + Number(event.metadata.revenueProtected).toFixed(0) + " TND"
+    return "Revenu protégé : " + Number(event.metadata.revenueProtected).toFixed(0) + " TND"
   }
   return null
 }
@@ -107,7 +107,7 @@ export default function OrderTimeline({ events, orderAmount }: Props) {
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--success-green)] animate-pulse-soft" />
-          <p className="text-caption text-[var(--text-tertiary)]">Operation Timeline</p>
+          <p className="text-caption text-[var(--text-tertiary)]">Chronologie des opérations</p>
         </div>
       </div>
 
@@ -136,7 +136,7 @@ export default function OrderTimeline({ events, orderAmount }: Props) {
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] text-[var(--text-secondary)]">
-                      {event.actorType === "system" ? "System" : event.actorType === "operator" ? "Operator" : "Buyer"}
+                      {event.actorType === "system" ? "Système" : event.actorType === "operator" ? "Opérateur" : "Acheteur"}
                     </span>
                     <span className="text-[9px] text-[var(--text-tertiary)]">
                       {formatTime(event.createdAt)}

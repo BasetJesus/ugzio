@@ -17,7 +17,7 @@ const EMOTION_CONFIG = {
   stable: { border: "var(--border)", bg: "var(--bg-surface)", glow: "var(--glow-soft)", color: "var(--text-tertiary)" },
 }
 
-export default function RevenueShield({ protectedAmount, estimatedLossPrevented = 0, todayLabel = "Protected Today", compact = false, emotion = "protected", continuityLabel }: Props) {
+export default function RevenueShield({ protectedAmount, estimatedLossPrevented = 0, todayLabel = "Protégé aujourd'hui", compact = false, emotion = "protected", continuityLabel }: Props) {
   const [animate, setAnimate] = useState(false)
   const prevAmount = useRef(protectedAmount)
   const [displayAmount, setDisplayAmount] = useState(protectedAmount)
@@ -76,7 +76,7 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
             {displayAmount.toFixed(0)} TND
           </p>
           <p className="text-xs text-white/40 mt-1">
-            Revenue protected through operator decisions
+            Revenu protégé grâce aux décisions de l'opérateur
           </p>
           {continuityLabel && (
             <p className="text-[10px] text-indigo-400 mt-0.5">
@@ -103,13 +103,13 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
           </div>
           <div className="flex items-center gap-4 text-xs">
             <span className="font-medium" style={{ color: emotionCfg.color }}>
-              {displayAmount.toFixed(0)} TND saved
+              {displayAmount.toFixed(0)} TND économisés
             </span>
             {estimatedLossPrevented > 0 && (
               <>
                 <span className="text-[var(--text-tertiary)]">•</span>
                 <span className="text-[var(--text-tertiary)]">
-                  {estimatedLossPrevented.toFixed(0)} TND losses prevented
+                  {estimatedLossPrevented.toFixed(0)} TND de pertes évitées
                 </span>
               </>
             )}

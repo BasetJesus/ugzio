@@ -6,10 +6,10 @@ export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <button
+<button
       onClick={toggleTheme}
-      className="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--border)] transition-colors"
-      title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-[var(--bg-surface)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+      title={theme === "dark" ? "Mode clair" : "Mode sombre"}
     >
       {theme === "dark" ? (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

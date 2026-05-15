@@ -17,28 +17,28 @@ const PSYCH_STYLES: Record<SequenceType, {
   icon: string
 }> = {
   trust: {
-    label: "Trust",
+    label: "Confiance",
     accent: "var(--psych-trust)",
     bg: "var(--psych-trust-bg)",
     border: "var(--psych-trust)",
     icon: "✔️",
   },
   reminder: {
-    label: "Reminder",
+    label: "Rappel",
     accent: "var(--psych-reminder)",
     bg: "var(--psych-reminder-bg)",
     border: "var(--psych-reminder)",
     icon: "🔔",
   },
   urgency: {
-    label: "Urgency",
+    label: "Urgence",
     accent: "var(--psych-urgency)",
     bg: "var(--psych-urgency-bg)",
     border: "var(--psych-urgency)",
     icon: "⚠️",
   },
   reassurance: {
-    label: "Reassurance",
+    label: "Réassurance",
     accent: "var(--psych-reassurance)",
     bg: "var(--psych-reassurance-bg)",
     border: "var(--psych-reassurance)",
@@ -61,9 +61,9 @@ export default function PsychologyCard({ sequenceType, psychologicalReason, expe
         <div className="flex items-center gap-2">
           <span className="text-sm">{style.icon}</span>
           <div>
-            <p className="text-xs font-semibold" style={{ color: style.accent }}>{style.label} Sequence</p>
+            <p className="text-xs font-semibold" style={{ color: style.accent }}>{style.label}</p>
             <p className="text-[10px] text-[var(--text-tertiary)]">
-              {messageCount ? `${messageCount} messages` : "Psychology-driven"}
+              {messageCount ? `${messageCount} messages` : "Séquence psychologique"}
             </p>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function PsychologyCard({ sequenceType, psychologicalReason, expe
         >
           <div className="flex items-center gap-1.5 mb-1">
             <span className="text-[9px] font-medium uppercase tracking-wider" style={{ color: style.accent }}>
-              Preview
+              Aperçu
             </span>
             <span className="text-[9px] text-[var(--text-tertiary)]">· WhatsApp</span>
           </div>

@@ -33,8 +33,8 @@ export default function WhatsAppFlowFeed() {
       <div className="landing-glass rounded-2xl p-4 min-h-[180px] flex flex-col justify-center">
         <div className="flex items-center gap-2 mb-4">
           <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-status-online" />
-          <span className="text-[10px] font-medium text-white/40 tracking-wider uppercase">Live Feed</span>
-          <span className="text-[9px] text-green-400/40 ml-auto">online</span>
+          <span className="text-[10px] font-medium text-white/40 tracking-wider uppercase">Flux Live</span>
+          <span className="text-[9px] text-green-400/40 ml-auto">en ligne</span>
         </div>
         <div className="relative min-h-[100px]">
           {steps.map((step, i) => (
@@ -56,13 +56,13 @@ export default function WhatsAppFlowFeed() {
                   {i === 0 && (
                     <div className="flex items-center gap-1 mt-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse-urgent" />
-                      <span className="text-[9px] text-amber-400/60 font-medium">Action required</span>
+                      <span className="text-[9px] text-amber-400/60 font-medium">Action requise</span>
                     </div>
                   )}
                   {i === 4 && (
                     <div className="flex items-center gap-1 mt-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse-ring" />
-                      <span className="text-[9px] text-green-400/60 font-medium">Revenue protected</span>
+                      <span className="text-[9px] text-green-400/60 font-medium">Revenue protégé</span>
                     </div>
                   )}
                 </div>

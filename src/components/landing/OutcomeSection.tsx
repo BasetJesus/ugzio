@@ -58,7 +58,7 @@ export default function OutcomeSection() {
         <RevealOnScroll delay={200}>
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { value: "-22%", label: "RTS Rate", color: "text-green-400" },
+              { value: "-22%", label: "Taux RTS", color: "text-green-400" },
               { value: "+40%", label: "Taux de confirmation", color: "text-purple-400" },
               { value: "3s", label: "Décision par commande", color: "text-blue-400" },
               { value: "500+", label: "TND protégés / mois", color: "text-emerald-400" },

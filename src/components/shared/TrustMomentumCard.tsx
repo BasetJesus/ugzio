@@ -18,12 +18,12 @@ interface Props {
 
 function trustNarrative(data: TrustMomentumData, style?: SellerStyle): string {
   if (data.trustImprovement > 0) {
-    if (style === "relationship_seller") return `${data.trustImprovement}% improvement — your buyers trust your service`
-    if (style === "fast_responder") return `${data.trustImprovement}% improvement — fast confirmations build trust`
-    return `${data.trustImprovement}% improvement in buyer trust signals`
+    if (style === "relationship_seller") return `${data.trustImprovement}% d'amélioration — vos acheteurs vous font confiance`
+    if (style === "fast_responder") return `${data.trustImprovement}% d'amélioration — les confirmations rapides renforcent la confiance`
+    return `${data.trustImprovement}% d'amélioration des signaux de confiance acheteurs`
   }
-  if (data.confirmedOrders > 5) return "Building trust through consistent confirmations"
-  return "Building trust baseline"
+  if (data.confirmedOrders > 5) return "La confiance se construit par des confirmations régulières"
+  return "Construction de la base de confiance"
 }
 
 export default function TrustMomentumCard({ data, sellerStyle }: Props) {
@@ -34,9 +34,9 @@ export default function TrustMomentumCard({ data, sellerStyle }: Props) {
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
-        <p className="text-caption text-[var(--text-tertiary)]">Trust Momentum</p>
+        <p className="text-caption text-[var(--text-tertiary)]">Momentum de confiance</p>
         <h2 className="text-display text-[var(--text-primary)] mt-1">
-          Buyer Trust
+          Confiance acheteur
         </h2>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
           {trustNarrative(data, sellerStyle)}
@@ -45,21 +45,21 @@ export default function TrustMomentumCard({ data, sellerStyle }: Props) {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-panel p-panel">
         <div>
-          <p className="text-caption text-[var(--success-green)]">Confirmed Orders</p>
+          <p className="text-caption text-[var(--success-green)]">Commandes confirmées</p>
           <p className="text-display text-[var(--text-primary)] mt-0.5">
             {data.confirmedOrders}
           </p>
         </div>
 
         <div>
-          <p className="text-caption text-[var(--accent)]">Best Sequence</p>
+          <p className="text-caption text-[var(--accent)]">Meilleure séquence</p>
           <p className="text-display text-[var(--text-primary)] mt-0.5">
             {data.bestSequence}
           </p>
         </div>
 
         <div>
-          <p className="text-caption text-[var(--psych-reassurance)]">UGC Requests</p>
+          <p className="text-caption text-[var(--psych-reassurance)]">Demandes UGC</p>
           <p className="text-display text-[var(--text-primary)] mt-0.5">
             {data.ugcRequestsTriggered}
           </p>

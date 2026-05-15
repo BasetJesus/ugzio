@@ -37,14 +37,14 @@ export default function NotificationBell({ orgId }: { orgId: string }) {
       </button>
       {show && (
         <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 shadow-[var(--shadow-lg)] z-50">
-          <p className="text-xs font-semibold text-[var(--risk-red)]">{count} high-risk order{count !== 1 ? "s" : ""}</p>
-          <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Requires your attention</p>
+          <p className="text-xs font-semibold text-[var(--risk-red)]">{count} commande à haut risque{count !== 1 ? "s" : ""}</p>
+          <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Nécessite votre attention</p>
           <Link
             href="/shield"
             onClick={() => setShow(false)}
             className="mt-2 block rounded-md bg-[var(--accent)] px-3 py-1.5 text-center text-xs font-semibold text-white"
           >
-            View in ZioShield
+            Voir dans ZioShield
           </Link>
         </div>
       )}

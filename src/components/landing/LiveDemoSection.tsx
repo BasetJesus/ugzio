@@ -184,7 +184,7 @@ export default function LiveDemoSection() {
               <div className={`transition-all duration-500 ease-out ${transitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Risk Score</p>
+                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Score Risque</p>
                     <div className="flex items-baseline gap-2">
                       <span className={`text-3xl font-bold transition-colors duration-500 ${
                         active.risk > 70 ? "text-red-400" : active.risk > 40 ? "text-amber-400" : "text-green-400"
@@ -203,7 +203,7 @@ export default function LiveDemoSection() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Trust Score</p>
+                    <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Score Confiance</p>
                     <div className="flex items-baseline gap-2">
                       <span className={`text-3xl font-bold transition-colors duration-500 ${
                         active.trust > 70 ? "text-green-400" : active.trust > 40 ? "text-amber-400" : "text-red-400"
@@ -224,7 +224,7 @@ export default function LiveDemoSection() {
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">WhatsApp Intelligence</p>
+                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Intelligence WhatsApp</p>
                   <div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
                     <span className="text-[10px] font-medium text-purple-400">{active.whatsappSequence}</span>
@@ -237,7 +237,7 @@ export default function LiveDemoSection() {
                     <div className="flex items-center gap-2 mb-3 pb-2 border-b border-green-900/20">
                       <span className="h-5 w-5 rounded-full bg-green-600 flex items-center justify-center text-[10px] font-bold text-white">U</span>
                       <span className="text-xs font-medium text-green-300">UGZIO Bot</span>
-                      <span className="text-[9px] text-green-600 ml-auto">online</span>
+                      <span className="text-[9px] text-green-600 ml-auto">en ligne</span>
                     </div>
 
                     <div className="space-y-2">
@@ -255,7 +255,7 @@ export default function LiveDemoSection() {
 
                       {showTyping && (
                         <div className="flex items-center gap-1.5 px-1 py-1">
-                          <span className="text-[9px] text-green-400/50">typing</span>
+                          <span className="text-[9px] text-green-400/50">écriture...</span>
                           <span className="flex items-center gap-0.5">
                             <span className="h-1 w-1 rounded-full bg-green-400/60 animate-typing-dot" style={{ animationDelay: "0ms" }} />
                             <span className="h-1 w-1 rounded-full bg-green-400/60 animate-typing-dot" style={{ animationDelay: "200ms" }} />
@@ -266,7 +266,7 @@ export default function LiveDemoSection() {
 
                       {!showMessage && !showTyping && (
                         <div className="py-6 text-center">
-                          <p className="text-xs text-white/30">Switching buyer type...</p>
+                          <p className="text-xs text-white/30">Changement de profil...</p>
                         </div>
                       )}
                     </div>
@@ -281,10 +281,10 @@ export default function LiveDemoSection() {
                       {celebration ? "🎉" : active.outcomeIcon}
                     </span>
                     <div>
-                      <p className="text-[10px] text-white/30 uppercase tracking-wider">Revenue Outcome</p>
+                      <p className="text-[10px] text-white/30 uppercase tracking-wider">Résultat Revenue</p>
                       <p className={`text-base font-bold flex items-center gap-2 ${active.outcomeColor}`}>
                         {active.outcome}
-                        {celebration && <span className="text-[9px] text-green-400/60 font-normal animate-pulse">Protected!</span>}
+                          {celebration && <span className="text-[9px] text-green-400/60 font-normal animate-pulse">Protégé!</span>}
                       </p>
                     </div>
                   </div>

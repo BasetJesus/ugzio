@@ -25,11 +25,11 @@ const MOMENT_COLORS: Record<string, string> = {
 }
 
 const MOMENT_VERBS: Record<string, string> = {
-  revenue_protected: "secured",
-  delivery_prevented: "prevented",
-  buyer_confirmed: "confirmed",
-  ugc_received: "received",
-  first_action: "started",
+  revenue_protected: "sécurisé",
+  delivery_prevented: "évité",
+  buyer_confirmed: "confirmé",
+  ugc_received: "reçu",
+  first_action: "démarré",
 }
 
 export default function SuccessMomentsFeed({ moments }: Props) {
@@ -65,12 +65,12 @@ export default function SuccessMomentsFeed({ moments }: Props) {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
         <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
-          <p className="text-caption text-[var(--text-tertiary)]">Today</p>
-          <p className="text-display text-[var(--text-primary)] mt-1">Activity</p>
+          <p className="text-caption text-[var(--text-tertiary)]">Aujourd'hui</p>
+          <p className="text-display text-[var(--text-primary)] mt-1">Activité</p>
         </div>
         <div className="px-panel py-6 text-center">
-          <p className="text-xs text-[var(--text-secondary)]">No activity yet today</p>
-          <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Outcomes will appear here</p>
+          <p className="text-xs text-[var(--text-secondary)]">Aucune activité aujourd'hui</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Les résultats apparaîtront ici</p>
         </div>
       </div>
     )
@@ -79,8 +79,8 @@ export default function SuccessMomentsFeed({ moments }: Props) {
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
-        <p className="text-caption text-[var(--text-tertiary)]">Today</p>
-        <h2 className="text-display text-[var(--text-primary)] mt-1">Success Moments</h2>
+        <p className="text-caption text-[var(--text-tertiary)]">Aujourd'hui</p>
+        <h2 className="text-display text-[var(--text-primary)] mt-1">Moments de succès</h2>
       </div>
 
       <div className="divide-y divide-[var(--border)]">

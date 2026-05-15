@@ -39,7 +39,7 @@ export default function HeroSection() {
                   className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple relative overflow-hidden group w-full sm:w-auto"
                   style={{ backgroundColor: "#7c3aed" }}
                 >
-                  <span className="relative z-10">🚀 Try Live Demo</span>
+                  <span className="relative z-10">🚀 Démo Live</span>
                   <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />
                 </TrackedCTA>
                 <TrackedCTA
@@ -48,7 +48,7 @@ export default function HeroSection() {
                   eventName="hero_cta_click"
                   className="inline-flex items-center justify-center rounded-xl border border-white/15 px-7 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass w-full sm:w-auto"
                 >
-                  📲 Join Waitlist
+                  📲 Rejoindre l'attente
                 </TrackedCTA>
               </div>
 
@@ -58,7 +58,7 @@ export default function HeroSection() {
                   Des vendeurs tunisiens testent déjà
                 </span>
                 <span className="hidden sm:inline text-white/10">•</span>
-                <span className="hidden sm:inline">WhatsApp-native • COD-focused</span>
+                <span className="hidden sm:inline">WhatsApp-native • COD-native</span>
               </div>
             </div>
           </RevealOnScroll>

@@ -7,11 +7,11 @@ interface Props {
 }
 
 const STEPS = [
-  { key: "whatsappConnected" as const, label: "Connect WhatsApp", icon: "📱" },
-  { key: "ordersImported" as const, label: "Import orders", icon: "📦" },
-  { key: "firstConfirmationDone" as const, label: "First confirmation", icon: "✅" },
-  { key: "firstDeliveryProtected" as const, label: "First delivery protected", icon: "🛡️" },
-  { key: "firstUgcSent" as const, label: "First UGC request", icon: "📷" },
+  { key: "whatsappConnected" as const, label: "Connecter WhatsApp", icon: "📱" },
+  { key: "ordersImported" as const, label: "Importer commandes", icon: "📦" },
+  { key: "firstConfirmationDone" as const, label: "Première confirmation", icon: "✅" },
+  { key: "firstDeliveryProtected" as const, label: "Première livraison protégée", icon: "🛡️" },
+  { key: "firstUgcSent" as const, label: "Première demande UGC", icon: "📷" },
 ]
 
 export default function SellerQuickstartCard({ data }: Props) {
@@ -23,15 +23,15 @@ export default function SellerQuickstartCard({ data }: Props) {
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-caption text-[var(--accent)]">Quickstart</p>
+            <p className="text-caption text-[var(--accent)]">Démarrage rapide</p>
             <h2 className="text-display text-[var(--text-primary)] mt-1">
-              {allDone ? "You're operational!" : "Set up your store"}
+              {allDone ? "Vous êtes opérationnel !" : "Configurer votre boutique"}
             </h2>
           </div>
           <span className="text-2xl">{allDone ? "🎉" : "🚀"}</span>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          {allDone ? "All steps completed. UGZIO is protecting your revenue." : data.nextAction}
+          {allDone ? "Toutes les étapes terminées. UGZIO protège votre revenu." : data.nextAction}
         </p>
       </div>
 
@@ -61,7 +61,7 @@ export default function SellerQuickstartCard({ data }: Props) {
                 <span className={"text-xs " + (done ? "text-[var(--text-primary)] font-medium" : "text-[var(--text-tertiary)]")}>
                   {step.label}
                 </span>
-                {done && <span className="text-[9px] text-[var(--success-green)] ml-auto shrink-0">Done</span>}
+                {done && <span className="text-[9px] text-[var(--success-green)] ml-auto shrink-0">Fait</span>}
               </div>
             )
           })}

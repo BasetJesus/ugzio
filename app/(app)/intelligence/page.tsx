@@ -53,25 +53,25 @@ export default async function IntelligencePage() {
   return (
     <div className="p-4 sm:p-6 space-y-8">
       <div>
-        <h1 className="text-lg font-bold text-[var(--text-primary)]">Cancellation Analytics</h1>
-        <p className="text-sm text-[var(--text-tertiary)] mt-1">Revenue protection intelligence</p>
+        <h1 className="text-lg font-bold text-[var(--text-primary)]">Analyse des annulations</h1>
+        <p className="text-sm text-[var(--text-tertiary)] mt-1">Intelligence de protection du revenu</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiCard label="Total Orders" value={analytics.totalOrders} tier="neutral" />
+        <KpiCard label="Total commandes" value={analytics.totalOrders} tier="neutral" />
         <KpiCard
-          label="Cancellation Rate"
+          label="Taux d'annulation"
           value={`${analytics.cancellationRate}%`}
           tier={analytics.cancellationRate > 20 ? "high" : analytics.cancellationRate > 10 ? "medium" : "low"}
           emotion={analytics.cancellationRate > 20 ? "tense" : analytics.cancellationRate > 10 ? "protective" : "calm"}
         />
         <KpiCard
-          label="Refusal Rate"
+          label="Taux de refus"
           value={`${analytics.refusalRate}%`}
           tier={analytics.refusalRate > 15 ? "high" : analytics.refusalRate > 5 ? "medium" : "low"}
         />
         <KpiCard
-          label="Delivery Rate"
+          label="Taux de livraison"
           value={`${analytics.deliveryRate}%`}
           tier={analytics.deliveryRate > 70 ? "low" : analytics.deliveryRate > 50 ? "medium" : "high"}
           emotion={analytics.deliveryRate > 70 ? "achievement" : analytics.deliveryRate > 50 ? "protective" : "tense"}
@@ -79,40 +79,40 @@ export default async function IntelligencePage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <KpiCard label="Cancelled" value={analytics.cancelledCount} tier="high" emotion="tense" />
-        <KpiCard label="Refused" value={analytics.refusedCount} tier="medium" />
-        <KpiCard label="Delivered" value={analytics.deliveredCount} tier="low" emotion="achievement" />
-        <KpiCard label="Confirmed" value={analytics.confirmedCount} tier="neutral" />
+        <KpiCard label="Annulé" value={analytics.cancelledCount} tier="high" emotion="tense" />
+        <KpiCard label="Refusé" value={analytics.refusedCount} tier="medium" />
+        <KpiCard label="Livré" value={analytics.deliveredCount} tier="low" emotion="achievement" />
+        <KpiCard label="Confirmé" value={analytics.confirmedCount} tier="neutral" />
       </div>
 
       <div>
-        <SectionHeader icon="🔬" label="Before vs After Confirmation (30 days)" />
+        <SectionHeader icon="🔬" label="Avant vs Après Confirmation (30 jours)" />
         <div className="grid grid-cols-2 gap-4 mt-4">
           <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-            <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Before Confirm</p>
+            <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Avant confirmation</p>
             <p className="text-2xl font-extrabold text-red-400">{analytics.beforeAfter.beforeConfirm.rate}%</p>
             <p className="text-xs text-[var(--text-tertiary)] mt-1">
-              {analytics.beforeAfter.beforeConfirm.cancelled} cancelled / {analytics.beforeAfter.beforeConfirm.total} total
+              {analytics.beforeAfter.beforeConfirm.cancelled} annulés / {analytics.beforeAfter.beforeConfirm.total} total
             </p>
           </div>
           <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-            <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">After Confirm</p>
+            <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Après confirmation</p>
             <p className="text-2xl font-extrabold text-emerald-400">{analytics.beforeAfter.afterConfirm.rate}%</p>
             <p className="text-xs text-[var(--text-tertiary)] mt-1">
-              {analytics.beforeAfter.afterConfirm.cancelled} cancelled / {analytics.beforeAfter.afterConfirm.total} confirmed
+              {analytics.beforeAfter.afterConfirm.cancelled} annulés / {analytics.beforeAfter.afterConfirm.total} confirmés
             </p>
           </div>
         </div>
       </div>
 
       <div>
-        <SectionHeader icon="💬" label="Buyer Sentiment" />
+        <SectionHeader icon="💬" label="Sentiment acheteur" />
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 mt-4 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[var(--text-primary)]">Average Satisfaction</p>
+            <p className="text-sm text-[var(--text-primary)]">Satisfaction moyenne</p>
             <p className="text-lg font-bold text-purple-400">{sentiment.averageSatisfaction} / 5</p>
           </div>
-          <p className="text-xs text-[var(--text-tertiary)]">{sentiment.totalFeedback} feedback responses</p>
+          <p className="text-xs text-[var(--text-tertiary)]">{sentiment.totalFeedback} réponses de feedback</p>
           <div className="space-y-2">
             {[5, 4, 3, 2, 1].map((score) => (
               <SentimentBar

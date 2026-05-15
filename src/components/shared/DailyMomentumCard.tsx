@@ -19,29 +19,29 @@ export default function DailyMomentumCard({ data, hasOutcomes }: Props) {
             style={{ backgroundColor: isActive ? "var(--state-protected)" : "var(--text-tertiary)" }}
           />
           <p className="text-caption" style={{ color: isActive ? "var(--state-protected)" : "var(--text-tertiary)" }}>
-            {isActive ? data.streakLabel : "No activity yet today"}
+            {isActive ? data.streakLabel : "Aucune activité aujourd'hui"}
           </p>
         </div>
         <h2 className="text-display text-[var(--text-primary)] mt-1">
-          {isActive ? "Today's Momentum" : "Daily Pulse"}
+          {isActive ? "Momentum du jour" : "Pouls quotidien"}
         </h2>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-panel p-panel">
         <div>
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Protected</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Protégé</p>
           <p className="text-base font-semibold mt-0.5" style={{ color: data.protectedToday > 0 ? "var(--state-protected)" : "var(--text-tertiary)" }}>
             {data.protectedToday > 0 ? `${data.protectedToday.toFixed(0)} TND` : "—"}
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Confirmed</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Confirmé</p>
           <p className="text-base font-semibold mt-0.5 text-[var(--text-primary)]">
             {data.confirmations > 0 ? data.confirmations : "—"}
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Replied</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Répondu</p>
           <p className="text-base font-semibold mt-0.5 text-[var(--text-primary)]">
             {data.buyersReplied > 0 ? data.buyersReplied : "—"}
           </p>

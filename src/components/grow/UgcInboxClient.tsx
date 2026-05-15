@@ -13,9 +13,16 @@ interface Props {
 type FilterMode = "all" | "received" | "approved" | "rejected"
 
 const STATUS_LABELS: Record<string, string> = {
-  received: "pending",
-  approved: "approved",
-  rejected: "rejected",
+  received: "en attente",
+  approved: "approuvé",
+  rejected: "rejeté",
+}
+
+const FILTER_LABELS: Record<string, string> = {
+  all: "Tout",
+  received: "Reçus",
+  approved: "Approuvés",
+  rejected: "Rejetés",
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -37,7 +44,7 @@ function UgcMediaCard({ item, onAction, acting }: {
         {item.mediaType === "image" ? (
           <img
             src={item.mediaUrl}
-            alt={`UGC from ${item.buyerName}`}
+            alt={`UGC de ${item.buyerName}`}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -56,7 +63,7 @@ function UgcMediaCard({ item, onAction, acting }: {
         <div className="flex items-start justify-between">
           <div className="min-w-0">
             <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.buyerName}</p>
-            <p className="text-[10px] text-[var(--text-tertiary)]">{item.product ?? "unknown product"}</p>
+            <p className="text-[10px] text-[var(--text-tertiary)]">{item.product ?? "produit inconnu"}</p>
           </div>
           <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full border shrink-0 ${STATUS_COLORS[item.status]}`}>
             {STATUS_LABELS[item.status] ?? item.status}
@@ -74,14 +81,14 @@ function UgcMediaCard({ item, onAction, acting }: {
               disabled={isActing}
               className="rounded-lg bg-[var(--btn-green)]/90 py-2.5 text-xs font-semibold text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
             >
-              {isActing ? "..." : "Approve"}
+              {isActing ? "..." : "Approuver"}
             </button>
             <button
               onClick={() => onAction(item.id, "reject")}
               disabled={isActing}
               className="rounded-lg border border-[var(--risk-red)]/30 py-2.5 text-xs font-semibold text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
             >
-              {isActing ? "..." : "Reject"}
+              {isActing ? "..." : "Rejeter"}
             </button>
           </div>
         )}
@@ -94,7 +101,7 @@ function UgcMediaCard({ item, onAction, acting }: {
               rel="noopener noreferrer"
               className="block w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] py-2.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/50 text-center transition-all duration-200"
             >
-              Download ↗
+              Télécharger ↗
             </a>
           </div>
         )}
@@ -132,20 +139,20 @@ export default function UgcInboxClient({ initialItems, stats }: Props) {
   return (
     <div className="space-y-section">
       <SystemNarrative
-        title={needsAttention ? "UGC to review" : "UGC Inbox"}
+        title={needsAttention ? "UGC à examiner" : "Boîte de réception UGC"}
         narrative={
           needsAttention
-            ? `${pendingCount} items need your review — approve the best ones for reposting`
-            : "All UGC items have been reviewed"
+            ? `${pendingCount} éléments nécessitent votre avis — approuvez les meilleurs pour republication`
+            : "Tous les contenus UGC ont été examinés"
         }
         emotion={needsAttention ? "tense" : "calm"}
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
         <MiniKpiCard label="Total UGC" value={stats.total} tier="neutral" />
-        <MiniKpiCard label="Pending review" value={stats.received} tier={stats.received > 0 ? "medium" : "low"} />
-        <MiniKpiCard label="Approved" value={stats.approved} tier="low" emotion="protective" />
-        <MiniKpiCard label="Approval rate" value={`${stats.rate}%`} tier={stats.rate >= 50 ? "low" : "neutral"} />
+        <MiniKpiCard label="En attente" value={stats.received} tier={stats.received > 0 ? "medium" : "low"} />
+        <MiniKpiCard label="Approuvé" value={stats.approved} tier="low" emotion="protective" />
+        <MiniKpiCard label="Taux d'approbation" value={`${stats.rate}%`} tier={stats.rate >= 50 ? "low" : "neutral"} />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2">
@@ -159,7 +166,7 @@ export default function UgcInboxClient({ initialItems, stats }: Props) {
                 : "bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--accent)]/50"
             }`}
           >
-            {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
+            {f === "all" ? FILTER_LABELS[f] : FILTER_LABELS[f] ?? (f.charAt(0).toUpperCase() + f.slice(1))}
             {f !== "all" && ` (${f === "received" ? stats.received : f === "approved" ? stats.approved : stats.rejected})`}
           </button>
         ))}
@@ -167,9 +174,9 @@ export default function UgcInboxClient({ initialItems, stats }: Props) {
 
       {filtered.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-center">
-          <p className="text-[var(--text-tertiary)] text-sm">No UGC items yet</p>
+          <p className="text-[var(--text-tertiary)] text-sm">Aucun élément UGC pour l'instant</p>
           <p className="text-[var(--text-tertiary)] text-xs mt-1">
-            UGC requests sent to buyers will appear here once they submit photos or videos
+            Les demandes UGC envoyées aux acheteurs apparaîtront ici une fois qu'ils soumettront des photos ou vidéos
           </p>
         </div>
       ) : (

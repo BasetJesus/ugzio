@@ -18,18 +18,18 @@ export default function First48HoursTracker({ data }: Props) {
       <div className="px-panel pt-panel pb-3 border-b border-[var(--accent)]/10">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-caption text-[var(--accent)]">First 48 Hours</p>
+            <p className="text-caption text-[var(--accent)]">Premières 48 Heures</p>
             <h2 className="text-display text-[var(--text-primary)] mt-1">
-              Momentum tracker
+              Traqueur de momentum
             </h2>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-[var(--accent)]">{hoursLeft}h</p>
-            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider">remaining</p>
+            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider">restantes</p>
           </div>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          {remaining > 0 ? remaining + " steps to go — keep going!" : "All milestones reached! Your store is live."}
+          {remaining > 0 ? remaining + " étapes restantes — continuez !" : "Tous les jalons atteints ! Votre boutique est en ligne."}
         </p>
       </div>
 

@@ -20,20 +20,20 @@ export default function SellerBusinessProfileCard({ context }: Props) {
           />
           <p className="text-caption" style={{ color: style.accent }}>{style.label}</p>
         </div>
-        <h2 className="text-display text-[var(--text-primary)] mt-1">Your Operation</h2>
+        <h2 className="text-display text-[var(--text-primary)] mt-1">Votre exploitation</h2>
         <p className="text-xs text-[var(--text-secondary)] mt-1">{profile.businessRhythm}</p>
       </div>
 
       <div className="p-panel space-y-3">
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Average order</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Commande moyenne</p>
             <p className="text-base font-semibold text-[var(--text-primary)] mt-0.5">
               {hasData ? `${profile.averageOrderValue} TND` : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-[var(--bg-surface)] p-3">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Buyer response</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Réponse acheteur</p>
             <p className="text-base font-semibold mt-0.5" style={{ color: profile.buyerResponsiveness >= 50 ? "var(--state-protected)" : profile.buyerResponsiveness > 0 ? "var(--state-recovering)" : "var(--text-tertiary)" }}>
               {profile.buyerResponsiveness > 0 ? `${profile.buyerResponsiveness}%` : "—"}
             </p>
@@ -43,26 +43,26 @@ export default function SellerBusinessProfileCard({ context }: Props) {
         {hasData && (
           <div className="rounded-lg bg-[var(--bg-surface)] p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[var(--text-tertiary)]">Peak time</span>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Heure de pointe</span>
               <span className="text-[11px] font-medium text-[var(--text-primary)]">
                 {rhythm.peakPeriodLabel}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[var(--text-tertiary)]">Buyer behavior</span>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Comportement acheteur</span>
               <span className="text-[11px] font-medium text-[var(--text-primary)]">
                 {profile.confirmationBehavior}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[var(--text-tertiary)]">Best sequence</span>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Meilleure séquence</span>
               <span className="text-[11px] font-medium text-[var(--text-primary)]" style={{ color: style.accent }}>
                 {rhythm.strongestSequence}
               </span>
             </div>
             {rhythm.repeatBuyerStability > 0 && (
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-[var(--text-tertiary)]">Repeat buyers</span>
+                <span className="text-[10px] text-[var(--text-tertiary)]">Acheteurs récurrents</span>
                 <span className={"text-[11px] font-medium " + (rhythm.repeatBuyerStability >= 30 ? "text-[var(--state-protected)]" : "text-[var(--text-primary)]")}>
                   {rhythm.repeatBuyerStability}%
                 </span>
