@@ -1,6 +1,44 @@
 import { prisma } from "@/lib/db"
+import { validateOperationEvent } from "@/lib/events/validate"
 
-export type OperationEventType = "message_sent" | "whatsapp_opened" | "whatsapp_message_sent" | "buyer_replied" | "buyer_confirmed" | "confirmed" | "unreachable" | "delayed_request" | "cancelled" | "retry_scheduled" | "operator_note" | "sequence_selected" | "ugc_request_sent" | "ugc_received" | "delivery_completed" | "customer_story_shared" | "review_received"
+// Both legacy and canonical names are accepted for backward compatibility
+export type OperationEventType =
+  // Legacy names (snake_case)
+  | "message_sent"
+  | "whatsapp_opened"
+  | "whatsapp_message_sent"
+  | "buyer_replied"
+  | "buyer_confirmed"
+  | "confirmed"
+  | "unreachable"
+  | "delayed_request"
+  | "cancelled"
+  | "retry_scheduled"
+  | "operator_note"
+  | "sequence_selected"
+  | "ugc_request_sent"
+  | "ugc_received"
+  | "delivery_completed"
+  | "customer_story_shared"
+  | "review_received"
+  // Canonical names (dot-separated)
+  | "buyer.responded"
+  | "buyer.confirmed"
+  | "buyer.requested_delay"
+  | "operator.confirmed"
+  | "operator.marked_unreachable"
+  | "operator.cancelled"
+  | "operator.scheduled_retry"
+  | "operator.added_note"
+  | "comm.message_sent"
+  | "comm.whatsapp_opened"
+  | "comm.whatsapp_message_sent"
+  | "comm.sequence_selected"
+  | "ugc.requested"
+  | "ugc.received"
+  | "delivery.completed"
+  | "customer.story_shared"
+  | "customer.review_received"
 
 export type ActorType = "system" | "operator" | "buyer"
 
@@ -20,6 +58,7 @@ export async function addEvent(
   actorType: ActorType,
   metadata?: Record<string, unknown> | null,
 ): Promise<{ success: boolean }> {
+  validateOperationEvent(type, metadata)
   try {
     await prisma.operationEvent.create({
       data: {

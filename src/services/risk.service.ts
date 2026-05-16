@@ -3,6 +3,7 @@ import { computeScore, computeAndAlert } from "@/lib/zioshield/scoring";
 import { addToBlacklist, removeFromBlacklist } from "@/lib/zioshield/blacklist";
 import { determineRiskLevel } from "@/lib/risk/config";
 import { emit } from "@/lib/events/event-bus";
+import { EventType } from "@/lib/events/taxonomy";
 import type { ScoreResult, RiskDashboardStats, RecentRiskOrder, BlacklistEntry, RiskSignal, RiskExplanation, RiskAlertItem, RiskAggregateStats } from "@/types/risk";
 import type { RiskLevel } from "@/types/order";
 
@@ -41,7 +42,7 @@ export async function scoreAndPersist(
   try {
     const result = await computeAndAlert(phone, orgId, buyerName, orderId);
 
-    emit("RISK_CALCULATED", {
+    emit(EventType.RISK_SCORED, {
       orderId,
       orgId,
       riskScore: result.score,
@@ -338,7 +339,7 @@ export async function blacklistPhone(orgId: string, phone: string) {
   });
 
   if (flaggedOrder) {
-    emit("ORDER_FLAGGED", {
+    emit(EventType.RISK_ORDER_FLAGGED, {
       orderId: flaggedOrder.id,
       orgId,
       buyerPhone: phone,

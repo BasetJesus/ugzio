@@ -92,7 +92,7 @@ export async function buyerConfirmOrder(
         channel: "buyer_page",
         source: "self_service",
       })
-      await addEvent(order.organizationId, order.id, "confirmed", "buyer", {
+      await addEvent(order.organizationId, order.id, "buyer.confirmed", "buyer", {
         method: "self_service",
         orderAmount: Number(order.amount),
       })
@@ -115,7 +115,7 @@ export async function submitBuyerFeedback(
     })
     if (!order) return { success: false }
 
-    await addEvent(order.organizationId, order.id, "operator_note", "buyer", {
+    await addEvent(order.organizationId, order.id, "buyer.responded", "buyer", {
       satisfaction,
       note: note ?? null,
       orderAmount: Number(order.amount),

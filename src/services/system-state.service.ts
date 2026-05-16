@@ -1,6 +1,6 @@
-import { getEvents, getEventsByOrg, getRecentEvents } from "@/lib/events/event-store"
+import { getEvents, getEventsByOrg } from "@/lib/events/event-store"
 import type { EventRecord } from "@/lib/events/event-store"
-import type { UgzioEvent } from "@/lib/events/event-bus"
+import { EventType } from "@/lib/events/taxonomy"
 
 export interface OrderStatusSummary {
   status: string
@@ -28,8 +28,8 @@ export interface SystemState {
 
 function buildOrderStatusMap(orgId: string): Map<string, string> {
   const orderStatuses = new Map<string, string>()
-  const createdEvents = getEvents({ types: ["ORDER_CREATED"] as UgzioEvent[], orgId })
-  const updatedEvents = getEvents({ types: ["ORDER_UPDATED"] as UgzioEvent[], orgId })
+  const createdEvents = getEvents({ types: [EventType.ORDER_CREATED], orgId })
+  const updatedEvents = getEvents({ types: [EventType.ORDER_STATUS_CHANGED], orgId })
 
   for (const e of createdEvents) {
     const p = e.payload as { orderId: string; orgId: string }
@@ -45,7 +45,7 @@ function buildOrderStatusMap(orgId: string): Map<string, string> {
 }
 
 function computeRiskTrend(orgId: string): RiskTrend {
-  const riskEvents = getEvents({ types: ["RISK_CALCULATED"] as UgzioEvent[], orgId })
+  const riskEvents = getEvents({ types: [EventType.RISK_SCORED], orgId })
 
   if (riskEvents.length === 0) {
     return {
@@ -95,7 +95,7 @@ export function computeSystemState(orgId: string): SystemState {
     .map(([status, count]) => ({ status, count }))
     .sort((a, b) => b.count - a.count)
 
-  const allFlagged = getEvents({ types: ["ORDER_FLAGGED"] as UgzioEvent[], orgId })
+  const allFlagged = getEvents({ types: [EventType.RISK_ORDER_FLAGGED], orgId })
   const recentActivity = getEventsByOrg(orgId, 20)
 
   return {

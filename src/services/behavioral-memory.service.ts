@@ -35,17 +35,17 @@ export async function getOrderMemory(orgId: string, orderId: string): Promise<Or
     const communicationOutcomes: string[] = []
 
     for (const e of events) {
-      const type = e.type as OperationEventType
-      if (type === "sequence_selected" && e.metadata) {
+      const type = e.type
+      if ((type === "sequence_selected" || type === "comm.sequence_selected") && e.metadata) {
         const meta = safeParseJson(e.metadata)
         if (meta?.sequenceType) sequenceHistory.push(meta.sequenceType as string)
       }
-      if (type === "buyer_replied" || type === "buyer_confirmed") responseCount++
-      if (type === "confirmed" || type === "cancelled" || type === "retry_scheduled" || type === "operator_note") operatorActions++
-      if (type === "unreachable") communicationOutcomes.push("unreachable")
-      if (type === "cancelled") communicationOutcomes.push("cancelled")
-      if (type === "confirmed") communicationOutcomes.push("confirmed")
-      if (type === "delivery_completed") communicationOutcomes.push("delivered")
+      if (type === "buyer_replied" || type === "buyer_confirmed" || type === "buyer.responded" || type === "buyer.confirmed") responseCount++
+      if (type === "confirmed" || type === "cancelled" || type === "retry_scheduled" || type === "operator_note" || type === "operator.confirmed" || type === "operator.cancelled" || type === "operator.scheduled_retry" || type === "operator.added_note") operatorActions++
+      if (type === "unreachable" || type === "operator.marked_unreachable") communicationOutcomes.push("unreachable")
+      if (type === "cancelled" || type === "operator.cancelled") communicationOutcomes.push("cancelled")
+      if (type === "confirmed" || type === "operator.confirmed") communicationOutcomes.push("confirmed")
+      if (type === "delivery_completed" || type === "delivery.completed") communicationOutcomes.push("delivered")
     }
 
     return {
@@ -103,7 +103,7 @@ export async function getBuyerMemory(orgId: string, buyerPhone: string): Promise
       where: {
         organizationId: orgId,
         orderId: { in: orders.map((o) => o.id) },
-        type: { in: ["confirmed", "buyer_replied", "buyer_confirmed"] },
+        type: { in: ["confirmed", "buyer_replied", "buyer_confirmed", "operator.confirmed", "buyer.responded", "buyer.confirmed"] },
       },
       orderBy: { createdAt: "desc" },
       take: 2,

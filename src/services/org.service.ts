@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { emit } from "@/lib/events/event-bus";
+import { EventType } from "@/lib/events/taxonomy";
 
 export interface ActivationStatus {
   hasOrders: boolean
@@ -94,7 +95,7 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
 
     if (isHighRisk) highRiskCount++
 
-    emit("ORDER_CREATED", {
+    emit(EventType.ORDER_CREATED, {
       orderId: order.id,
       orgId,
       buyerName: buyer.name,
@@ -103,7 +104,7 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
       product: buyer.product,
     })
 
-    emit("RISK_CALCULATED", {
+    emit(EventType.RISK_SCORED, {
       orderId: order.id,
       orgId,
       riskScore: 100 - trustScore,
@@ -133,7 +134,7 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
 
     highRiskCount++
 
-    emit("ORDER_CREATED", {
+    emit(EventType.ORDER_CREATED, {
       orderId: order.id,
       orgId,
       buyerName: buyer.name,
@@ -142,7 +143,7 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
       product: buyer.product,
     })
 
-    emit("RISK_CALCULATED", {
+    emit(EventType.RISK_SCORED, {
       orderId: order.id,
       orgId,
       riskScore: 85,
@@ -151,7 +152,7 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
       signals: ["first-time-order", "high-amount", "unusual-region", "prior-failures"],
     })
 
-    emit("ORDER_FLAGGED", {
+    emit(EventType.RISK_ORDER_FLAGGED, {
       orderId: order.id,
       orgId,
       buyerPhone: buyer.phone,

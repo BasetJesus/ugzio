@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { emit } from "@/lib/events/event-bus";
+import { EventType } from "@/lib/events/taxonomy";
 import { transitionOrderStatus } from "./order.service";
 import { calculateActionOutcome } from "@/services/revenue-protection.service";
 import { recordOutcome } from "@/services/operation-outcome.service";
@@ -203,7 +204,7 @@ export async function markConfirmed(
       operator,
     })
 
-    emit("ORDER_CONFIRMED", {
+    emit(EventType.OPERATOR_CONFIRMED, {
       orderId,
       orgId,
       buyerName: order.buyerName,
@@ -214,7 +215,7 @@ export async function markConfirmed(
       revenueSaved: outcome.revenueSaved,
     })
 
-    emit("CUSTOMER_VERIFIED", {
+    emit(EventType.OPERATOR_VERIFIED_CUSTOMER, {
       orderId,
       orgId,
       buyerName: order.buyerName,
@@ -223,7 +224,7 @@ export async function markConfirmed(
       trustDelta: 15,
     })
 
-    await addEvent(orgId, orderId, "confirmed", "operator", {
+    await addEvent(orgId, orderId, "operator.confirmed", "operator", {
       method,
       orderAmount: Number(order.amount),
     })
@@ -286,7 +287,7 @@ export async function markUnreachable(
       })
     }
 
-    emit("ORDER_UNREACHABLE", {
+    emit(EventType.OPERATOR_MARKED_UNREACHABLE, {
       orderId,
       orgId,
       buyerName: order.buyerName,
@@ -294,7 +295,7 @@ export async function markUnreachable(
       attemptMethod: method,
     })
 
-    await addEvent(orgId, orderId, "unreachable", "operator", {
+    await addEvent(orgId, orderId, "operator.marked_unreachable", "operator", {
       method,
       orderAmount: Number(order.amount),
     })
@@ -349,7 +350,7 @@ export async function markSuspicious(
       })
     }
 
-    emit("CUSTOMER_VERIFIED", {
+    emit(EventType.OPERATOR_VERIFIED_CUSTOMER, {
       orderId,
       orgId,
       buyerName: order.buyerName,
@@ -358,7 +359,7 @@ export async function markSuspicious(
       trustDelta: -20,
     })
 
-    await addEvent(orgId, orderId, "operator_note", "operator", {
+    await addEvent(orgId, orderId, "operator.added_note", "operator", {
       note: notes ?? "Marked suspicious",
       orderAmount: Number(order.amount),
     })
@@ -413,7 +414,7 @@ export async function scheduleRetry(
       })
     }
 
-    await addEvent(orgId, orderId, "retry_scheduled", "operator", {
+    await addEvent(orgId, orderId, "operator.scheduled_retry", "operator", {
       notes: notes ?? null,
       orderAmount: Number(order.amount),
     })
@@ -471,7 +472,7 @@ export async function cancelOrder(
       })
     }
 
-    emit("ORDER_CANCELLED", {
+    emit(EventType.OPERATOR_CANCELLED, {
       orderId,
       orgId,
       buyerName: order.buyerName,
@@ -481,7 +482,7 @@ export async function cancelOrder(
       lossPrevented: outcome.lossPrevented,
     })
 
-    await addEvent(orgId, orderId, "cancelled", "operator", {
+    await addEvent(orgId, orderId, "operator.cancelled", "operator", {
       reason,
       orderAmount: Number(order.amount),
     })

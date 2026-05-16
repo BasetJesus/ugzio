@@ -5,6 +5,7 @@ import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib
 import { canTransition } from "@/lib/zioconfirm/state-machine";
 import { emitCritical } from "@/lib/events/queues";
 import { emit } from "@/lib/events/event-bus";
+import { EventType } from "@/lib/events/taxonomy";
 import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
 import { resolveDeliveryOutcome } from "@/services/attribution.service";
@@ -114,9 +115,9 @@ export async function createOrder(orgId: string, data: {
     console.error("[order.service] Pre-delivery confirm scheduling failed:", e);
   }
 
-  await emitCritical("ORDER_CREATED", { orderId: order.id, orgId });
+  await emitCritical(EventType.ORDER_CREATED, { orderId: order.id, orgId });
 
-  emit("ORDER_CREATED", {
+  emit(EventType.ORDER_CREATED, {
     orderId: order.id,
     orgId,
     buyerName: data.buyerName,
@@ -149,7 +150,7 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
       data: { status: newStatus },
     });
 
-    emit("ORDER_UPDATED", {
+    emit(EventType.ORDER_STATUS_CHANGED, {
       orderId,
       orgId,
       previousStatus,
@@ -164,7 +165,7 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
     if (newStatus === "DELIVERED") {
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.ORDER_DELIVERED)
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.DELIVERY_SUCCESS)
-      await addEvent(orgId, orderId, "delivery_completed", "system", {
+      await addEvent(orgId, orderId, "delivery.completed", "system", {
         newStatus: "DELIVERED",
         orderAmount: Number(order.amount),
         deliverySuccessScore: order.trustScore >= 70 ? 90 : order.trustScore >= 40 ? 60 : 40,
@@ -174,13 +175,13 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
     }
 
     if (newStatus === "UGC_REQUESTED") {
-      await addEvent(orgId, orderId, "ugc_request_sent", "system", {
+      await addEvent(orgId, orderId, "ugc.requested", "system", {
         orderAmount: Number(order.amount),
       })
     }
 
     if (newStatus === "UGC_RECEIVED") {
-      await addEvent(orgId, orderId, "ugc_received", "system", {
+      await addEvent(orgId, orderId, "ugc.received", "system", {
         orderAmount: Number(order.amount),
       })
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.UGC_RECEIVED, {

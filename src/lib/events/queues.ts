@@ -1,5 +1,6 @@
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
+import { EventType } from "./taxonomy";
 
 const redis = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
   maxRetriesPerRequest: null,
@@ -17,8 +18,8 @@ export const criticalQueue = new Queue("critical-events", {
 });
 
 export type CriticalEventType =
-  | "ORDER_CREATED"
-  | "DELIVERY_FAILED"
+  | typeof EventType.ORDER_CREATED
+  | typeof EventType.DELIVERY_FAILED
   | "VERIFICATION_CONFIRMED";
 
 export async function emitCritical(type: CriticalEventType, payload: unknown) {

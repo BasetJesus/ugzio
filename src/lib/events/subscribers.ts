@@ -1,5 +1,6 @@
 import { on } from "./event-bus"
-import type { OrderCreatedPayload, OrderUpdatedPayload, RiskCalculatedPayload, OrderFlaggedPayload } from "./event-bus"
+import { EventType } from "./taxonomy"
+import type { OrderCreatedPayload, OrderStatusChangedPayload, RiskScoredPayload, RiskOrderFlaggedPayload } from "./taxonomy"
 
 let registered = false
 
@@ -7,15 +8,15 @@ export function registerCoreSubscribers(): void {
   if (registered) return
   registered = true
 
-  on("ORDER_CREATED", (payload: OrderCreatedPayload) => {
+  on(EventType.ORDER_CREATED, (payload: OrderCreatedPayload) => {
     console.log(`[EventBus] Order created: ${payload.orderId} — ${payload.buyerName} (${payload.amount} TND)`)
   })
 
-  on("ORDER_UPDATED", (payload: OrderUpdatedPayload) => {
+  on(EventType.ORDER_STATUS_CHANGED, (payload: OrderStatusChangedPayload) => {
     console.log(`[EventBus] Order updated: ${payload.orderId} — ${payload.previousStatus} → ${payload.newStatus}`)
   })
 
-  on("RISK_CALCULATED", (payload: RiskCalculatedPayload) => {
+  on(EventType.RISK_SCORED, (payload: RiskScoredPayload) => {
     if (payload.riskLevel === "high") {
       console.log(`[EventBus] High risk alert: ${payload.orderId} — score ${payload.riskScore}, signals: [${payload.signals.join(", ")}]`)
     } else {
@@ -23,7 +24,7 @@ export function registerCoreSubscribers(): void {
     }
   })
 
-  on("ORDER_FLAGGED", (payload: OrderFlaggedPayload) => {
+  on(EventType.RISK_ORDER_FLAGGED, (payload: RiskOrderFlaggedPayload) => {
     console.log(`[EventBus] Order flagged: ${payload.orderId} — ${payload.buyerName} (${payload.buyerPhone}), risk ${payload.riskScore}`)
   })
 }

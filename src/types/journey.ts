@@ -1,3 +1,8 @@
+import { EventType, getEventLabel, toCanonical } from "@/lib/events/taxonomy"
+
+// ─── LEGACY JOURNEY EVENT TYPES (backward compat) ──────────────────
+// These map to the canonical taxonomy. New code should use EventType from taxonomy directly.
+
 export const JOURNEY_EVENT_TYPES = {
   BUYER_CONTACT_ATTEMPTED: "BUYER_CONTACT_ATTEMPTED",
   BUYER_RESPONDED: "BUYER_RESPONDED",
@@ -23,6 +28,7 @@ export const JOURNEY_EVENT_TYPES = {
 
 export type JourneyEventType = (typeof JOURNEY_EVENT_TYPES)[keyof typeof JOURNEY_EVENT_TYPES]
 
+// Labels derived from canonical taxonomy
 export const JOURNEY_EVENT_LABELS: Record<JourneyEventType, string> = {
   BUYER_CONTACT_ATTEMPTED: "Contact attempted",
   BUYER_RESPONDED: "Buyer responded",
@@ -44,6 +50,10 @@ export const JOURNEY_EVENT_LABELS: Record<JourneyEventType, string> = {
   CUSTOMER_STORY_SHARED: "Customer shared story",
   REVIEW_RECEIVED: "Review received",
   DELIVERY_SUCCESS: "Delivery completed",
+}
+
+export function journeyToCanonical(legacy: string): string {
+  return toCanonical(legacy)
 }
 
 export type BehaviorTag = "responsive" | "hesitant" | "ghosting" | "engaged" | "high-friction"

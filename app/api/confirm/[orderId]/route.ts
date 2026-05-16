@@ -70,25 +70,25 @@ export async function POST(
         await transitionOrderStatus(orgId, orderId, "REFUSED");
         break;
       case "buyer_replied":
-        await addEvent(orgId, orderId, "buyer_replied", "buyer");
+        await addEvent(orgId, orderId, "buyer.responded", "buyer");
         await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_RESPONDED, { method: "manual" });
         break;
       case "delayed":
-        await addEvent(orgId, orderId, "delayed_request", "buyer", { note: "Buyer requested delay" });
+        await addEvent(orgId, orderId, "buyer.requested_delay", "buyer", { note: "Buyer requested delay" });
         await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_REQUESTED_DELAY, { operator: session.user.name });
         break;
       case "wrong_number":
-        await addEvent(orgId, orderId, "unreachable", "operator", { note: "Wrong number reported" });
+        await addEvent(orgId, orderId, "operator.marked_unreachable", "operator", { note: "Wrong number reported" });
         break;
       case "operator_note":
-        await addEvent(orgId, orderId, "operator_note", "operator", { note: notes ?? "No details" });
+        await addEvent(orgId, orderId, "operator.added_note", "operator", { note: notes ?? "No details" });
         break;
       case "ugc_request_sent":
-        await addEvent(orgId, orderId, "ugc_request_sent", "operator", { note: notes ?? "Manual UGC request" });
+        await addEvent(orgId, orderId, "ugc.requested", "operator", { note: notes ?? "Manual UGC request" });
         await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.UGC_REQUEST_SENT, { operator: session.user.name });
         break;
       case "ugc_received":
-        await addEvent(orgId, orderId, "ugc_received", "buyer", { note: notes ?? "UGC received from buyer" });
+        await addEvent(orgId, orderId, "ugc.received", "buyer", { note: notes ?? "UGC received from buyer" });
         await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.UGC_RECEIVED, { operator: session.user.name });
         await transitionOrderStatus(orgId, orderId, "UGC_RECEIVED");
         break;
