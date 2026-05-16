@@ -7,6 +7,7 @@ export const EventType = {
   ORDER_CREATED: "order.created",
   ORDER_BATCH_IMPORTED: "order.batch_imported",
   ORDER_STATUS_CHANGED: "order.status_changed",
+  ORDER_COMPLETED: "order.completed",
   ORDER_DELETED: "order.deleted",
 
   // ── RISK ──
@@ -97,6 +98,7 @@ export function getEventLabel(eventType: EventType): string {
     "order.created": "Order created",
     "order.batch_imported": "Batch imported",
     "order.status_changed": "Status changed",
+    "order.completed": "Order completed",
     "order.deleted": "Order deleted",
     "risk.scored": "Risk scored",
     "risk.order_flagged": "Flagged",
@@ -152,6 +154,16 @@ export interface OrderCreatedPayload {
   buyerPhone: string
   amount: number
   product: string | null
+}
+
+export interface OrderCompletedPayload {
+  orderId: string
+  orgId: string
+  status: string
+  buyerName: string
+  buyerPhone: string
+  amount: number
+  outcome: "SUCCESS" | "FAILURE"
 }
 
 export interface OrderBatchImportedPayload {
@@ -232,7 +244,8 @@ export interface SystemOverviewRefreshedPayload {
 export type EventPayloadMap = {
   "order.created": OrderCreatedPayload
   "order.batch_imported": OrderBatchImportedPayload
-  "order.status_changed": OrderStatusChangedPayload
+  "order.status_changed": OrderStatusChangedPayload,
+  "order.completed": OrderCompletedPayload,
   "order.deleted": never
   "risk.scored": RiskScoredPayload
   "risk.order_flagged": RiskOrderFlaggedPayload
@@ -284,6 +297,7 @@ export type EventPayloadMap = {
 export const LEGACY_EVENT_MAP: Record<string, EventType> = {
   // ── Event bus (SCREAMING_SNAKE) ──
   ORDER_CREATED: "order.created",
+  ORDER_COMPLETED: "order.completed",
   ORDER_UPDATED: "order.status_changed",
   BATCH_ORDERS_IMPORTED: "order.batch_imported",
   RISK_CALCULATED: "risk.scored",

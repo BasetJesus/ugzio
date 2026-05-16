@@ -222,6 +222,19 @@ export async function listOrders(orgId: string) {
   }
 }
 
+export async function getLoopCompletionStats(orgId: string) {
+  try {
+    if (DEMO_MODE) {
+      const mod = await import("@/lib/demo/demo-engine");
+      return mod.getDemoLoopCompletionStats(orgId);
+    }
+    const mod = await import("@/services/overview.service");
+    return mod.getLoopCompletionStats(orgId);
+  } catch {
+    return { totalCompleted: 0, successfulCompletions: 0, failedCompletions: 0, completionRate: 0, learningSignals: 0 };
+  }
+}
+
 export async function getPendingOutcomeOrders(orgId: string) {
   try {
     const mod = await import("@/services/confirmation.service");

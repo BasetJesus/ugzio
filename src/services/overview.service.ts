@@ -1,6 +1,14 @@
 import { prisma } from "@/lib/db";
 import { getHighRiskAlerts } from "@/services/risk.service";
 
+export interface LoopCompletionStats {
+  totalCompleted: number
+  successfulCompletions: number
+  failedCompletions: number
+  completionRate: number
+  learningSignals: number
+}
+
 export interface OverviewStats {
   ordersToday: number;
   ordersThisWeek: number;
@@ -10,6 +18,7 @@ export interface OverviewStats {
   pendingVerifications: number;
   ugcReceived: number;
   deliveredRate: number;
+  loopCompletion?: LoopCompletionStats;
 }
 
 export interface LiveOrder {
@@ -51,6 +60,33 @@ export interface OverviewData {
   ugcOpportunities: UGCOpportunity[];
 }
 
+export async function getLoopCompletionStats(orgId: string): Promise<LoopCompletionStats> {
+  try {
+    const terminalStatuses = ["UGC_RECEIVED", "REFUSED", "INTELLIGENT_CANCEL"]
+    const [completedOrders, aiEvaluations, totalOrders] = await Promise.all([
+      prisma.order.findMany({
+        where: { organizationId: orgId, deletedAt: null, status: { in: terminalStatuses } },
+        select: { status: true },
+      }),
+      prisma.aIEvaluation.count({ where: { organizationId: orgId } }),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
+    ])
+
+    const successfulCompletions = completedOrders.filter(o => o.status === "UGC_RECEIVED").length
+    const failedCompletions = completedOrders.filter(o => o.status === "REFUSED" || o.status === "INTELLIGENT_CANCEL").length
+
+    return {
+      totalCompleted: completedOrders.length,
+      successfulCompletions,
+      failedCompletions,
+      completionRate: totalOrders > 0 ? Math.round((completedOrders.length / totalOrders) * 100) : 0,
+      learningSignals: aiEvaluations,
+    }
+  } catch {
+    return { totalCompleted: 0, successfulCompletions: 0, failedCompletions: 0, completionRate: 0, learningSignals: 0 }
+  }
+}
+
 export async function getOverviewData(orgId: string): Promise<OverviewData> {
   try {
     const dayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -58,12 +94,15 @@ export async function getOverviewData(orgId: string): Promise<OverviewData> {
     weekStart.setDate(weekStart.getDate() - weekStart.getDay());
     weekStart.setHours(0, 0, 0, 0);
 
-    const [stats, liveOrders, riskAlerts, ugcOpportunities] = await Promise.all([
+    const [stats, loopCompletion, liveOrders, riskAlerts, ugcOpportunities] = await Promise.all([
       loadStats(orgId, dayStart, weekStart),
+      getLoopCompletionStats(orgId),
       loadLiveOrders(orgId),
       getHighRiskAlerts(orgId, 5),
       loadUGCOpportunities(orgId),
     ]);
+
+    stats.loopCompletion = loopCompletion
 
     return { stats, liveOrders, riskAlerts, ugcOpportunities };
   } catch {

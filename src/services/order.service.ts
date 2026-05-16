@@ -132,6 +132,53 @@ export async function createOrder(orgId: string, data: {
   return order;
 }
 
+async function closeOperationalLoop(orgId: string, orderId: string, terminalStatus: OrderStatus, order: { buyerPhone: string; buyerName: string; amount: number }) {
+  try {
+    const isSuccess = terminalStatus === "UGC_RECEIVED"
+    const outcome = isSuccess ? "SUCCESS" : "FAILURE"
+
+    // 1. Update BuyerIdentity counters
+    if (isSuccess) {
+      await prisma.buyerIdentity.upsert({
+        where: { anonymizedId: order.buyerPhone },
+        update: { successfulOrders: { increment: 1 }, totalOrders: { increment: 1 } },
+        create: { anonymizedId: order.buyerPhone, successfulOrders: 1, totalOrders: 1, riskScore: 50, networkMlScore: 50 },
+      })
+    } else {
+      await prisma.buyerIdentity.upsert({
+        where: { anonymizedId: order.buyerPhone },
+        update: { failedOrders: { increment: 1 }, totalOrders: { increment: 1 } },
+        create: { anonymizedId: order.buyerPhone, failedOrders: 1, totalOrders: 1, riskScore: 50, networkMlScore: 50 },
+      })
+    }
+
+    // 2. Create AIEvaluation record (learning signal)
+    await prisma.aIEvaluation.create({
+      data: {
+        organizationId: orgId,
+        insightId: `loop_${orderId}_${Date.now()}`,
+        recommendationType: `ORDER_${outcome}`,
+        wasActedOn: true,
+        outcomeAfter14d: outcome,
+        sellerRating: isSuccess ? 5 : 1,
+      },
+    })
+
+    // 3. Emit completion event
+    emit(EventType.ORDER_COMPLETED, {
+      orderId,
+      orgId,
+      status: terminalStatus,
+      buyerName: order.buyerName,
+      buyerPhone: order.buyerPhone,
+      amount: Number(order.amount),
+      outcome,
+    })
+  } catch (e) {
+    console.error("[order.service] closeOperationalLoop failed:", e)
+  }
+}
+
 export async function transitionOrderStatus(orgId: string, orderId: string, newStatus: OrderStatus) {
   try {
     const order = await prisma.order.findFirst({
@@ -187,11 +234,17 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.UGC_RECEIVED, {
         method: "whatsapp",
       })
+      await closeOperationalLoop(orgId, orderId, "UGC_RECEIVED", order)
     }
 
     if (newStatus === "REFUSED") {
       await recordJourneyEvent(orgId, orderId, JOURNEY_EVENT_TYPES.BUYER_REFUSED)
       await alertSeller(orgId, refusedAlert(order.buyerName));
+      await closeOperationalLoop(orgId, orderId, "REFUSED", order)
+    }
+
+    if (newStatus === "INTELLIGENT_CANCEL") {
+      await closeOperationalLoop(orgId, orderId, "INTELLIGENT_CANCEL", order)
     }
 
     return { id: orderId, status: newStatus };

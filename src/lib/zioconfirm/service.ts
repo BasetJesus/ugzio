@@ -5,6 +5,7 @@ import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { renderTemplate } from "@/services/ugc-template.service";
 import { METADATA_BASE_URL } from "@/lib/constants";
+import { transitionOrderStatus } from "@/services/order.service";
 
 const CONFIRM_WINDOW_H = 20;
 
@@ -194,10 +195,7 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
 
   switch (buttonId) {
     case "confirm":
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { status: "BUYER_CONFIRMED" },
-      });
+      await transitionOrderStatus(order.organizationId, orderId, "BUYER_CONFIRMED");
       await reply("Merci! Ta commande est confirmée ✅");
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_CONFIRMED, {
         channel: "whatsapp",
@@ -206,10 +204,7 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
       break;
 
     case "cancel":
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { status: "INTELLIGENT_CANCEL" },
-      });
+      await transitionOrderStatus(order.organizationId, orderId, "INTELLIGENT_CANCEL");
       await reply("Pas de problème. Commande annulée.");
       await alertSeller(order.organizationId, cancelAlert(order.buyerName, order.product ?? "produit"));
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.ORDER_CANCELLED, {
@@ -219,10 +214,7 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
       break;
 
     case "reschedule":
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { status: "PENDING_RESCHEDULE" },
-      });
+      await transitionOrderStatus(order.organizationId, orderId, "PENDING_RESCHEDULE");
       await reply("Pas de souci! On te renvoie un message plus tard.");
       await recordJourneyEvent(order.organizationId, orderId, JOURNEY_EVENT_TYPES.BUYER_REQUESTED_DELAY, {
         channel: "whatsapp",

@@ -209,6 +209,11 @@ const dict: Dict = {
   "ov.results-today": { tun: "نتائج اليوم", fr: "Résultats du jour", en: "Today's Results" },
   "ov.at-risk-amount": { tun: "{n} TND في خطر", fr: "{n} TND en risque", en: "{n} TND at risk" },
   "ov.pending-count": { tun: "{n} معلقة", fr: "{n} en attente", en: "{n} pending" },
+  "ov.loop-completed": { tun: "الدورة مكتملة", fr: "Boucle terminée", en: "Loop Completed" },
+  "ov.learning-signals": { tun: "إشارات التعلم", fr: "Signaux d'apprentissage", en: "Learning Signals" },
+  "ov.completion-rate": { tun: "معدل الإكمال", fr: "Taux d'achèvement", en: "Completion Rate" },
+  "ov.section-learning": { tun: "التعلم", fr: "Apprentissage", en: "Learning" },
+  "ov.loop-description": { tun: "الطلبات التي أكملت الدورة التشغيلية", fr: "Commandes qui ont terminé le cycle opérationnel", en: "Orders that completed the operational loop" },
 
   /* ── Confirm page ── */
   "cf.title-pending": { tun: "طلبات معلقة", fr: "Commandes en attente", en: "Pending Orders" },

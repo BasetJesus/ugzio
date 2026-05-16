@@ -2,7 +2,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getRevenueAtRisk, getNeedsConfirmCount, getRevenueProtectionStats } from "@/services/demo-orchestrator.service";
+import { getRevenueAtRisk, getNeedsConfirmCount, getRevenueProtectionStats, getLoopCompletionStats } from "@/services/demo-orchestrator.service";
+import type { LoopCompletionStats } from "@/services/overview.service";
 import { getRecentActivity } from "@/services/operation-timeline.service";
 import { getWeeklyStory, getTrustMomentum } from "@/services/behavioral-outcome.service";
 import { getQuickstartProgress, getFirst48Hours, getSuccessMoments, getSellerHealth } from "@/services/pilot.service";
@@ -58,9 +59,9 @@ export default async function OverviewPage() {
 
   const lang = await getServerLang();
 
-  let [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as WeeklyStory | null, null as TrustMomentumData | null, null as QuickstartProgress | null, null as First48HoursData | null, [] as SuccessMoment[], null as SellerHealth | null, null as WhatsAppConnectionState | null, null as CommunicationPerformance | null, null as SellerContext | null, null as DailyMomentum | null];
+  let [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum, loopCompletion] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as WeeklyStory | null, null as TrustMomentumData | null, null as QuickstartProgress | null, null as First48HoursData | null, [] as SuccessMoment[], null as SellerHealth | null, null as WhatsAppConnectionState | null, null as CommunicationPerformance | null, null as SellerContext | null, null as DailyMomentum | null, null as LoopCompletionStats | null];
   try {
-    [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum] = await Promise.all([
+    [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum, loopCompletion] = await Promise.all([
       getRevenueAtRisk(orgId),
       getNeedsConfirmCount(orgId),
       getRevenueProtectionStats(orgId),
@@ -75,6 +76,7 @@ export default async function OverviewPage() {
       getCommunicationPerformance(orgId),
       getSellerContext(orgId),
       getDailyMomentum(orgId),
+      getLoopCompletionStats(orgId),
     ]);
   } catch (e) {
     console.error("[overview] service error", e);
@@ -164,6 +166,19 @@ export default async function OverviewPage() {
           <p className="text-xs text-[var(--text-secondary)] mt-1">
             <Link href="/confirm" className="text-[var(--success-green)] hover:underline">{st(lang, "ov.empty-link")}</Link> {st(lang, "ov.empty-desc")}
           </p>
+        </div>
+      )}
+
+      {loopCompletion && loopCompletion.totalCompleted > 0 && (
+        <div>
+          <SectionHeader icon="🧠" label={st(lang, "ov.section-learning")} subtitle={`${loopCompletion.learningSignals} ${st(lang, "ov.learning-signals")}`} />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
+            <MiniKpiCard label={st(lang, "ov.loop-completed")} value={loopCompletion.totalCompleted} tier="neutral" emotion="achievement" />
+            <MiniKpiCard label={st(lang, "ov.completion-rate")} value={`${loopCompletion.completionRate}%`} tier={loopCompletion.completionRate >= 50 ? "low" : "medium"} emotion={loopCompletion.completionRate >= 50 ? "protective" : "calm"} />
+            <MiniKpiCard label={st(lang, "ov.learning-signals")} value={loopCompletion.learningSignals} tier="neutral" emotion="achievement" />
+            <MiniKpiCard label={st(lang, "ov.protected-revenue")} value={`${loopCompletion.successfulCompletions}/${loopCompletion.totalCompleted}`} tier="low" emotion="protective" />
+          </div>
+          <p className="text-[10px] text-[var(--text-tertiary)]/60 mt-2">{st(lang, "ov.loop-description")}</p>
         </div>
       )}
 

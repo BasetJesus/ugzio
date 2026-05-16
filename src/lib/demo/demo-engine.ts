@@ -203,6 +203,23 @@ export function getDemoRevenueAtRisk(orgId: string): number {
   return Math.round(highRiskTotal * 0.3);
 }
 
+export function getDemoLoopCompletionStats(orgId: string) {
+  const orders = buildOrders(orgId);
+  const totalOrders = orders.length
+  const completed = orders.filter(o =>
+    o.status === "UGC_RECEIVED" || o.status === "REFUSED" || o.status === "INTELLIGENT_CANCEL"
+  )
+  const successful = completed.filter(o => o.status === "UGC_RECEIVED").length
+  const failed = completed.filter(o => o.status === "REFUSED" || o.status === "INTELLIGENT_CANCEL").length
+  return {
+    totalCompleted: completed.length,
+    successfulCompletions: successful,
+    failedCompletions: failed,
+    completionRate: totalOrders > 0 ? Math.round((completed.length / totalOrders) * 100) : 0,
+    learningSignals: Math.min(completed.length, 12),
+  }
+}
+
 export function getDemoNeedsConfirmCount(orgId: string): number {
   const orders = buildOrders(orgId);
   return orders.filter(
