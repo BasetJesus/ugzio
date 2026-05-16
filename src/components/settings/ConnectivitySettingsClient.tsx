@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 
 interface ConnectionState {
   status: "connected" | "disconnected" | "pending" | "expired"
@@ -76,7 +77,7 @@ export default function ConnectivitySettingsClient() {
   const isConnected = connection?.status === "connected";
 
   if (loading) {
-    return <div className="text-center py-8 text-sm text-[var(--text-tertiary)]">Chargement...</div>;
+    return <div className="p-4"><LoadingSkeleton variant="card" count={1} /></div>;
   }
 
   return (

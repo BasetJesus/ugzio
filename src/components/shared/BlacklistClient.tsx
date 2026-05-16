@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 
 interface BlacklistEntry {
   phone: string;
@@ -91,7 +92,7 @@ export default function BlacklistClient() {
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-sm text-[var(--text-tertiary)]">Chargement...</div>
+        <div className="p-4"><LoadingSkeleton variant="list" count={3} /></div>
       ) : entries.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-center">
           <p className="text-sm text-[var(--text-tertiary)]">{t("bl.empty")}</p>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 
 export interface DeliveryProviderSummary {
   id: string;
@@ -24,6 +26,7 @@ export default function DeliverySettingsClient() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const [formName, setFormName] = useState("");
   const [formRtsCost, setFormRtsCost] = useState("15");
@@ -156,7 +159,13 @@ export default function DeliverySettingsClient() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Supprimer ce transporteur ?")) return;
+    setDeleteTarget(id);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    const id = deleteTarget;
+    setDeleteTarget(null);
 
     try {
       const res = await fetch(`/api/v1/settings/delivery/${id}`, {
@@ -275,11 +284,12 @@ export default function DeliverySettingsClient() {
             </button>
           </div>
         </div>
-      </div>
-    );
+    </div>
+  );
   }
 
   return (
+    <>
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
@@ -303,10 +313,7 @@ export default function DeliverySettingsClient() {
       )}
 
       {loading ? (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
-          <div className="animate-pulse text-xl text-[var(--text-tertiary)]">◎</div>
-          <p className="text-sm text-[var(--text-tertiary)] mt-2">Chargement...</p>
-        </div>
+        <div className="p-4"><LoadingSkeleton variant="list" count={3} /></div>
       ) : providers.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="text-4xl mb-3 text-[var(--text-tertiary)]">◇</div>
@@ -399,5 +406,16 @@ Supprimer
         </ul>
       </div>
     </div>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        titleKey="confirm.delete.title"
+        descKey="confirm.delete.desc"
+        confirmKey="cta.remove"
+        variant="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
+    </>
   );
 }

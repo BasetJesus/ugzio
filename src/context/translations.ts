@@ -1,3 +1,6 @@
+import { copy, hasCopy } from "@/lib/core/copy"
+import type { CopyKey } from "@/lib/core/copy"
+
 export type Lang = "tun" | "fr" | "en";
 
 type Dict = Record<string, { tun: string; fr: string; en: string }>;
@@ -243,5 +246,8 @@ export const NICHE_KEYS = [
 ] as const;
 
 export function t(key: string, lang: Lang): string {
-  return dict[key]?.[lang] ?? key;
+  const localized = dict[key]?.[lang]
+  if (localized !== undefined) return localized
+  if (hasCopy(key)) return copy(key as CopyKey)
+  return key
 }

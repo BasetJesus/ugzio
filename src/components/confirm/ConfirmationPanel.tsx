@@ -9,6 +9,9 @@ import WhatsAppDecisionCard from "@/components/confirm/WhatsAppDecisionCard";
 import PsychologyCard from "@/components/shared/PsychologyCard";
 import JourneyTimelineComponent from "@/components/shared/JourneyTimeline";
 import ConfettiBurst from "@/components/shared/ConfettiBurst";
+import EmptyState from "@/components/shared/EmptyState";
+import { useToast } from "@/components/shared/Toast";
+import { t } from "@/lib/core/copy";
 
 interface Props {
   items: ConfirmationQueueItem[]
@@ -23,13 +26,12 @@ function initials(name: string): string {
   return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
 }
 
-function impactMessage(action: string, item: ConfirmationQueueItem): string {
-  switch (action) {
-    case "confirm": return `+${item.amount.toFixed(0)} TND sécurisés`;
-    case "retry": return "Risque neutralisé";
-    case "cancel": return "Revenu protégé";
-    default: return "Action terminée";
-  }
+const TOAST_KEYS: Record<string, { key: "toast.confirm" | "toast.retry" | "toast.cancel" | "toast.delivered" | "toast.refused"; type: "success" | "error" | "info" }> = {
+  confirm: { key: "toast.confirm", type: "success" },
+  retry: { key: "toast.retry", type: "info" },
+  cancel: { key: "toast.cancel", type: "error" },
+  delivered: { key: "toast.delivered", type: "success" },
+  refused: { key: "toast.refused", type: "error" },
 }
 
 function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline, timelineLoading }: {
@@ -88,12 +90,12 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
             </div>
 
             <div className="rounded-xl border p-4 border-[var(--kpi-red-border)] bg-[var(--kpi-red-bg)]">
-              <p className="text-[10px] text-[var(--risk-red)] font-medium uppercase tracking-wider mb-1">
-                Si tu ne fais rien
-              </p>
-              <p className="text-sm font-semibold text-[var(--risk-red)]">
-                Perte estimée : {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
-              </p>
+                <p className="text-[10px] text-[var(--risk-red)] font-medium uppercase tracking-wider mb-1">
+                  {t("label.if-do-nothing")}
+                </p>
+                <p className="text-sm font-semibold text-[var(--risk-red)]">
+                  {t("label.estimated-loss")} : {Math.round(item.amount * (item.riskLevel === "high" ? 0.65 : 0.35))} TND
+                </p>
             </div>
 
             <div>
@@ -159,19 +161,19 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
                 onClick={() => { onAction(item.orderId, "confirm"); onClose(); }}
                 className="rounded-lg bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Sécuriser
+                {t("cta.secure")}
               </button>
               <button
                 onClick={() => { onAction(item.orderId, "retry"); onClose(); }}
                 className="rounded-lg border border-amber-500/30 py-3 text-sm font-semibold text-amber-400 hover:bg-amber-500/10 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Re-contacter
+                {t("cta.recontact")}
               </button>
               <button
                 onClick={() => { onAction(item.orderId, "cancel"); onClose(); }}
                 className="rounded-lg border border-red-500/30 py-3 text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-colors active:scale-[0.97] touch-manipulation"
               >
-                Annuler
+                {t("common.cancel")}
               </button>
             </div>
           </div>
@@ -181,6 +183,7 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
 }
 
 export default function ConfirmationPanel({ items, pendingCount, contactedCount, total, psychologyMap, pendingOutcomes }: Props) {
+  const { toastKey } = useToast();
   const router = useRouter();
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
@@ -190,7 +193,6 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
     timeline?: JourneyTimelineData | null
     timelineLoading?: boolean
   } | null>(null);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "neutral" | "danger" } | null>(null);
   const [confettiActive, setConfettiActive] = useState(false);
 
   const filtered = filter === "all"
@@ -206,32 +208,24 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
-      const msg = item ? impactMessage(action, item) : "Action completed";
-      const type = action === "confirm" || action === "delivered" ? "success" : action === "cancel" || action === "refused" ? "danger" : "neutral";
-      if (type === "success") setConfettiActive(true);
-      setToast({ message: msg, type });
-      setTimeout(() => setToast(null), 2000);
+      const cfg = TOAST_KEYS[action] ?? { key: "toast.confirm", type: "success" };
+      if (item) {
+        toastKey({ type: cfg.type, key: cfg.key, params: { amount: item.amount.toFixed(0) } });
+      }
+      if (cfg.type === "success") setConfettiActive(true);
       router.refresh();
     } finally {
       setSubmitting(null);
     }
   }
 
-  function toastStyle(type: string) {
-    if (type === "success") return { backgroundColor: "#059669", color: "white" };
-    if (type === "danger") return { backgroundColor: "#dc2626", color: "white" };
-    return { backgroundColor: "#d97706", color: "white" };
-  }
-
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
-        <div className="w-12 h-12 rounded-full bg-[var(--state-protected-bg)] flex items-center justify-center mx-auto mb-3">
-          <span className="text-lg">🛡️</span>
-        </div>
-        <p className="text-sm font-medium text-[var(--text-primary)]">Koul chay t7at l control</p>
-        <p className="text-xs text-[var(--text-tertiary)] mt-1">Aucune commande en risque. UGZIO surveille.</p>
-      </div>
+      <EmptyState
+        icon="🛡️"
+        titleKey="label.confirm-empty"
+        descKey="label.confirm-empty-desc"
+      />
     );
   }
 
@@ -242,26 +236,26 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           onClick={() => setFilter("all")}
           className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "all" ? "bg-emerald-600 text-white" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
-          Toutes ({total})
+          {t("label.all")} ({total})
         </button>
         <button
           onClick={() => setFilter("pending_confirmation")}
           className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "pending_confirmation" ? "bg-[var(--state-recovering-bg)] text-[var(--warning-amber)]" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
-          En attente ({pendingCount})
+          {t("label.pending")} ({pendingCount})
         </button>
         <button
           onClick={() => setFilter("contacted")}
           className={`rounded-full px-5 py-2 text-xs font-medium transition-colors whitespace-nowrap ${filter === "contacted" ? "bg-[var(--state-protected-bg)] text-[var(--success-green)]" : "bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"}`}
         >
-          Contacted ({contactedCount})
+          {t("label.contacted")} ({contactedCount})
         </button>
       </div>
 
       {pendingOutcomes && pendingOutcomes.length > 0 && (
         <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-4 mb-4">
           <p className="text-[10px] font-medium text-[var(--success-green)] uppercase tracking-wider mb-3">
-            Livraison en attente ({pendingOutcomes.length})
+            {t("label.delivery-pending")} ({pendingOutcomes.length})
           </p>
           <div className="space-y-2">
             {pendingOutcomes.map((o) => (
@@ -284,14 +278,14 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
                     disabled={submitting === o.orderId + "_delivered"}
                     className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_delivered" ? "..." : "✅ Livré"}
+                    {submitting === o.orderId + "_delivered" ? "..." : t("label.outcome-delivered")}
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); performAction(o.orderId, "refused"); }}
                     disabled={submitting === o.orderId + "_refused"}
                     className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-50 transition-colors active:scale-[0.97] touch-manipulation"
                   >
-                    {submitting === o.orderId + "_refused" ? "..." : "🗑️ Refusé"}
+                    {submitting === o.orderId + "_refused" ? "..." : t("label.outcome-refused")}
                   </button>
                 </div>
               </div>
@@ -318,17 +312,6 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
           />
         ))}
       </div>
-
-      {toast && (
-        <div className="fixed bottom-20 sm:bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:right-4 sm:translate-x-0 z-50 animate-slide-in-top">
-          <div className="rounded-lg px-4 py-3 text-xs font-semibold shadow-[var(--shadow-lg)]" style={toastStyle(toast.type)}>
-            <div className="flex items-center gap-2">
-              <span>{toast.type === "success" ? "✓" : toast.type === "danger" ? "⚠️" : "ℹ"}</span>
-              {toast.message}
-            </div>
-          </div>
-        </div>
-      )}
 
       {selected && (
         <RiskInsightPanel

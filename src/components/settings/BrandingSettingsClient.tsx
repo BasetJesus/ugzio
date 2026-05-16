@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import SocialConnectButton from "./SocialConnectButton";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 
 interface SocialLinks {
   instagram?: string
@@ -96,7 +97,7 @@ export default function BrandingSettingsClient() {
   }
 
   if (loading) {
-    return <div className="text-center py-8 text-sm text-[var(--text-tertiary)]">Chargement...</div>;
+    return <div className="p-4"><LoadingSkeleton variant="card" count={1} /></div>;
   }
 
   const charCount = brandDescription.length;

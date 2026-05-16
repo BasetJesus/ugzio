@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 
 interface UgcTemplate {
   id: string;
@@ -41,6 +43,7 @@ export default function UgcTemplateSettingsClient() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const [formName, setFormName] = useState("");
   const [formRequestType, setFormRequestType] = useState("photo_review");
@@ -166,7 +169,13 @@ export default function UgcTemplateSettingsClient() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Supprimer ce modèle ?")) return;
+    setDeleteTarget(id);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    const id = deleteTarget;
+    setDeleteTarget(null);
 
     try {
       const res = await fetch(`/api/v1/settings/ugc-templates/${id}`, {
@@ -314,6 +323,7 @@ export default function UgcTemplateSettingsClient() {
   }
 
   return (
+    <>
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
@@ -337,10 +347,7 @@ export default function UgcTemplateSettingsClient() {
       )}
 
       {loading ? (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
-          <div className="animate-pulse text-xl text-[var(--text-tertiary)]">◎</div>
-          <p className="text-sm text-[var(--text-tertiary)] mt-2">Chargement...</p>
-        </div>
+        <div className="p-4"><LoadingSkeleton variant="list" count={3} /></div>
       ) : templates.length === 0 ? (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
           <div className="text-4xl mb-3 text-[var(--text-tertiary)]">💬</div>
@@ -426,5 +433,16 @@ Supprimer
         </ul>
       </div>
     </div>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        titleKey="confirm.delete.title"
+        descKey="confirm.delete.desc"
+        confirmKey="cta.remove"
+        variant="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
+    </>
   );
 }

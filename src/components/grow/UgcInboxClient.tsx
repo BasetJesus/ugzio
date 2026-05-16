@@ -4,6 +4,8 @@ import { useState, useCallback } from "react"
 import type { UgcItemSummary, UgcStats } from "@/services/grow.service"
 import { MiniKpiCard } from "@/components/shared/KpiCard"
 import SystemNarrative from "@/components/shared/SystemNarrative"
+import EmptyState from "@/components/shared/EmptyState"
+import { t } from "@/lib/core/copy"
 
 interface Props {
   initialItems: UgcItemSummary[]
@@ -12,17 +14,23 @@ interface Props {
 
 type FilterMode = "all" | "received" | "approved" | "rejected"
 
-const STATUS_LABELS: Record<string, string> = {
-  received: "en attente",
-  approved: "approuvé",
-  rejected: "rejeté",
+function statusLabel(s: string): string {
+  switch (s) {
+    case "received": return t("label.ugc-status-pending")
+    case "approved": return t("label.ugc-status-approved")
+    case "rejected": return t("label.ugc-status-rejected")
+    default: return s
+  }
 }
 
-const FILTER_LABELS: Record<string, string> = {
-  all: "Tout",
-  received: "Reçus",
-  approved: "Approuvés",
-  rejected: "Rejetés",
+function filterLabel(s: string): string {
+  switch (s) {
+    case "all": return t("label.filter-all")
+    case "received": return t("label.filter-received")
+    case "approved": return t("label.filter-approved")
+    case "rejected": return t("label.filter-rejected")
+    default: return s
+  }
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -63,10 +71,10 @@ function UgcMediaCard({ item, onAction, acting }: {
         <div className="flex items-start justify-between">
           <div className="min-w-0">
             <p className="text-sm font-medium text-[var(--text-primary)] truncate">{item.buyerName}</p>
-            <p className="text-[10px] text-[var(--text-tertiary)]">{item.product ?? "produit inconnu"}</p>
+            <p className="text-[10px] text-[var(--text-tertiary)]">{item.product ?? t("label.produit-inconnu")}</p>
           </div>
           <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full border shrink-0 ${STATUS_COLORS[item.status]}`}>
-            {STATUS_LABELS[item.status] ?? item.status}
+            {statusLabel(item.status)}
           </span>
         </div>
 
@@ -81,14 +89,14 @@ function UgcMediaCard({ item, onAction, acting }: {
               disabled={isActing}
               className="rounded-lg bg-[var(--btn-green)]/90 py-2.5 text-xs font-semibold text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
             >
-              {isActing ? "..." : "Approuver"}
+              {isActing ? "..." : t("cta.approve")}
             </button>
             <button
               onClick={() => onAction(item.id, "reject")}
               disabled={isActing}
               className="rounded-lg border border-[var(--risk-red)]/30 py-2.5 text-xs font-semibold text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
             >
-              {isActing ? "..." : "Rejeter"}
+              {isActing ? "..." : t("cta.reject")}
             </button>
           </div>
         )}
@@ -101,7 +109,7 @@ function UgcMediaCard({ item, onAction, acting }: {
               rel="noopener noreferrer"
               className="block w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] py-2.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/50 text-center transition-all duration-200"
             >
-              Télécharger ↗
+              {t("label.ugc-download")}
             </a>
           </div>
         )}
@@ -149,10 +157,10 @@ export default function UgcInboxClient({ initialItems, stats }: Props) {
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label="Total UGC" value={stats.total} tier="neutral" />
-        <MiniKpiCard label="En attente" value={stats.received} tier={stats.received > 0 ? "medium" : "low"} />
-        <MiniKpiCard label="Approuvé" value={stats.approved} tier="low" emotion="protective" />
-        <MiniKpiCard label="Taux d'approbation" value={`${stats.rate}%`} tier={stats.rate >= 50 ? "low" : "neutral"} />
+        <MiniKpiCard label={t("label.ugc-total")} value={stats.total} tier="neutral" />
+        <MiniKpiCard label={t("label.pending")} value={stats.received} tier={stats.received > 0 ? "medium" : "low"} />
+        <MiniKpiCard label={t("label.ugc-approved")} value={stats.approved} tier="low" emotion="protective" />
+        <MiniKpiCard label={t("label.ugc-approval-rate")} value={`${stats.rate}%`} tier={stats.rate >= 50 ? "low" : "neutral"} />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2">
@@ -166,19 +174,18 @@ export default function UgcInboxClient({ initialItems, stats }: Props) {
                 : "bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--accent)]/50"
             }`}
           >
-            {f === "all" ? FILTER_LABELS[f] : FILTER_LABELS[f] ?? (f.charAt(0).toUpperCase() + f.slice(1))}
+            {filterLabel(f)}
             {f !== "all" && ` (${f === "received" ? stats.received : f === "approved" ? stats.approved : stats.rejected})`}
           </button>
         ))}
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-center">
-          <p className="text-[var(--text-tertiary)] text-sm">Aucun élément UGC pour l'instant</p>
-          <p className="text-[var(--text-tertiary)] text-xs mt-1">
-            Les demandes UGC envoyées aux acheteurs apparaîtront ici une fois qu'ils soumettront des photos ou vidéos
-          </p>
-        </div>
+        <EmptyState
+          icon="📸"
+          titleKey="empty.ugc.title"
+          descKey="empty.ugc.desc"
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((item) => (

@@ -5,6 +5,7 @@ import type { ConfirmationQueueItem } from "@/services/confirmation.service"
 import type { PsychologyPreview } from "@/types/whatsapp"
 import PsychologyCard from "@/components/shared/PsychologyCard"
 import StatePulse from "@/components/shared/StatePulse"
+import { t } from "@/lib/core/copy"
 
 interface Props {
   item: ConfirmationQueueItem
@@ -87,11 +88,11 @@ export default function DecisionCard({ item, psychology, onAction, onSelect, sub
           <span className={`text-2xl font-extrabold tracking-tight ${riskColor(rl)}`}>
             {pct}%
           </span>
-          <span className={`text-[10px] font-medium ${riskColor(rl)}`}>échec</span>
+          <span className={`text-[10px] font-medium ${riskColor(rl)}`}>{t("label.failure")}</span>
         </div>
         <div className="h-3 w-px bg-[var(--border)]" />
         <span className="text-[11px] text-[var(--text-secondary)]">
-          Confiance {item.trustScore}
+          {t("label.trust-score")} {item.trustScore}
         </span>
       </div>
 
@@ -112,21 +113,21 @@ export default function DecisionCard({ item, psychology, onAction, onSelect, sub
           disabled={sub === `${item.orderId}_confirm`}
           className="rounded-lg bg-[var(--btn-green)]/90 py-3 text-sm font-semibold text-white hover:bg-[var(--btn-green-hover)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
         >
-          {sub === `${item.orderId}_confirm` ? "..." : "Sécuriser"}
+          {sub === `${item.orderId}_confirm` ? "..." : t("cta.secure")}
         </button>
         <button
           onClick={(e) => handleAction(e, "retry")}
           disabled={sub === `${item.orderId}_retry`}
           className="rounded-lg border border-[var(--warning-amber)]/30 py-3 text-sm font-semibold text-[var(--warning-amber)] hover:bg-[var(--warning-amber-bg)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
         >
-          {sub === `${item.orderId}_retry` ? "..." : "Re-contacter"}
+          {sub === `${item.orderId}_retry` ? "..." : t("cta.recontact")}
         </button>
         <button
           onClick={(e) => handleAction(e, "cancel")}
           disabled={sub === `${item.orderId}_cancel`}
           className="rounded-lg border border-[var(--risk-red)]/30 py-3 text-sm font-semibold text-[var(--risk-red)] hover:bg-[var(--risk-red-bg)] disabled:opacity-60 transition-all duration-200 active:scale-[0.97] touch-manipulation"
         >
-          {sub === `${item.orderId}_cancel` ? "..." : "Annuler"}
+          {sub === `${item.orderId}_cancel` ? "..." : t("common.cancel")}
         </button>
       </div>
     </div>

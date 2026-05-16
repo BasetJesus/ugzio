@@ -5,6 +5,7 @@ import type { ConfirmationQueueItem } from "@/services/confirmation.service"
 import type { PsychologyPreview } from "@/types/whatsapp"
 import StatePulse from "@/components/shared/StatePulse"
 import VoiceNoteRecorder from "@/components/confirm/VoiceNoteRecorder"
+import { t } from "@/lib/core/copy"
 
 interface Props {
   item: ConfirmationQueueItem
@@ -146,7 +147,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
                 <span className={`text-[10px] font-semibold shrink-0 ${
                   pct > 60 ? "text-red-400" : pct > 30 ? "text-amber-400" : "text-emerald-400"
                 }`}>
-                  {pct}% échec
+                  {pct}% {t("label.failure")}
                 </span>
               </div>
             </div>
@@ -175,21 +176,21 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
               disabled={sub === `${item.orderId}_confirm`}
               className="rounded-lg bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_confirm` ? "..." : "Sécuriser"}
+              {sub === `${item.orderId}_confirm` ? "..." : t("cta.secure")}
             </button>
             <button
               onClick={(e) => handleAction(e, "retry")}
               disabled={sub === `${item.orderId}_retry`}
               className="rounded-lg border border-amber-500/30 py-2.5 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_retry` ? "..." : "Re-contacter"}
+              {sub === `${item.orderId}_retry` ? "..." : t("cta.recontact")}
             </button>
             <button
               onClick={(e) => handleAction(e, "cancel")}
               disabled={sub === `${item.orderId}_cancel`}
               className="rounded-lg border border-red-500/30 py-2.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 disabled:opacity-60 transition-all active:scale-[0.97] touch-manipulation"
             >
-              {sub === `${item.orderId}_cancel` ? "..." : "Annuler"}
+              {sub === `${item.orderId}_cancel` ? "..." : t("common.cancel")}
             </button>
           </div>
         </div>

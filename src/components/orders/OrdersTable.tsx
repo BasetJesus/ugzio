@@ -4,6 +4,8 @@ import type { OrderTableItem, RiskLevel } from "@/types/order"
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge"
 import TrustScoreMeter from "@/components/orders/TrustScoreMeter"
 import { RISK_META } from "@/lib/risk/config"
+import EmptyState from "@/components/shared/EmptyState"
+import { t } from "@/lib/core/copy"
 
 interface Props {
   orders: OrderTableItem[]
@@ -22,15 +24,7 @@ function RiskBadge({ level }: { level: RiskLevel }) {
 
 export default function OrdersTable({ orders, totalCount }: Props) {
   if (orders.length === 0) {
-    return (
-      <div className="flex flex-col items-center py-16 text-center px-5">
-        <div className="h-12 w-12 rounded-full flex items-center justify-center mb-4 bg-[var(--bg-card)]">
-          <span className="text-base text-[var(--text-tertiary)]">—</span>
-        </div>
-        <p className="text-base font-medium text-[var(--text-primary)]">Aucune commande</p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Les commandes apparaîtront ici une fois créées.</p>
-      </div>
-    )
+    return <EmptyState icon="📦" titleKey="empty.orders.title" descKey="empty.orders.desc" />
   }
 
   return (
@@ -65,15 +59,15 @@ export default function OrdersTable({ orders, totalCount }: Props) {
           {/* Trust score + payment + delivery */}
           <div className="flex items-center justify-between gap-3 pt-3 border-t border-[var(--border)]">
             <div className="flex-1">
-              <p className="text-xs text-[var(--text-tertiary)] mb-1">Confiance</p>
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">{t("label.trust")}</p>
               <TrustScoreMeter score={order.trustScore} />
             </div>
             <div className="text-right">
-              <p className="text-xs text-[var(--text-tertiary)]">Paiement</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{t("label.paiement")}</p>
               <p className="text-sm font-medium text-[var(--text-secondary)]">{order.paymentStatus}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-[var(--text-tertiary)]">Livraison</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{t("label.livraison")}</p>
               <p className="text-sm font-medium text-[var(--text-secondary)]">{order.deliveryState}</p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
 import { SessionProvider } from "@/lib/auth/session-provider";
 import AnalyticsProvider from "@/components/shared/AnalyticsProvider";
+import { ToastProvider } from "@/components/shared/Toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -68,7 +69,9 @@ export default function RootLayout({
           <LanguageProvider>
             <SessionProvider>
               <AnalyticsProvider>
-                {children}
+                <ToastProvider>
+                  {children}
+                </ToastProvider>
               </AnalyticsProvider>
             </SessionProvider>
           </LanguageProvider>
