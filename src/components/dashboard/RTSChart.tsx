@@ -66,18 +66,18 @@ export default function RTSChart({ data, trend }: Props) {
             }} />
             <defs>
               <linearGradient id="rtsGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.2} />
-                <stop offset="100%" stopColor="#7c3aed" stopOpacity={0} />
+                <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.2} />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <Area type="monotone" dataKey="rate" fill="url(#rtsGradient)" stroke="none" />
             <Line
               type="monotone"
               dataKey="rate"
-              stroke="#7c3aed"
+              stroke="var(--accent)"
               strokeWidth={2}
-              dot={{ fill: "#7c3aed", strokeWidth: 0, r: 3 }}
-              activeDot={{ r: 5, fill: "#7c3aed" }}
+              dot={{ fill: "var(--accent)", strokeWidth: 0, r: 3 }}
+              activeDot={{ r: 5, fill: "var(--accent)" }}
             />
           </LineChart>
         </ResponsiveContainer>

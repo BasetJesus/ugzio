@@ -265,7 +265,7 @@ export async function POST(req: Request) {
       const captions: Caption[] = JSON.parse(cleaned);
 
       if (!Array.isArray(captions)) {
-        throw new Error("Invalid response format");
+        return NextResponse.json({ error: "Invalid response format" }, { status: 500 });
       }
 
       return NextResponse.json({ captions });

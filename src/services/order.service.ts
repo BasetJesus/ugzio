@@ -62,8 +62,13 @@ export async function getOrderDetail(orgId: string, orderId: string) {
   return order;
 }
 
-export async function checkFreePlanLimit(orgId: string, currentPlan: string, maxOrders: number): Promise<boolean> {
-  if (currentPlan !== "free") return false;
+export async function checkFreePlanLimit(orgId: string): Promise<boolean> {
+  const org = await prisma.organization.findUnique({
+    where: { id: orgId },
+    select: { subscriptionStatus: true, maxOrdersPerMonth: true },
+  });
+  if (!org) return true;
+  if (org.subscriptionStatus !== "free") return false;
 
   const monthlyCount = await prisma.order.count({
     where: {
@@ -74,7 +79,7 @@ export async function checkFreePlanLimit(orgId: string, currentPlan: string, max
     },
   });
 
-  return monthlyCount >= Math.min(maxOrders, FREE_TIER_LIMIT);
+  return monthlyCount >= Math.min(org.maxOrdersPerMonth, FREE_TIER_LIMIT);
 }
 
 export async function createOrder(orgId: string, data: {
@@ -184,12 +189,12 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
     const order = await prisma.order.findFirst({
       where: { id: orderId, organizationId: orgId, deletedAt: null },
     });
-    if (!order) return null;
+    if (!order) return { success: false };
 
     const previousStatus = order.status;
 
     if (!canTransition(previousStatus as never, newStatus as never)) {
-      return null;
+      return { success: false };
     }
 
     await prisma.order.update({
@@ -247,9 +252,9 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
       await closeOperationalLoop(orgId, orderId, "INTELLIGENT_CANCEL", order)
     }
 
-    return { id: orderId, status: newStatus };
+    return { success: true, id: orderId, status: newStatus };
   } catch {
-    return null;
+    return { success: false };
   }
 }
 

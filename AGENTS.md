@@ -33,10 +33,13 @@ Alternate: `INTELLIGENT_CANCEL`, `PENDING_RESCHEDULE`, `REFUSED`
 - Konnect payment only (no Stripe)
 
 ## Design
-- `bg-black`, cards `bg-zinc-900/50 border-zinc-800 rounded-xl`
-- Primary: `bg-purple-600`, Danger: `text-red-400`, Success: `text-green-400`
-- Mobile-first (sellers use phones)
-- Dark/white purple theme, Darija + French
+- Warm off-white base (`--bg-base: #f5f5f0`), white cards with subtle borders
+- Primary: `var(--accent)` = protection green `#059669`
+- Mobile-first (sellers use phones), bottom nav on <768px, sidebar on >=768px
+- Theme classes: `theme-dark` = actual dark mode, `theme-light` = warm light (default)
+- All colors via CSS variables in `globals.css` — no raw hex in components
+- Multi-language: Arabic (default), French, English
+- Design DNA: Stripe Dashboard + Linear + high-end fintech operations
 
 ## Architecture Stability Rules (HARD RULES)
 
@@ -165,9 +168,16 @@ Forbidden:
 - `/orders/import` → INGESTION (bring data in)
 - `/settings/delivery` → ECONOMICS (configure costs)
 
+### Auxiliary routes (configuration / secondary features):
+- `/settings/*` → Configuration pages (branding, connectivity, security, ugc)
+- `/inbox` → UGC review (part of core loop)
+- `/blacklist` → Risk management
+- `/growth` → Growth metrics
+
 All other routes in `(app)` redirect to `/overview`.
 
 **No orphaned pages. No experimental routes. No duplicate trees.**
+- Redundant duplicates: `/dashboard`, `/operations`, `/intelligence`, `/success`, `/shield`, `/orders/new` — all deleted
 
 ---
 

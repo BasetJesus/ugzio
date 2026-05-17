@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await sendVerification(orgId, orderId);
-    if (!result) {
+    if (!result.success) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
@@ -21,6 +21,6 @@ export async function POST(request: NextRequest) {
     if (e instanceof AuthError) {
       return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
     }
-    throw e;
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

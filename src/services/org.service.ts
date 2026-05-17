@@ -229,6 +229,18 @@ export async function getOrderCount(orgId: string): Promise<number> {
   }
 }
 
+export async function updateOrganization(orgId: string, data: { name?: string; sellerPhone?: string; sellerName?: string }) {
+  try {
+    await prisma.organization.update({
+      where: { id: orgId },
+      data,
+    });
+    return { success: true };
+  } catch {
+    return { success: false };
+  }
+}
+
 export async function getActivationEvents(orgId: string): Promise<{ eventType: string }[]> {
   try {
     const events = await prisma.activationEvent.findMany({

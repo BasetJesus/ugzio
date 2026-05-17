@@ -114,7 +114,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
                 </div>
               </div>
 
-              <div className="mt-2 rounded-xl bg-[#1a2e2a] border border-green-900/30 p-3">
+              <div className="mt-2 rounded-xl bg-[var(--emotion-protection)] border border-green-900/30 p-3">
                 <div className="flex items-center gap-1.5 mb-1">
                   <StatePulse state={pulseState} size="sm" />
                   <span className="text-[9px] font-medium text-green-400/70">UGZIO Bot</span>

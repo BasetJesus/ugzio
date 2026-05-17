@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
-import { prisma } from "@/lib/db";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { createOrganization, generateSampleData } from "@/services/org.service";
+import { createOrganization, updateOrganization, generateSampleData } from "@/services/org.service";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -25,14 +24,7 @@ export async function POST(request: Request) {
     const org = await createOrganization(shopName, session.user.id, sellerPhone);
     orgId = org.id;
   } else {
-    await prisma.organization.update({
-      where: { id: orgId },
-      data: {
-        name: shopName,
-        sellerPhone: sellerPhone ?? undefined,
-        sellerName: shopName,
-      },
-    });
+    await updateOrganization(orgId, { name: shopName, sellerPhone, sellerName: shopName });
   }
 
   if (generateSample) {

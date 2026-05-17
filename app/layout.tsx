@@ -61,7 +61,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{
-          __html: `(function(){try{var e=localStorage.getItem("ugzio-theme");if(!e||e==="dark"){document.documentElement.classList.add("theme-dark")}else{document.documentElement.classList.add("theme-light")}}catch(e){document.documentElement.classList.add("theme-dark")}})()`
+          __html: `(function(){try{var e=localStorage.getItem("ugzio-theme");if(!e||e==="light"){document.documentElement.classList.add("theme-light")}else{document.documentElement.classList.add("theme-dark")}}catch(e){document.documentElement.classList.add("theme-light")}})()`
         }} />
       </head>
       <body className="min-h-dvh bg-[var(--bg-base)] text-[var(--text-primary)]">

@@ -82,7 +82,7 @@ export async function buyerConfirmOrder(
 
     if (action === "confirm") {
       const transitioned = await transitionOrderStatus(order.organizationId, order.id, "BUYER_CONFIRMED" as OrderStatus)
-      if (!transitioned) return { success: false }
+      if (!transitioned.success) return { success: false }
 
       await prisma.order.update({
         where: { id: order.id },

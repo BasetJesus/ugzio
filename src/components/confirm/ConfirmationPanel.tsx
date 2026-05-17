@@ -135,7 +135,7 @@ function RiskInsightPanel({ item, onClose, onAction, psychologyPreview, timeline
             </div>
 
             {psychologyPreview && (
-              <div className="rounded-xl bg-[#1a2e2a] border border-green-900/30 p-4">
+              <div className="rounded-xl bg-[var(--emotion-protection)] border border-green-900/30 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[10px] font-medium text-green-400/70 uppercase tracking-wider">WhatsApp Sequence</span>
                   <span className="text-[9px] text-green-600 ml-auto">{psychologyPreview.sequenceType}</span>

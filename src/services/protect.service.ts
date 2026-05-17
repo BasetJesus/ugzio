@@ -23,7 +23,7 @@ export async function sendVerification(orgId: string, orderId: string) {
   const order = await prisma.order.findFirst({
     where: { id: orderId, organizationId: orgId, deletedAt: null },
   });
-  if (!order) return null;
+  if (!order) return { success: false };
 
   await prisma.order.update({
     where: { id: orderId },

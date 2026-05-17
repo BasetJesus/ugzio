@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { validateCSV, importOrdersFromCSV, ImportResult } from "@/services/order-import.service";
-import { prisma } from "@/lib/db";
 import { checkFreePlanLimit } from "@/services/order.service";
 
 export async function POST(request: NextRequest) {
   try {
     const { orgId } = await requireSession();
-
-    const org = await prisma.organization.findUnique({ where: { id: orgId } });
-    if (!org) {
-      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
-    }
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -34,7 +28,7 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const limitReached = await checkFreePlanLimit(orgId, org.subscriptionStatus, org.maxOrdersPerMonth);
+    const limitReached = await checkFreePlanLimit(orgId);
     if (limitReached) {
       return NextResponse.json(
         { error: "Limite mensuelle atteinte. Passe à Essentiel (49 TND/mois) ou Croissance (139 TND/mois)." },

@@ -230,10 +230,7 @@ export async function markConfirmed(
     })
 
     if (order.status === "CREATED") {
-      const result = await transitionOrderStatus(orgId, orderId, "BUYER_CONFIRMED" as OrderStatus)
-      if (result) {
-        // state machine may not allow transition; confirmStatus is already set
-      }
+      await transitionOrderStatus(orgId, orderId, "BUYER_CONFIRMED" as OrderStatus)
     }
 
     return { success: true }
@@ -487,10 +484,7 @@ export async function cancelOrder(
       orderAmount: Number(order.amount),
     })
 
-    const result = await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)
-    if (result) {
-      // state machine may reject; confirmStatus is already set
-    }
+    await transitionOrderStatus(orgId, orderId, "INTELLIGENT_CANCEL" as OrderStatus)
 
     return { success: true }
   } catch {

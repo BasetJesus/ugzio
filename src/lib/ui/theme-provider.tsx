@@ -30,11 +30,10 @@ function useIsClient() {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (typeof window === "undefined") return "dark"
+    if (typeof window === "undefined") return "light"
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored === "light" || stored === "dark") return stored
-    if (window.matchMedia?.("(prefers-color-scheme: light)").matches) return "light"
-    return "dark"
+    return "light"
   })
   const mounted = useIsClient()
 

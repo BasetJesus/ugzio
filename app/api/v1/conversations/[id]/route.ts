@@ -20,6 +20,6 @@ export async function GET(
     if (e instanceof AuthError) {
       return NextResponse.json({ error: e.message }, { status: e.message === "Unauthorized" ? 401 : 400 });
     }
-    throw e;
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
