@@ -4,10 +4,9 @@ import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { stateFromPath } from "@/lib/core/system-state"
 import type { SystemState } from "@/lib/core/system-state"
-import LiveSystemHeader from "./LiveSystemHeader"
-import SystemFlowNavigator from "./SystemFlowNavigator"
+import SidebarNav from "@/components/nav/SidebarNav"
 import MobileBottomNav from "@/components/shared/MobileBottomNav"
-import LanguageToggle from "@/components/shared/LanguageToggle"
+import { PageTransition } from "@/components/shared/PageTransition"
 
 interface Props {
   children: React.ReactNode
@@ -16,9 +15,11 @@ interface Props {
   orgId: string
   completedCount: number
   revenueAtRisk: number
+  pendingCount?: number
+  highRiskCount?: number
 }
 
-export default function CoreShell({ children, orgName, planName, orgId, completedCount, revenueAtRisk }: Props) {
+export default function CoreShell({ children, orgName, planName, orgId, completedCount, revenueAtRisk, pendingCount = 0, highRiskCount = 0 }: Props) {
   const pathname = usePathname()
   const currentState = stateFromPath(pathname)
   const [displayState, setDisplayState] = useState<SystemState>(currentState)
@@ -42,36 +43,31 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
   }, [currentState])
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[72rem]">
-      <SystemFlowNavigator
+    <div className="mx-auto flex min-h-dvh bg-[#0a0a0f]">
+      <SidebarNav
         orgName={orgName}
         planName={planName}
         completedCount={completedCount}
+        pendingCount={pendingCount}
+        highRiskCount={highRiskCount}
       />
       <div className="relative flex flex-1 flex-col">
-        <LiveSystemHeader
-          orgName={orgName}
-          planName={planName}
-          orgId={orgId}
-          revenueAtRisk={revenueAtRisk}
-        />
         <main className="flex-1 overflow-y-auto pb-24 sm:pb-0">
           <div
             className={`px-4 py-5 sm:px-8 sm:py-6 ${
               animating
-                ? "animate-view-fade-out opacity-0"
-                : "animate-emotion-transition"
+                ? "opacity-0"
+                : ""
             }`}
             key={displayState}
           >
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </div>
         </main>
       </div>
-      <MobileBottomNav />
-      <div className="fixed bottom-24 right-4 z-50 sm:bottom-6">
-        <LanguageToggle />
-      </div>
+      <MobileBottomNav pendingCount={pendingCount} highRiskCount={highRiskCount} />
     </div>
   )
 }

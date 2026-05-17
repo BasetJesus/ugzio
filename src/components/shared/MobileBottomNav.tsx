@@ -3,53 +3,56 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLanguage } from "@/context/LanguageContext"
-import { SYSTEM_STATES, stateFromPath } from "@/lib/core/system-state"
 
-interface NavItem {
+interface Tab {
   href: string
-  labelKey: string
-  stateKey: "LIVE" | "DECISION" | "HISTORY" | null
+  label: string
   icon: string
+  badge?: number | null
 }
 
-const ITEMS: NavItem[] = [
-  { href: "/overview", labelKey: "nav.overview", stateKey: "LIVE", icon: "●" },
-  { href: "/confirm", labelKey: "nav.confirm", stateKey: "DECISION", icon: "◆" },
-  { href: "/orders", labelKey: "nav.orders", stateKey: "HISTORY", icon: "▸" },
-]
+interface Props {
+  pendingCount?: number
+  highRiskCount?: number
+}
 
-export default function MobileBottomNav() {
+export default function MobileBottomNav({ pendingCount = 0, highRiskCount = 0 }: Props) {
   const pathname = usePathname()
   const { t } = useLanguage()
-  const currentState = stateFromPath(pathname)
 
-  const isActive = (item: NavItem) => item.stateKey ? currentState === item.stateKey : false
-  const getAccent = (item: NavItem) => item.stateKey ? SYSTEM_STATES[item.stateKey].color : "var(--text-tertiary)"
+  const tabs: Tab[] = [
+    { href: "/overview", label: "nav.overview", icon: "●" },
+    { href: "/orders", label: "nav.orders", icon: "▸", badge: highRiskCount > 0 ? highRiskCount : null },
+    { href: "/confirm", label: "nav.confirm", icon: "◆", badge: pendingCount > 0 ? pendingCount : null },
+    { href: "/inbox", label: "nav.inbox", icon: "📥" },
+    { href: "/settings", label: "nav.settings", icon: "⚙" },
+  ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--nav-border)] bg-[var(--bg-base)] pb-safe sm:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-xl pb-safe sm:hidden">
       <div className="flex items-stretch">
-        {ITEMS.map((item) => {
-          const active = isActive(item)
-          const accent = getAccent(item)
-
+        {tabs.map((tab) => {
+          const active = pathname.startsWith(tab.href)
           return (
             <Link
-              key={item.href}
-              href={item.href}
-              className="relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition"
-              style={{ color: active ? accent : "var(--text-tertiary)" }}
+              key={tab.href}
+              href={tab.href}
+              onClick={() => { try { navigator.vibrate?.(10) } catch {} }}
+              className="relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition duration-150"
+              style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
             >
-              {active && (
-                <span
-                  className="absolute top-0 left-1/4 right-1/4 h-0.5 rounded-full"
-                  style={{ backgroundColor: accent }}
-                />
-              )}
-              <span className={`text-sm leading-none ${active && item.stateKey === "LIVE" ? "animate-pulse" : ""}`}>
-                {item.icon}
+              <span className="relative text-lg leading-none">
+                {tab.icon}
+                {tab.badge != null && tab.badge > 0 && (
+                  <span className="absolute -top-1 -right-1.5 flex h-4 min-w-[14px] items-center justify-center rounded-full bg-[var(--status-danger)] px-1 text-[8px] font-bold text-white">
+                    {tab.badge > 99 ? "99+" : tab.badge}
+                  </span>
+                )}
               </span>
-              <span>{t(item.labelKey)}</span>
+              <span className="text-[10px]">{t(tab.label)}</span>
+              {active && (
+                <span className="absolute -top-px left-1/4 right-1/4 h-0.5 rounded-full bg-[var(--accent)]" />
+              )}
             </Link>
           )
         })}

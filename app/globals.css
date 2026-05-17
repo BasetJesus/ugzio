@@ -15,23 +15,34 @@
 /* ── Theme Variables ── */
 
 .theme-dark {
-  --bg-base: #0c0c0e;
-  --bg-surface: #161618;
-  --bg-card: #161618;
+  --bg-base: #0a0a0f;
+  --bg-surface: #111118;
+  --bg-card: #111118;
+  --bg-elevated: #1a1a24;
 
-  --border: rgba(255, 255, 255, 0.06);
-  --nav-border: rgba(255, 255, 255, 0.04);
+  --border: #2a2a3a;
+  --nav-border: #2a2a3a;
 
-  --text-primary: #f4f4f5;
-  --text-secondary: #a1a1aa;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
   --text-tertiary: #71717a;
+  --text-muted: #475569;
 
-  --risk-red: #f87171;
-  --success-green: #4ade80;
-  --warning-amber: #fbbf24;
+  --risk-red: #ef4444;
+  --success-green: #10b981;
+  --warning-amber: #f59e0b;
 
-  --accent: #4F46E5;
-  --accent-hover: #6366F1;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+
+  --status-danger: #ef4444;
+  --status-danger-bg: rgba(239,68,68,0.10);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245,158,11,0.10);
+  --status-success: #10b981;
+  --status-success-bg: rgba(16,185,129,0.10);
+  --status-info: #3b82f6;
+  --status-info-bg: rgba(59,130,246,0.10);
 
   --nav-bg: rgba(12, 12, 14, 0.8);
 
@@ -112,23 +123,34 @@
 }
 
 .theme-light {
-  --bg-base: #FAFAF8;
-  --bg-surface: #FFFFFF;
-  --bg-card: #FFFFFF;
+  --bg-base: #fafaf8;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
 
-  --border: rgba(17, 17, 17, 0.06);
+  --border: rgba(17, 17, 17, 0.08);
   --nav-border: rgba(17, 17, 17, 0.04);
 
   --text-primary: #111111;
-  --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-muted: #d1d5db;
 
-  --risk-red: #DC2626;
+  --risk-red: #dc2626;
   --success-green: #059669;
-  --warning-amber: #D97706;
+  --warning-amber: #d97706;
 
-  --accent: #4F46E5;
-  --accent-hover: #6366F1;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+
+  --status-danger: #dc2626;
+  --status-danger-bg: rgba(220,38,38,0.08);
+  --status-warning: #d97706;
+  --status-warning-bg: rgba(217,119,6,0.08);
+  --status-success: #059669;
+  --status-success-bg: rgba(5,150,105,0.08);
+  --status-info: #2563eb;
+  --status-info-bg: rgba(37,99,235,0.08);
 
   --nav-bg: rgba(250, 250, 248, 0.9);
 

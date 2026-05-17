@@ -6,7 +6,7 @@ export async function getServerLang(): Promise<Lang> {
   try {
     const store = await cookies();
     const v = store.get("ugzio_lang")?.value;
-    if (v === "tun" || v === "fr" || v === "en") return v;
+    if (v === "ar" || v === "fr" || v === "en") return v;
   } catch {}
   return "fr";
 }

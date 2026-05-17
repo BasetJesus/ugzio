@@ -92,6 +92,24 @@ export default async function OverviewPage() {
 
   const sellerStyle = sellerContext?.style.style
 
+  const NARRATIVE = {
+    "tense": {
+      ar: `${revenueAtRisk.toFixed(0)} TND معرضة للخطر — ${needsAction} طلب تحتاج لاهتمامك`,
+      fr: `${revenueAtRisk.toFixed(0)} TND exposés — ${needsAction} commande nécessitent votre attention`,
+      en: `${revenueAtRisk.toFixed(0)} TND at risk — ${needsAction} order needs your attention`,
+    },
+    "has-outcomes": {
+      ar: `${protectedToday.toFixed(0)} TND محمية اليوم — ${needsAction} طلب في الانتظار`,
+      fr: `${protectedToday.toFixed(0)} TND protégés aujourd'hui — ${needsAction} commande en attente`,
+      en: `${protectedToday.toFixed(0)} TND protected today — ${needsAction} order pending`,
+    },
+    "empty": {
+      ar: "لا يوجد خطر نشط — النظام يراقب الطلبات الجديدة",
+      fr: "Aucun risque actif — le système surveille les nouvelles commandes",
+      en: "No active risk — monitoring new orders",
+    },
+  }
+
   return (
     <OperationalPresenceLayer>
     <div className="space-y-section" data-state="live">
@@ -99,10 +117,10 @@ export default async function OverviewPage() {
         title={tense ? st(lang, "ov.revenue-at-risk") : st(lang, "ov.revenue-live")}
         narrative={
           tense
-            ? `${revenueAtRisk.toFixed(0)} TND exposés — ${needsAction} ${needsAction > 1 ? "commandes" : "commande"} nécessitent votre attention`
+            ? NARRATIVE["tense"][lang]
             : hasOutcomes
-            ? sellerContext?.narrative ?? `${protectedToday.toFixed(0)} TND protégés aujourd'hui — ${needsAction} ${needsAction > 1 ? "commandes" : "commande"} en attente`
-            : sellerContext?.narrative ?? "Aucun risque actif — le système surveille les nouvelles commandes"
+            ? sellerContext?.narrative ?? NARRATIVE["has-outcomes"][lang]
+            : sellerContext?.narrative ?? NARRATIVE["empty"][lang]
         }
         emotion={tense ? "tense" : "protective"}
         sellerStyle={sellerStyle}

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-import { t as translate, type Lang } from "./translations";
+import { translate, type Lang } from "@/lib/translations";
 
 interface LangCtx {
   lang: Lang;
@@ -10,27 +10,29 @@ interface LangCtx {
 }
 
 const Ctx = createContext<LangCtx>({
-  lang: "tun",
+  lang: "ar",
   setLang: () => {},
   t: (k: string) => k,
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
-    if (typeof window === "undefined") return "tun"
+    if (typeof window === "undefined") return "ar"
     const v = localStorage.getItem("ugzio_lang");
-    return (v === "tun" || v === "fr" || v === "en") ? v : "tun"
+    return (v === "ar" || v === "fr" || v === "en") ? v : "ar"
   });
 
   useEffect(() => {
-    document.documentElement.dir = lang === "tun" ? "rtl" : "ltr";
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
   }, [lang]);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
     localStorage.setItem("ugzio_lang", l);
     document.cookie = `ugzio_lang=${l};path=/;max-age=31536000;SameSite=Lax`;
-    document.documentElement.dir = l === "tun" ? "rtl" : "ltr";
+    document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = l;
   }, []);
 
   const _t = useCallback((key: string) => translate(key, lang), [lang]);
@@ -44,4 +46,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage() {
   return useContext(Ctx);
+}
+
+export function useT() {
+  const { t, lang } = useLanguage()
+  return { t, lang }
 }
