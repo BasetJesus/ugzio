@@ -96,7 +96,7 @@ export default function WaitlistPage() {
               </div>
               <Link
                 href="/"
-                className="mt-6 inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] landing-glow-purple"
+                className="mt-6 inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] landing-glow-green"
                 style={{ backgroundColor: "#7c3aed" }}
               >
                 ← Retour à l&apos;accueil
@@ -278,7 +278,7 @@ export default function WaitlistPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group relative w-full rounded-xl px-6 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.98] disabled:opacity-60 overflow-hidden landing-glow-purple"
+                    className="group relative w-full rounded-xl px-6 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.98] disabled:opacity-60 overflow-hidden landing-glow-green"
                     style={{ backgroundColor: "#7c3aed" }}
                   >
                     <span className="relative z-10">

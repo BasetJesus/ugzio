@@ -137,7 +137,7 @@ export default function PricingSection() {
                 <a
                   href={plan.href}
                   className={`group relative w-full rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.98] overflow-hidden inline-flex items-center justify-center mb-6 ${
-                    plan.highlight ? "landing-glow-purple" : "border border-white/15"
+                    plan.highlight ? "landing-glow-green" : "border border-white/15"
                   }`}
                   style={{
                     backgroundColor: plan.highlight ? "#7c3aed" : "transparent",

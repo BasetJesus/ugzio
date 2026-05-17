@@ -36,7 +36,7 @@ export default function HeroSection() {
                   href="/overview?demo=true"
                   label="try_live_demo"
                   eventName="hero_cta_click"
-                  className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple relative overflow-hidden group w-full sm:w-auto"
+                  className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-green relative overflow-hidden group w-full sm:w-auto"
                   style={{ backgroundColor: "#7c3aed" }}
                 >
                   <span className="relative z-10">🚀 Démo Live</span>

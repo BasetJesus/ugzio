@@ -28,7 +28,7 @@ export default function FinalCtaSection() {
               href="/overview?demo=true"
               label="try_live_demo"
               eventName="final_cta_click"
-              className="group inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-purple min-w-[200px] relative overflow-hidden"
+              className="group inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-green min-w-[200px] relative overflow-hidden"
               style={{ backgroundColor: "#7c3aed" }}
             >
               <span className="relative z-10">🚀 Démo Live</span>

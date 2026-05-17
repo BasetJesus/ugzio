@@ -43,7 +43,7 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
   }, [currentState])
 
   return (
-    <div className="mx-auto flex min-h-dvh bg-[#0a0a0f]">
+    <div className="mx-auto flex min-h-dvh bg-[var(--bg-base)]">
       <SidebarNav
         orgName={orgName}
         planName={planName}

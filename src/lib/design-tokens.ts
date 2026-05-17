@@ -1,32 +1,37 @@
+// UGZIO Design Tokens
+// Warm operational intelligence — Stripe Dashboard + Linear + high-end fintech ops
+// Emotion: controlled, protective, financially serious
+
 export const tokens = {
   bg: {
-    base: '#0a0a0f',
-    surface: '#111118',
-    elevated: '#1a1a24',
-    border: '#2a2a3a',
+    base: '#f5f5f0',        // warm off-white — calm operational base
+    surface: '#ffffff',      // white cards — clean, trustworthy
+    elevated: '#ffffff',     // modals, dropdowns
+    border: '#e5e5e0',       // subtle warm borders
   },
   accent: {
-    purple: '#7c3aed',
-    purpleHover: '#6d28d9',
-    purpleGlow: 'rgba(124,58,237,0.15)',
+    green: '#059669',        // protection green — primary CTA
+    greenHover: '#047857',   // darker green on hover
+    greenGlow: 'rgba(5,150,105,0.10)',
+    greenLight: '#ecfdf5',   // light green bg for active states
   },
   status: {
-    danger: '#ef4444',
-    dangerBg: 'rgba(239,68,68,0.10)',
-    warning: '#f59e0b',
-    warningBg: 'rgba(245,158,11,0.10)',
-    success: '#10b981',
-    successBg: 'rgba(16,185,129,0.10)',
-    info: '#3b82f6',
-    infoBg: 'rgba(59,130,246,0.10)',
+    danger: '#dc2626',       // controlled red — high risk
+    dangerBg: 'rgba(220,38,38,0.06)',
+    warning: '#d97706',      // amber — medium risk
+    warningBg: 'rgba(217,119,6,0.06)',
+    success: '#059669',      // muted green — delivered, confirmed
+    successBg: 'rgba(5,150,105,0.08)',
+    info: '#2563eb',         // blue — neutral info
+    infoBg: 'rgba(37,99,235,0.06)',
   },
   text: {
-    primary: '#f8fafc',
-    secondary: '#94a3b8',
-    muted: '#475569',
-    danger: '#fca5a5',
-    success: '#6ee7b7',
-    warning: '#fcd34d',
+    primary: '#111827',      // near-black — max readability
+    secondary: '#6b7280',    // gray-500 — secondary info
+    muted: '#9ca3af',        // gray-400 — tertiary
+    danger: '#dc2626',
+    success: '#059669',
+    warning: '#d97706',
   },
   font: {
     sans: 'var(--font-geist-sans)',
@@ -40,8 +45,8 @@ export const tokens = {
     full: '9999px',
   },
   shadow: {
-    card: '0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05)',
-    elevated: '0 8px 32px rgba(0,0,0,0.6)',
-    glow: '0 0 20px rgba(124,58,237,0.3)',
+    card: '0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03)',
+    elevated: '0 4px 16px rgba(0,0,0,0.08)',
+    glow: '0 0 16px rgba(5,150,105,0.15)',
   },
 }
