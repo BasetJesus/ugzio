@@ -6,6 +6,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # UGZIO v4 Blueprint — Source of Truth
 
+## Branded System Language
+| System | Purpose |
+|---|---|
+| **ZioShield** | Risk engine |
+| **ZioBrain** | Intelligence |
+| **ZioConfirm** | Buyer confirmation |
+| **ZioFlow** | Workflows |
+| **ZioInbox** | Messaging |
+| **ZioView** | Operational visibility |
+| **ZioLearn** | Outcome learning |
+| **ZioIdentity** | Behavioral memory |
+
 Full specification is in the conversation context. Key principles:
 
 ## Architecture
