@@ -28,11 +28,11 @@ const valueColors: Record<RiskTier, string> = {
   neutral: "text-[var(--text-primary)]",
 }
 
-const emotionIcons: Record<EmotionTier, string> = {
-  protective: "🛡️",
-  tense: "⚡",
-  calm: "○",
-  achievement: "⭐",
+const emotionLabels: Record<EmotionTier, string> = {
+  protective: "SAVED",
+  tense: "AT RISK",
+  calm: "STABLE",
+  achievement: "GOAL MET",
   neutral: "",
 }
 
@@ -50,10 +50,10 @@ export default function KpiCard({ label, value, tier = "neutral", emotion, child
       <div className="flex items-center justify-between mb-2">
         <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">{label}</p>
         {emotion && emotion !== "neutral" && (
-          <span className="text-sm opacity-70">{emotionIcons[emotion]}</span>
+          <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">{emotionLabels[emotion]}</span>
         )}
       </div>
-      <p className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${valueColors[tier]}`}>{value}</p>
+      <p className={`text-3xl sm:text-4xl font-bold tracking-[-0.03em] ${valueColors[tier]}`}>{value}</p>
       {children}
     </div>
   )

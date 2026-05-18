@@ -28,7 +28,7 @@ export default function SystemNarrative({ title, narrative, emotion, sellerStyle
 
   return (
     <div className="space-y-1">
-      <h1 className="text-display-lg text-[var(--text-primary)]" style={{ color: emotionColor }}>
+      <h1 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] leading-[1.15] text-[var(--text-primary)] font-[family-name:var(--font-fraunces)]" style={{ color: emotionColor }}>
         {title}
       </h1>
       <p className="text-narrative">{narrative}</p>
