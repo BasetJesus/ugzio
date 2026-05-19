@@ -5,14 +5,16 @@ export interface WhatsAppCreds {
   accessToken: string;
 }
 
-async function getCreds(creds?: WhatsAppCreds): Promise<{ phoneNumberId: string; accessToken: string }> {
+async function getCreds(creds?: WhatsAppCreds): Promise<{ phoneNumberId: string; accessToken: string } | null> {
   if (creds?.phoneNumberId && creds?.accessToken) {
     return creds;
   }
   const phoneNumberId = process.env.META_PHONE_NUMBER_ID;
   const accessToken = process.env.META_ACCESS_TOKEN;
-  if (!phoneNumberId) throw new Error("META_PHONE_NUMBER_ID not set");
-  if (!accessToken) throw new Error("META_ACCESS_TOKEN not set");
+  if (!phoneNumberId || !accessToken) {
+    console.warn("[whatsapp/client] META env vars not configured");
+    return null;
+  }
   return { phoneNumberId, accessToken };
 }
 
@@ -24,7 +26,9 @@ function getHeaders(token: string) {
 }
 
 export async function sendText(to: string, text: string, creds?: WhatsAppCreds) {
-  const { phoneNumberId, accessToken } = await getCreds(creds);
+  const resolved = await getCreds(creds);
+  if (!resolved) return null;
+  const { phoneNumberId, accessToken } = resolved;
   const res = await fetch(`https://graph.facebook.com/${API_VERSION}/${phoneNumberId}/messages`, {
     method: "POST",
     headers: getHeaders(accessToken),
@@ -38,7 +42,8 @@ export async function sendText(to: string, text: string, creds?: WhatsAppCreds) 
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`WhatsApp sendText failed: ${res.status} ${err}`);
+    console.error(`[whatsapp/client] sendText failed: ${res.status} ${err}`);
+    return null;
   }
   return res.json();
 }
@@ -49,7 +54,9 @@ export async function sendButtons(
   buttons: { id: string; title: string }[],
   creds?: WhatsAppCreds,
 ) {
-  const { phoneNumberId, accessToken } = await getCreds(creds);
+  const resolved = await getCreds(creds);
+  if (!resolved) return null;
+  const { phoneNumberId, accessToken } = resolved;
   const res = await fetch(`https://graph.facebook.com/${API_VERSION}/${phoneNumberId}/messages`, {
     method: "POST",
     headers: getHeaders(accessToken),
@@ -72,7 +79,8 @@ export async function sendButtons(
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`WhatsApp sendButtons failed: ${res.status} ${err}`);
+    console.error(`[whatsapp/client] sendButtons failed: ${res.status} ${err}`);
+    return null;
   }
   return res.json();
 }
@@ -83,7 +91,9 @@ export async function sendMedia(
   mediaType: "image" | "video",
   creds?: WhatsAppCreds,
 ) {
-  const { phoneNumberId, accessToken } = await getCreds(creds);
+  const resolved = await getCreds(creds);
+  if (!resolved) return null;
+  const { phoneNumberId, accessToken } = resolved;
   const res = await fetch(`https://graph.facebook.com/${API_VERSION}/${phoneNumberId}/messages`, {
     method: "POST",
     headers: getHeaders(accessToken),
@@ -97,13 +107,16 @@ export async function sendMedia(
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`WhatsApp sendMedia failed: ${res.status} ${err}`);
+    console.error(`[whatsapp/client] sendMedia failed: ${res.status} ${err}`);
+    return null;
   }
   return res.json();
 }
 
-export async function uploadMedia(fileUrl: string, creds?: WhatsAppCreds): Promise<string> {
-  const { phoneNumberId, accessToken } = await getCreds(creds);
+export async function uploadMedia(fileUrl: string, creds?: WhatsAppCreds): Promise<string | null> {
+  const resolved = await getCreds(creds);
+  if (!resolved) return null;
+  const { phoneNumberId, accessToken } = resolved;
   const res = await fetch(
     `https://graph.facebook.com/${API_VERSION}/${phoneNumberId}/media`,
     {
@@ -118,7 +131,8 @@ export async function uploadMedia(fileUrl: string, creds?: WhatsAppCreds): Promi
   );
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`WhatsApp uploadMedia failed: ${res.status} ${err}`);
+    console.error(`[whatsapp/client] uploadMedia failed: ${res.status} ${err}`);
+    return null;
   }
   const data = await res.json();
   return data.id;

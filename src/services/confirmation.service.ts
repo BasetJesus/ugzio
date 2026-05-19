@@ -111,32 +111,33 @@ export async function getConfirmationQueue(orgId: string): Promise<ConfirmationQ
 }
 
 export async function getConfirmationDetail(orgId: string, orderId: string): Promise<ConfirmationDetail | null> {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-    include: {
-      confirmationAttempts: {
-        orderBy: { createdAt: "desc" },
-        take: 20,
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+      include: {
+        confirmationAttempts: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
+        },
       },
-    },
-  })
+    })
 
-  if (!order) return null
+    if (!order) return null
 
-  const signals = buildRiskSignals(order.riskLevel, order.trustScore, order.status)
-  const recommendation = buildRecommendation(order.confirmStatus as ConfirmStatus, order.riskLevel)
+    const signals = buildRiskSignals(order.riskLevel, order.trustScore, order.status)
+    const recommendation = buildRecommendation(order.confirmStatus as ConfirmStatus, order.riskLevel)
 
-  return {
-    order: {
-      orderId: order.id,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
-      amount: Number(order.amount),
-      product: order.product,
-      riskLevel: order.riskLevel,
-      trustScore: order.trustScore,
-      orderStatus: order.status,
-      confirmStatus: order.confirmStatus as ConfirmStatus,
+    return {
+      order: {
+        orderId: order.id,
+        buyerName: order.buyerName,
+        buyerPhone: order.buyerPhone,
+        amount: Number(order.amount),
+        product: order.product,
+        riskLevel: order.riskLevel,
+        trustScore: order.trustScore,
+        orderStatus: order.status,
+        confirmStatus: order.confirmStatus as ConfirmStatus,
       lastAttemptAt: order.confirmationAttempts[0]?.createdAt.toISOString() ?? null,
       lastAttemptOutcome: order.confirmationAttempts[0]?.outcome ?? null,
       createdAt: order.createdAt.toISOString(),
@@ -153,6 +154,9 @@ export async function getConfirmationDetail(orgId: string, orderId: string): Pro
       signals,
       recommendation,
     },
+  }
+  } catch {
+    return null;
   }
 }
 
@@ -500,28 +504,32 @@ export async function logAttempt(
   notes?: string,
   attemptedBy?: string,
 ): Promise<void> {
-  await prisma.confirmationAttempt.create({
-    data: {
-      order: { connect: { id: orderId } },
+  try {
+    await prisma.confirmationAttempt.create({
+      data: {
+        order: { connect: { id: orderId } },
+        method,
+        outcome,
+        notes: notes ?? null,
+        attemptedBy: attemptedBy ?? null,
+      },
+    })
+
+    const eventType =
+      outcome === "no_answer"
+        ? JOURNEY_EVENT_TYPES.BUYER_NO_RESPONSE
+        : outcome === "confirmed"
+          ? JOURNEY_EVENT_TYPES.BUYER_RESPONDED
+          : JOURNEY_EVENT_TYPES.BUYER_CONTACT_ATTEMPTED
+
+    await recordJourneyEvent(orgId, orderId, eventType, {
       method,
       outcome,
-      notes: notes ?? null,
       attemptedBy: attemptedBy ?? null,
-    },
-  })
-
-  const eventType =
-    outcome === "no_answer"
-      ? JOURNEY_EVENT_TYPES.BUYER_NO_RESPONSE
-      : outcome === "confirmed"
-        ? JOURNEY_EVENT_TYPES.BUYER_RESPONDED
-        : JOURNEY_EVENT_TYPES.BUYER_CONTACT_ATTEMPTED
-
-  await recordJourneyEvent(orgId, orderId, eventType, {
-    method,
-    outcome,
-    attemptedBy: attemptedBy ?? null,
-  })
+    })
+  } catch (e) {
+    console.error("[confirmation.service] logAttempt failed:", e);
+  }
 }
 
 // ─── OUTCOME MARKING ────────────────────────────────────────────────

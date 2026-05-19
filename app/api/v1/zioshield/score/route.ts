@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { scorePhone } from "@/services/risk.service";
+import { riskScoreSchema, formatZodErrors } from "@/lib/validation";
 
 export async function POST(request: NextRequest) {
   try {
     const { orgId } = await requireSession();
-    const { phone, excludeOrderId } = await request.json();
-
-    if (!phone) {
-      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    const body = await request.json();
+    const parsed = riskScoreSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { phone, excludeOrderId } = parsed.data;
 
     const result = await scorePhone(orgId, phone, excludeOrderId);
     return NextResponse.json(result);

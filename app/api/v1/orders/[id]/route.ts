@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { transitionOrderStatus } from "@/services/order.service";
+import { updateOrderStatusSchema, formatZodErrors } from "@/lib/validation";
 
 export async function PATCH(
   request: NextRequest,
@@ -10,11 +11,11 @@ export async function PATCH(
     const { orgId } = await requireSession();
     const { id } = await params;
     const body = await request.json();
-    const { status: newStatus } = body;
-
-    if (!newStatus) {
-      return NextResponse.json({ error: "status is required" }, { status: 400 });
+    const parsed = updateOrderStatusSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { status: newStatus } = parsed.data;
 
     const result = await transitionOrderStatus(orgId, id, newStatus);
     if (!result.success) {

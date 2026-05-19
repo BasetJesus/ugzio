@@ -280,77 +280,100 @@ export async function getHighRiskCreatedOrders(orgId: string, limit = 5) {
 
 // ─── Existing Dashboard / Blacklist Methods ───
 
+const EMPTY_RISK_DASHBOARD: RiskDashboardStats = {
+  totalOrders: 0, todayOrders: 0, todayRevenue: 0, highRiskCount: 0,
+  verificationRate: 0, recentOrders: [],
+};
+
 export async function getRiskDashboard(orgId: string): Promise<RiskDashboardStats> {
-  const orders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    take: 100,
-  });
+  try {
+    const orders = await prisma.order.findMany({
+      where: { organizationId: orgId, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    });
 
-  const todayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-  const todayOrders = orders.filter((o) => o.createdAt >= todayStart);
-  const highRiskOrders = orders.filter((o) => o.riskLevel === "high");
+    const todayStart = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const todayOrders = orders.filter((o) => o.createdAt >= todayStart);
+    const highRiskOrders = orders.filter((o) => o.riskLevel === "high");
 
-  return {
-    totalOrders: orders.length,
-    todayOrders: todayOrders.length,
-    todayRevenue: todayOrders.reduce((s, o) => s + Number(o.amount), 0),
-    highRiskCount: highRiskOrders.length,
-    verificationRate: orders.length > 0
-      ? Math.round((orders.filter((o) => o.verificationStatus !== "none").length / orders.length) * 100)
-      : 0,
-    recentOrders: orders.slice(0, 10).map((o) => ({
-      id: o.id,
-      buyerName: o.buyerName,
-      buyerPhone: o.buyerPhone,
-      amount: Number(o.amount),
-      riskLevel: o.riskLevel as RecentRiskOrder["riskLevel"],
-      trustScore: o.trustScore,
-      verificationStatus: o.verificationStatus,
-      status: o.status,
-      createdAt: o.createdAt.toISOString(),
-    })),
-  };
+    return {
+      totalOrders: orders.length,
+      todayOrders: todayOrders.length,
+      todayRevenue: todayOrders.reduce((s, o) => s + Number(o.amount), 0),
+      highRiskCount: highRiskOrders.length,
+      verificationRate: orders.length > 0
+        ? Math.round((orders.filter((o) => o.verificationStatus !== "none").length / orders.length) * 100)
+        : 0,
+      recentOrders: orders.slice(0, 10).map((o) => ({
+        id: o.id,
+        buyerName: o.buyerName,
+        buyerPhone: o.buyerPhone,
+        amount: Number(o.amount),
+        riskLevel: o.riskLevel as RecentRiskOrder["riskLevel"],
+        trustScore: o.trustScore,
+        verificationStatus: o.verificationStatus,
+        status: o.status,
+        createdAt: o.createdAt.toISOString(),
+      })),
+    };
+  } catch {
+    return EMPTY_RISK_DASHBOARD;
+  }
 }
 
-export async function getBlacklistedPhones(orgId: string): Promise<BlacklistEntry[]> {
-  const entries = await prisma.order.findMany({
-    where: { organizationId: orgId, riskLevel: "high", deletedAt: null },
-    select: { buyerPhone: true, buyerName: true, createdAt: true },
-    distinct: ["buyerPhone"],
-    orderBy: { createdAt: "desc" },
-  });
+const EMPTY_BLACKLIST: BlacklistEntry[] = [];
 
-  return entries.map((e) => ({
-    buyerPhone: e.buyerPhone,
-    buyerName: e.buyerName,
-    createdAt: e.createdAt,
-  }));
+export async function getBlacklistedPhones(orgId: string): Promise<BlacklistEntry[]> {
+  try {
+    const entries = await prisma.order.findMany({
+      where: { organizationId: orgId, riskLevel: "high", deletedAt: null },
+      select: { buyerPhone: true, buyerName: true, createdAt: true },
+      distinct: ["buyerPhone"],
+      orderBy: { createdAt: "desc" },
+    });
+
+    return entries.map((e) => ({
+      buyerPhone: e.buyerPhone,
+      buyerName: e.buyerName,
+      createdAt: e.createdAt,
+    }));
+  } catch {
+    return EMPTY_BLACKLIST;
+  }
 }
 
 export async function blacklistPhone(orgId: string, phone: string) {
-  await addToBlacklist(orgId, phone);
-  await ensureActivationEvent(orgId, "FIRST_HIGH_RISK_BLOCKED");
+  try {
+    await addToBlacklist(orgId, phone);
+    await ensureActivationEvent(orgId, "FIRST_HIGH_RISK_BLOCKED");
 
-  const flaggedOrder = await prisma.order.findFirst({
-    where: { organizationId: orgId, buyerPhone: phone, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    select: { id: true, buyerName: true, trustScore: true },
-  });
-
-  if (flaggedOrder) {
-    emit(EventType.RISK_ORDER_FLAGGED, {
-      orderId: flaggedOrder.id,
-      orgId,
-      buyerPhone: phone,
-      buyerName: flaggedOrder.buyerName,
-      riskScore: 100 - flaggedOrder.trustScore,
+    const flaggedOrder = await prisma.order.findFirst({
+      where: { organizationId: orgId, buyerPhone: phone, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, buyerName: true, trustScore: true },
     });
+
+    if (flaggedOrder) {
+      emit(EventType.RISK_ORDER_FLAGGED, {
+        orderId: flaggedOrder.id,
+        orgId,
+        buyerPhone: phone,
+        buyerName: flaggedOrder.buyerName,
+        riskScore: 100 - flaggedOrder.trustScore,
+      });
+    }
+  } catch (e) {
+    console.error("[risk.service] blacklistPhone failed:", e);
   }
 }
 
 export async function unblacklistPhone(orgId: string, phone: string) {
-  await removeFromBlacklist(orgId, phone);
+  try {
+    await removeFromBlacklist(orgId, phone);
+  } catch (e) {
+    console.error("[risk.service] unblacklistPhone failed:", e);
+  }
 }
 
 

@@ -4,6 +4,7 @@ import {
   approveUgcItem,
   rejectUgcItem,
 } from "@/services/grow.service";
+import { ugcActionSchema, formatZodErrors } from "@/lib/validation";
 
 export async function PATCH(
   request: NextRequest,
@@ -14,7 +15,11 @@ export async function PATCH(
     const { id: itemId } = await params;
 
     const body = await request.json();
-    const { action } = body;
+    const parsed = ugcActionSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
+    const { action } = parsed.data;
 
     if (action === "approve") {
       const result = await approveUgcItem(orgId, itemId);

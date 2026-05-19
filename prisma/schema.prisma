@@ -11,7 +11,7 @@ datasource db {
 
 model Plan {
   id                   String         @id @default(cuid())
-  name                 String         @unique // free|essentiel|croissance
+  name                 String         @unique // free|ziogrow|ziopro|ziomax
   maxOrdersPerMonth    Int
   maxUsersPerOrg       Int
   hasZioConfirm        Boolean        @default(false)
@@ -89,11 +89,12 @@ model Organization {
   waitlistEntries   WaitlistEntry[]
   activationEvents  ActivationEvent[]
   maxOrdersPerMonth  Int                @default(3)
-  subscriptionStatus String            @default("free")  // free|essentiel|croissance
+  subscriptionStatus String            @default("free")  // free|ziogrow|ziopro|ziomax
   ordersThisMonth   Int                @default(0)
   sellerPhone       String?
   sellerName        String?
   brandDescription  String?
+  logo              String?
   socialLinks       String?            @default("{}")
   whatsappConnection WhatsAppConnection?
   ugcTemplates      UgcRequestTemplate[]

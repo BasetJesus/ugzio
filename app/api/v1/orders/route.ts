@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { listOrders, createOrder, checkFreePlanLimit } from "@/services/order.service";
+import { createOrderSchema, formatZodErrors } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -20,24 +21,24 @@ export async function POST(request: NextRequest) {
     const { orgId } = await requireSession();
 
     const body = await request.json();
-    const { buyerName, buyerPhone, product, amount, buyerWilaya } = body;
-
-    if (!buyerName || !buyerPhone || amount == null) {
-      return NextResponse.json(
-        { error: "buyerName, buyerPhone, and amount are required" },
-        { status: 400 },
-      );
+    const parsed = createOrderSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { buyerName, buyerPhone, product, amount, buyerWilaya } = parsed.data;
 
     const limitReached = await checkFreePlanLimit(orgId);
     if (limitReached) {
       return NextResponse.json(
-        { error: "Limite mensuelle atteinte. Passe à Essentiel (49 TND/mois) ou Croissance (139 TND/mois)." },
+        { error: "Limite mensuelle atteinte. Passe à ZioGrow (29 TND/mois) ou ZioPro (79 TND/mois)." },
         { status: 403 },
       );
     }
 
     const order = await createOrder(orgId, { buyerName, buyerPhone, product, amount, buyerWilaya });
+    if (!order) {
+      return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    }
 
     return NextResponse.json({
       id: order.id,

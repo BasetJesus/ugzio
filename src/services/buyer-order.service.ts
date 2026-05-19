@@ -21,6 +21,7 @@ export interface BuyerOrderView {
   estimatedDeliveryDays: number
   createdAt: string
   brandDescription: string | null
+  logo: string | null
   socialLinks: { instagram?: string; facebook?: string; tiktok?: string }
 }
 
@@ -32,7 +33,7 @@ export async function getBuyerOrder(token: string): Promise<BuyerOrderView | nul
       where: { token, deletedAt: null },
       include: {
         organization: {
-          select: { name: true, sellerName: true, sellerPhone: true, brandDescription: true, socialLinks: true, deliveryProviders: { take: 1 } },
+          select: { name: true, sellerName: true, sellerPhone: true, brandDescription: true, logo: true, socialLinks: true, deliveryProviders: { take: 1 } },
         },
       },
     })
@@ -63,6 +64,7 @@ export async function getBuyerOrder(token: string): Promise<BuyerOrderView | nul
       estimatedDeliveryDays: deliveryDays,
       createdAt: order.createdAt.toISOString(),
       brandDescription: order.organization.brandDescription,
+      logo: order.organization.logo,
       socialLinks,
     }
   } catch {

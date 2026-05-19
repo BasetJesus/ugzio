@@ -16,70 +16,88 @@ import { FREE_TIER_LIMIT } from "@/lib/constants";
 import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
 
 async function ensureActivationEvent(orgId: string, eventType: string) {
-  const existing = await prisma.activationEvent.findFirst({
-    where: { organizationId: orgId, eventType },
-  });
-  if (!existing) {
-    await prisma.activationEvent.create({
-      data: { organizationId: orgId, eventType },
+  try {
+    const existing = await prisma.activationEvent.findFirst({
+      where: { organizationId: orgId, eventType },
     });
+    if (!existing) {
+      await prisma.activationEvent.create({
+        data: { organizationId: orgId, eventType },
+      });
+    }
+  } catch (e) {
+    console.error("[order.service] ensureActivationEvent failed:", e);
   }
 }
 
-export async function listOrders(orgId: string): Promise<OrderSummary[]> {
-  const orders = await prisma.order.findMany({
-    where: { organizationId: orgId, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
+const EMPTY_ORDERS: OrderSummary[] = [];
 
-  return orders.map((o) => ({
-    id: o.id,
-    buyerName: o.buyerName,
-    buyerPhone: o.buyerPhone,
-    buyerWilaya: o.buyerWilaya,
-    product: o.product,
-    amount: Number(o.amount),
-    riskLevel: o.riskLevel as OrderSummary["riskLevel"],
-    trustScore: o.trustScore,
-    status: o.status as OrderStatus,
-    createdAt: o.createdAt.toISOString(),
-  }));
+export async function listOrders(orgId: string): Promise<OrderSummary[]> {
+  try {
+    const orders = await prisma.order.findMany({
+      where: { organizationId: orgId, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+
+    return orders.map((o) => ({
+      id: o.id,
+      buyerName: o.buyerName,
+      buyerPhone: o.buyerPhone,
+      buyerWilaya: o.buyerWilaya,
+      product: o.product,
+      amount: Number(o.amount),
+      riskLevel: o.riskLevel as OrderSummary["riskLevel"],
+      trustScore: o.trustScore,
+      status: o.status as OrderStatus,
+      createdAt: o.createdAt.toISOString(),
+    }));
+  } catch {
+    return EMPTY_ORDERS;
+  }
 }
 
 export async function getOrderDetail(orgId: string, orderId: string) {
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, organizationId: orgId, deletedAt: null },
-    include: {
-      conversations: {
-        include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } },
-        take: 1,
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+      include: {
+        conversations: {
+          include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } },
+          take: 1,
+        },
+        ugcItems: true,
+        timeline: { orderBy: { scheduledFor: "asc" } },
       },
-      ugcItems: true,
-      timeline: { orderBy: { scheduledFor: "asc" } },
-    },
-  });
-  return order;
+    });
+    return order;
+  } catch {
+    return null;
+  }
 }
 
 export async function checkFreePlanLimit(orgId: string): Promise<boolean> {
-  const org = await prisma.organization.findUnique({
-    where: { id: orgId },
-    select: { subscriptionStatus: true, maxOrdersPerMonth: true },
-  });
-  if (!org) return true;
-  if (org.subscriptionStatus !== "free") return false;
+  try {
+    const org = await prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { subscriptionStatus: true, maxOrdersPerMonth: true },
+    });
+    if (!org) return true;
+    if (org.subscriptionStatus !== "free") return false;
 
-  const monthlyCount = await prisma.order.count({
-    where: {
-      organizationId: orgId,
-      createdAt: {
-        gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    const monthlyCount = await prisma.order.count({
+      where: {
+        organizationId: orgId,
+        createdAt: {
+          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        },
       },
-    },
-  });
+    });
 
-  return monthlyCount >= Math.min(org.maxOrdersPerMonth, FREE_TIER_LIMIT);
+    return monthlyCount >= Math.min(org.maxOrdersPerMonth, FREE_TIER_LIMIT);
+  } catch {
+    return true;
+  }
 }
 
 export async function createOrder(orgId: string, data: {
@@ -89,52 +107,57 @@ export async function createOrder(orgId: string, data: {
   amount: number;
   buyerWilaya?: string;
 }) {
-  const order = await prisma.order.create({
-    data: {
-      organizationId: orgId,
+  try {
+    const order = await prisma.order.create({
+      data: {
+        organizationId: orgId,
+        buyerName: data.buyerName,
+        buyerPhone: data.buyerPhone,
+        product: data.product ?? null,
+        buyerWilaya: data.buyerWilaya ?? null,
+        amount: Number(data.amount),
+        status: "CREATED",
+      },
+    });
+
+    try {
+      await scoreAndPersist(data.buyerPhone, orgId, data.buyerName, order.id);
+    } catch (e) {
+      console.error("[order.service] Risk scoring failed:", e);
+    }
+
+    try {
+      await schedulePsychologicalSequence(order.id);
+    } catch (e) {
+      console.error("[order.service] Psychological sequence scheduling failed:", e);
+    }
+
+    const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    try {
+      await schedulePreDeliveryConfirm(order.id, estimatedDelivery);
+    } catch (e) {
+      console.error("[order.service] Pre-delivery confirm scheduling failed:", e);
+    }
+
+    await emitCritical(EventType.ORDER_CREATED, { orderId: order.id, orgId });
+
+    emit(EventType.ORDER_CREATED, {
+      orderId: order.id,
+      orgId,
       buyerName: data.buyerName,
       buyerPhone: data.buyerPhone,
-      product: data.product ?? null,
-      buyerWilaya: data.buyerWilaya ?? null,
       amount: Number(data.amount),
-      status: "CREATED",
-    },
-  });
+      product: data.product ?? null,
+    });
 
-  try {
-    await scoreAndPersist(data.buyerPhone, orgId, data.buyerName, order.id);
+    await ensureActivationEvent(orgId, "FIRST_ORDER_CREATED");
+    await recordAnalyticsSnapshot(orgId, "baseline");
+
+    return order;
   } catch (e) {
-    console.error("[order.service] Risk scoring failed:", e);
+    console.error("[order.service] createOrder failed:", e);
+    return null;
   }
-
-  try {
-    await schedulePsychologicalSequence(order.id);
-  } catch (e) {
-    console.error("[order.service] Psychological sequence scheduling failed:", e);
-  }
-
-  const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-  try {
-    await schedulePreDeliveryConfirm(order.id, estimatedDelivery);
-  } catch (e) {
-    console.error("[order.service] Pre-delivery confirm scheduling failed:", e);
-  }
-
-  await emitCritical(EventType.ORDER_CREATED, { orderId: order.id, orgId });
-
-  emit(EventType.ORDER_CREATED, {
-    orderId: order.id,
-    orgId,
-    buyerName: data.buyerName,
-    buyerPhone: data.buyerPhone,
-    amount: Number(data.amount),
-    product: data.product ?? null,
-  });
-
-  await ensureActivationEvent(orgId, "FIRST_ORDER_CREATED");
-  await recordAnalyticsSnapshot(orgId, "baseline");
-
-  return order;
 }
 
 async function closeOperationalLoop(orgId: string, orderId: string, terminalStatus: OrderStatus, order: { buyerPhone: string; buyerName: string; amount: number }) {

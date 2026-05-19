@@ -1,0 +1,12 @@
+{
+  "version": "6.9.0",
+  "steps": [
+    {
+      "tag": "AlterTable",
+      "table": "Organization",
+      "addColumns": [
+        { "name": "logo", "type": "Text", "optional": true }
+      ]
+    }
+  ]
+}

@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server"
 import { recordReferralConversion } from "@/services/referral.service"
+import { buyerReferralSchema, formatZodErrors } from "@/lib/validation"
 
 export async function POST(req: Request) {
   try {
-    const { code, phone } = await req.json()
-    if (!code || !phone) {
-      return NextResponse.json({ success: false, error: "Missing fields" }, { status: 400 })
+    const body = await req.json()
+    const parsed = buyerReferralSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: formatZodErrors(parsed.error) }, { status: 400 })
     }
+    const { code, phone } = parsed.data
 
     const result = await recordReferralConversion(code, phone)
     if (!result.success) {

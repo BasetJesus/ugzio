@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { addNote } from "@/services/conversation.service";
+import { conversationNoteSchema, formatZodErrors } from "@/lib/validation";
 
 export async function POST(
   request: NextRequest,
@@ -9,11 +10,12 @@ export async function POST(
   try {
     const { orgId, userId } = await requireSession();
     const { id } = await params;
-    const { content } = await request.json();
-
-    if (!content) {
-      return NextResponse.json({ error: "content is required" }, { status: 400 });
+    const body = await request.json();
+    const parsed = conversationNoteSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { content } = parsed.data;
 
     const note = await addNote(orgId, id, userId, content);
     if (!note) {

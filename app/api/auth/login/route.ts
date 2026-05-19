@@ -1,17 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { encode } from "next-auth/jwt";
-import { prisma } from "@/lib/db";
+import { getUserByEmail } from "@/services/org.service";
+import { loginSchema, formatZodErrors } from "@/lib/validation";
+
+const LOGIN_RATE_LIMIT = 10;
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+
+function checkLoginRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = loginAttempts.get(ip);
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + 60_000 });
+    return true;
+  }
+  if (entry.count >= LOGIN_RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
-
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password required" }, { status: 400 });
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (!checkLoginRateLimit(ip)) {
+      return NextResponse.json({ error: "Trop de tentatives. Réessayez dans une minute." }, { status: 429 });
     }
+    const body = await request.json();
+    const parsed = loginSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
+    const { email, password } = parsed.data;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await getUserByEmail(email);
     if (!user || !user.password) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }

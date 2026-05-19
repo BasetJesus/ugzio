@@ -4,6 +4,7 @@ import {
   getTemplates,
   createTemplate,
 } from "@/services/ugc-template.service";
+import { ugcTemplateSchema, formatZodErrors } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -24,14 +25,18 @@ export async function POST(request: NextRequest) {
     const { orgId } = await requireSession();
 
     const body = await request.json();
-    const { name, requestType, messageBody, incentive, isActive } = body;
+    const parsed = ugcTemplateSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
+    const { name, body: messageBody } = parsed.data;
 
     const result = await createTemplate(orgId, {
       name,
-      requestType,
       messageBody,
-      incentive,
-      isActive,
+      requestType: body.requestType,
+      incentive: body.incentive,
+      isActive: body.isActive,
     });
 
     if (!result.success) {

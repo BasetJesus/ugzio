@@ -1,37 +1,21 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/db"
+import { addWaitlistEntry } from "@/services/waitlist.service"
+import { waitlistSchema, formatZodErrors } from "@/lib/validation"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, phone, niche } = body
-
-    if (!name || !email) {
-      return NextResponse.json({ error: "Nom et email requis" }, { status: 400 })
+    const parsed = waitlistSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 })
     }
+    const { name, email, phone, niche } = parsed.data
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Email invalide" }, { status: 400 })
+    const result = await addWaitlistEntry({ name, email, phone, niche })
+    if (!result.success) {
+      const status = result.error === "Cet email est déjà inscrit" ? 409 : 500
+      return NextResponse.json({ error: result.error }, { status })
     }
-
-    const existing = await prisma.waitlistEntry.findFirst({
-      where: { email: email.toLowerCase() },
-    })
-
-    if (existing) {
-      return NextResponse.json({ error: "Cet email est déjà inscrit" }, { status: 409 })
-    }
-
-    await prisma.waitlistEntry.create({
-      data: {
-        name: name.trim(),
-        email: email.toLowerCase().trim(),
-        phone: phone || null,
-        niche: niche || null,
-        status: "new",
-      },
-    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

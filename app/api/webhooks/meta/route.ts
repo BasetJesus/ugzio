@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { prisma } from "@/lib/db";
-import { enqueueWebhookJob } from "@/lib/events/queues";
+import { processWebhookMessages } from "@/services/webhook.service";
 
 function verifyHmac(payload: string, signature: string): boolean {
   const secret = process.env.META_APP_SECRET;
@@ -37,66 +36,7 @@ export async function POST(request: NextRequest) {
   const payload = JSON.parse(body);
   const entries = payload.entry || [];
 
-  for (const entry of entries) {
-    const changes = entry.changes || [];
-    for (const change of changes) {
-      const value = change.value;
-      if (!value) continue;
-      const metadata = value.metadata;
-      const phoneNumberId = metadata?.phone_number_id;
-
-      if (value.messages) {
-        for (const message of value.messages) {
-          const existing = await prisma.webhookLog.findUnique({
-            where: { eventId: message.id },
-          });
-          if (existing) continue;
-
-          await prisma.webhookLog.create({
-            data: {
-              provider: "meta",
-              eventType: message.type || "unknown",
-              eventId: message.id,
-              payload: JSON.stringify({ message, phoneNumberId }),
-              signature,
-              processed: false,
-            },
-          });
-
-          await enqueueWebhookJob("MESSAGE_RECEIVED", {
-            webhookLogId: message.id,
-            message,
-            phoneNumberId,
-          });
-        }
-      }
-
-      if (value.statuses) {
-        for (const status of value.statuses) {
-          const existing = await prisma.webhookLog.findUnique({
-            where: { eventId: status.id },
-          });
-          if (existing) continue;
-
-          await prisma.webhookLog.create({
-            data: {
-              provider: "meta",
-              eventType: `status:${status.status}`,
-              eventId: status.id,
-              payload: JSON.stringify(status),
-              signature,
-              processed: false,
-            },
-          });
-
-          await enqueueWebhookJob("STATUS_UPDATE", {
-            webhookLogId: status.id,
-            status,
-          });
-        }
-      }
-    }
-  }
+  await processWebhookMessages(entries, signature);
 
   return new NextResponse("OK", { status: 200 });
 }

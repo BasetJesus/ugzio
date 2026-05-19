@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyState } from "@/lib/core/state-sign";
 import { saveSocialConnection } from "@/services/social-connection.service";
 
 const TOKEN_EXCHANGE: Record<string, {
@@ -55,7 +56,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.redirect(new URL("/settings/branding?social=error", request.url));
   }
 
-  const [orgId] = state.split(":");
+  const verified = verifyState(state);
+  if (!verified) {
+    return NextResponse.redirect(new URL("/settings/branding?social=error", request.url));
+  }
+
+  const [orgId] = verified.split(":");
   if (!orgId) {
     return NextResponse.redirect(new URL("/settings/branding?social=error", request.url));
   }

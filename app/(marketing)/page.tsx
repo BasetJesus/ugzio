@@ -23,8 +23,9 @@ const jsonLd = {
     "@type": "AggregateOffer",
     offers: [
       { "@type": "Offer", name: "Free", price: "0", priceCurrency: "TND" },
-      { "@type": "Offer", name: "Essentiel", price: "49", priceCurrency: "TND" },
-      { "@type": "Offer", name: "Croissance", price: "139", priceCurrency: "TND" },
+      { "@type": "Offer", name: "ZioGrow", price: "29", priceCurrency: "TND" },
+      { "@type": "Offer", name: "ZioPro", price: "79", priceCurrency: "TND" },
+      { "@type": "Offer", name: "ZioMax", price: "399", priceCurrency: "TND" },
     ],
   },
   author: {

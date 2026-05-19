@@ -14,6 +14,7 @@ import { addEvent } from "@/services/operation-timeline.service";
 import { transitionOrderStatus } from "@/services/order.service";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
+import { confirmActionSchema, formatZodErrors } from "@/lib/validation";
 
 export async function GET(
   _request: Request,
@@ -44,7 +45,11 @@ export async function POST(
 
   const { orderId } = await params;
   const body = await request.json();
-  const { action, notes } = body;
+  const parsed = confirmActionSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+  }
+  const { action, notes } = parsed.data;
 
   try {
     switch (action) {

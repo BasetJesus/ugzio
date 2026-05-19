@@ -2,6 +2,17 @@
 
 > A VISUAL GUIDE TO HOW EVERYTHING FITS TOGETHER.
 
+## The Two Pillars
+
+Every service, component, and route belongs to one of two pillars:
+
+| Pillar | Purpose | Systems |
+|---|---|---|
+| **PROTECT** | Stop fake orders before they ship | ZioShield, ZioConfirm, ZioIdentity, ZioGuard, ZioBrain |
+| **GROW** | Turn customers into a content team | ZioCapture, ZioFlow, ZioInbox, ZioLearn, ZioView |
+
+GROW feeds back into PROTECT: UGC builds trust, trust reduces RTS, less RTS means more revenue protected.
+
 ---
 
 ## Quick Reference
@@ -149,18 +160,20 @@
 
 **Service Inventory:**
 
-| Service | Purpose | Mutations |
-|---------|---------|-----------|
-| `order.service.ts` | Order CRUD, state transitions | ✅ |
-| `order-import.service.ts` | CSV parsing, validation, batch create | ✅ |
-| `risk.service.ts` | Risk scoring, signals, blacklist | ✅ |
-| `revenue-protection.service.ts` | RTS loss, revenue at risk calculations | ❌ |
-| `confirmation.service.ts` | Confirmation queue, operator actions | ✅ |
-| `operation-outcome.service.ts` | Action tracking, outcome stats | ✅ |
-| `delivery-provider.service.ts` | Provider CRUD, RTS cost config | ✅ |
-| `contact-attempt.service.ts` | Mock contact methods | ✅ |
-| `overview.service.ts` | Overview page aggregation | ❌ |
-| `demo-orchestrator.service.ts` | DEMO_MODE router | ❌ |
+| Service | Pillar | Purpose | Mutations |
+|---------|--------|---------|-----------|
+| `order.service.ts` | PROTECT | Order CRUD, state transitions | ✅ |
+| `order-import.service.ts` | PROTECT | CSV parsing, validation, batch create | ✅ |
+| `risk.service.ts` | PROTECT | Risk scoring, signals, blacklist | ✅ |
+| `revenue-protection.service.ts` | PROTECT | RTS loss, revenue at risk calculations | ❌ |
+| `confirmation.service.ts` | PROTECT | Confirmation queue, operator actions | ✅ |
+| `operation-outcome.service.ts` | PROTECT | Action tracking, outcome stats | ✅ |
+| `delivery-provider.service.ts` | PROTECT | Provider CRUD, RTS cost config | ✅ |
+| `contact-attempt.service.ts` | PROTECT | Mock contact methods | ✅ |
+| `grow.service.ts` | GROW | UGC aggregation, growth metrics | ❌ |
+| `protect.service.ts` | PROTECT | WhatsApp verification send | ✅ |
+| `overview.service.ts` | PROTECT | Overview page aggregation | ❌ |
+| `demo-orchestrator.service.ts` | - | DEMO_MODE router | ❌ |
 
 ---
 

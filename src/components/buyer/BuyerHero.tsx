@@ -71,8 +71,28 @@ export default function BuyerHero({ order }: Props) {
       <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-indigo-500/5 rounded-full blur-xl" />
 
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-3">
-          <div className={`text-3xl ${cfg.celebration ? "animate-heartbeat" : ""}`}>{cfg.icon}</div>
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            {order.logo ? (
+              <img
+                src={order.logo}
+                alt={order.sellerName}
+                className="h-10 w-10 rounded-lg border border-[var(--border)] object-cover"
+              />
+            ) : (
+              <div className={`flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] text-lg ${cfg.celebration ? "animate-heartbeat" : ""}`}>
+                {cfg.icon}
+              </div>
+            )}
+            <div>
+              <h1 className="text-lg font-bold text-[var(--text-primary)] leading-tight">
+                {order.sellerName}
+              </h1>
+              <p className="text-[10px] text-[var(--text-tertiary)]">
+                {cfg.celebration ? "🔒 Commandé et protégé" : "Votre commande"}
+              </p>
+            </div>
+          </div>
           {order.socialLinks && Object.values(order.socialLinks).some(Boolean) && (
             <div className="flex items-center gap-1.5">
               {order.socialLinks.instagram && (
@@ -87,19 +107,16 @@ export default function BuyerHero({ order }: Props) {
             </div>
           )}
         </div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)] leading-tight mb-1 text-balance">
-          {order.sellerName}
-        </h1>
         <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
           {order.brandDescription || cfg.subtitle}
         </p>
         {cfg.celebration && (
-          <div className="mt-3 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-medium text-emerald-400 border border-emerald-500/20">
-              🔒 Commandé et protégé
+          <div className="mt-4 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-medium text-emerald-400 border border-emerald-500/20 animate-pulse">
+              🛡️ Commande protégée
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-indigo-500/10 px-3 py-1 text-[10px] font-medium text-indigo-400 border border-indigo-500/20">
-              ✓ UGZIO
+              ✓ UGZIO Verified
             </span>
           </div>
         )}

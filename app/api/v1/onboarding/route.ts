@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { createOrganization, updateOrganization, generateSampleData } from "@/services/org.service";
+import { onboardingSchema, formatZodErrors } from "@/lib/validation";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -12,11 +13,12 @@ export async function POST(request: Request) {
 
   let orgId = await getOrgFromUserId(session.user.id);
   const body = await request.json();
-  const { shopName, sellerPhone, generateSample } = body;
-
-  if (!shopName) {
-    return NextResponse.json({ error: "shopName is required" }, { status: 400 });
+  const parsed = onboardingSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
   }
+  const { shopName, sellerPhone } = parsed.data;
+  const { generateSample } = body;
 
   let sampleData = null;
 

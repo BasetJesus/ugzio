@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
 import { getBlacklistedPhones, blacklistPhone, unblacklistPhone } from "@/services/risk.service";
+import { blacklistActionSchema, formatZodErrors } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -18,11 +19,12 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { orgId } = await requireSession();
-    const { phone } = await request.json();
-
-    if (!phone) {
-      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    const body = await request.json();
+    const parsed = blacklistActionSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { phone } = parsed.data;
 
     await blacklistPhone(orgId, phone);
     return NextResponse.json({ success: true });
@@ -37,11 +39,12 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { orgId } = await requireSession();
-    const { phone } = await request.json();
-
-    if (!phone) {
-      return NextResponse.json({ error: "phone required" }, { status: 400 });
+    const body = await request.json();
+    const parsed = blacklistActionSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
     }
+    const { phone } = parsed.data;
 
     await unblacklistPhone(orgId, phone);
     return NextResponse.json({ success: true });

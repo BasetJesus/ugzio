@@ -2,7 +2,7 @@ import RevealOnScroll from "./RevealOnScroll"
 
 const plans = [
   {
-    name: "Free",
+    name: "ZioStart",
     price: "0",
     currency: "TND",
     period: "/mois",
@@ -23,8 +23,8 @@ const plans = [
     highlight: false,
   },
   {
-    name: "Essentiel",
-    price: "49",
+    name: "ZioGrow",
+    price: "29",
     currency: "TND",
     period: "/mois",
     desc: "Lazemlek volume, hakka taw yebda",
@@ -36,7 +36,7 @@ const plans = [
       { text: "Séquences WhatsApp avancées", included: true },
       { text: "Protection revenue tracking", included: true },
       { text: "Séquences psychologiques avancées", included: true },
-      { text: "Collection UGC automatique", included: false },
+      { text: "Collection UGC automatique", included: true },
       { text: "Support WhatsApp prioritaire", included: false },
       { text: "Accès équipe (jusqu'à 3 membres)", included: false },
       { text: "Export données & rapports", included: false },
@@ -44,8 +44,8 @@ const plans = [
     highlight: false,
   },
   {
-    name: "Croissance",
-    price: "139",
+    name: "ZioPro",
+    price: "79",
     currency: "TND",
     period: "/mois",
     desc: "Koul chay illimité, taw njihou barcha",
@@ -64,6 +64,27 @@ const plans = [
     ],
     highlight: true,
     badge: "Barcha yhebbo",
+  },
+  {
+    name: "ZioMax",
+    price: "399",
+    currency: "TND",
+    period: "/mois",
+    desc: "Multi-marques, équipe illimitée, tout inclus",
+    cta: "Nheb nbadà tawa",
+    href: "/overview?demo=true",
+    features: [
+      { text: "Commandes illimitées", included: true },
+      { text: "Multi-marques (marques illimitées)", included: true },
+      { text: "Analyse risque en 3 secondes", included: true },
+      { text: "Séquences WhatsApp avancées", included: true },
+      { text: "Collection UGC automatique", included: true },
+      { text: "Support WhatsApp prioritaire", included: true },
+      { text: "Accès équipe illimité", included: true },
+      { text: "Export données & rapports", included: true },
+      { text: "Account manager dédié", included: true },
+    ],
+    highlight: false,
   },
 ]
 

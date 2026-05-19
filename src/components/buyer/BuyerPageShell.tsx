@@ -20,13 +20,28 @@ const fadeUp = {
 
 export default function BuyerPageShell({ children, phase }: Props) {
   const [showConfetti, setShowConfetti] = useState(false)
+  const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
-    if (phase === "pre_confirmation" || phase === "delivered" || phase === "completed") {
-      const t = setTimeout(() => setShowConfetti(true), 300)
-      return () => clearTimeout(t)
-    }
+    const t1 = setTimeout(() => setShowContent(true), 100)
+    const t2 = setTimeout(() => {
+      if (phase === "pre_confirmation" || phase === "delivered" || phase === "completed") {
+        setShowConfetti(true)
+      }
+    }, 400)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [phase])
+
+  if (!showContent) {
+    return (
+      <div className="flex h-dvh items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin" />
+          <p className="text-xs text-[var(--text-tertiary)]">Chargement de votre commande...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

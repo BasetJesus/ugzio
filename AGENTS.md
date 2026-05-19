@@ -6,19 +6,44 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # UGZIO v4 Blueprint — Source of Truth
 
-## Branded System Language
-| System | Purpose |
-|---|---|
-| **ZioShield** | Risk engine |
-| **ZioBrain** | Intelligence |
-| **ZioConfirm** | Buyer confirmation |
-| **ZioFlow** | Workflows |
-| **ZioInbox** | Messaging |
-| **ZioView** | Operational visibility |
-| **ZioLearn** | Outcome learning |
-| **ZioIdentity** | Behavioral memory |
+## Two Pillars
 
-Full specification is in the conversation context. Key principles:
+UGZIO is built on two pillars that every feature must serve:
+
+```
+GROW                               PROTECT
+────────────────────               ────────────────────
+Turn real customers                Stop fake orders
+into your content team             before they ship
+
+UGC capture                        AI trust scoring
+Flywheel automation                Shared blacklist
+One-click repost                   Pre-delivery confirmation
+```
+
+**Brand promise:** Every seller using UGZIO grows faster and loses less — without hiring anyone, running paid ads, or manually chasing fake buyers.
+
+---
+
+## Zio System Map (sub-systems under the two pillars)
+
+| Pillar | System | Purpose | Status |
+|---|---|---|---|
+| **GROW** | **ZioCapture** | UGC capture engine — solicit, collect, organize customer content | 🔜 Planned |
+| **GROW** | **ZioFlow** | Repost flywheel — automate UGC republishing to social channels | 🔜 Planned |
+| **GROW** | **ZioInbox** | UGC review, approval, rejection workflow | ✅ Built |
+| **GROW** | **ZioLearn** | Outcome learning — which UGC converts best | 🔜 Planned |
+| **GROW** | **ZioView** | Growth metrics — UGC performance dashboard | 🔜 Planned |
+| **PROTECT** | **ZioShield** | Risk engine — trust scoring, risk signals, fraud detection | ✅ Built |
+| **PROTECT** | **ZioConfirm** | Buyer confirmation — pre-delivery verification, magic link | ✅ Built |
+| **PROTECT** | **ZioIdentity** | Behavioral memory — buyer history, cross-order patterns | ✅ Built |
+| **PROTECT** | **ZioGuard** | Shared blacklist — known bad actors across sellers | 🔜 Planned |
+| **PROTECT** | **ZioBrain** | Intelligence — OpenAI/ML-based risk inference (from Python) | ⚠️ Stub |
+
+### Naming convention for future systems
+All product systems use the `Zio` prefix. This creates a learnable family language: "Check your ZioShield score before shipping."
+
+---
 
 ## Architecture
 - **Next.js 16 App Router** → Operational system (routes, auth, state machine, webhooks, billing)
@@ -30,10 +55,13 @@ Full specification is in the conversation context. Key principles:
 `CREATED → PRE_SHIPPING_CONFIRM_SENT → BUYER_CONFIRMED → SHIPPED → DELIVERED → UGC_REQUESTED → UGC_RECEIVED`
 Alternate: `INTELLIGENT_CANCEL`, `PENDING_RESCHEDULE`, `REFUSED`
 
-## Every screen must answer: "What orders will lose me money today?"
-- Action-oriented operational UI. No beautiful empty SaaS dashboards.
-- Each alert has exactly ONE action button. No information without a next step.
-- KPI cards must be screenshot-shareable (organic growth via WhatsApp forwards).
+## Every screen must answer one of:
+- **PROTECT screens**: "What orders will lose me money today?"
+- **GROW screens**: "What UGC can I publish to grow today?"
+
+Action-oriented operational UI. No beautiful empty SaaS dashboards.
+Each alert has exactly ONE action button. No information without a next step.
+KPI cards must be screenshot-shareable (organic growth via WhatsApp forwards).
 
 ## AI Rules
 - Never makes irreversible decisions (no auto-blacklist, no auto-cancel)
@@ -41,7 +69,12 @@ Alternate: `INTELLIGENT_CANCEL`, `PENDING_RESCHEDULE`, `REFUSED`
 - Every recommendation creates an `AIEvaluation` record
 
 ## Subscription
-- Free: 3 orders/month | Essentiel: 49 TND/month (500 orders) | Croissance: 139 TND/month unlimited
+| Plan | Name | Price | Orders |
+|---|---|---|---|
+| Free | ZioStart | 0 TND | 3/month |
+| Basic | ZioGrow | 29 TND | 500/month |
+| Pro | ZioPro | 79 TND | Unlimited |
+| Agency | ZioMax | 399 TND | Unlimited, multi-brand |
 - Konnect payment only (no Stripe)
 
 ## Design
@@ -104,6 +137,7 @@ If a feature needs more than 2 layers → simplify it.
 - Failed delivery prevention layer
 - Operator decision system
 - Risk-based confirmation workflow
+- Customer content growth engine (GROW pillar)
 
 ### What UGZIO IS NOT:
 - ❌ Inventory management
@@ -121,6 +155,7 @@ Every future feature must answer YES to at least ONE:
 3. Does this accelerate operator decisions?
 4. Does this improve trust/risk intelligence?
 5. Does this strengthen the core operational loop?
+6. Does this turn customers into a content team? (GROW pillar)
 
 **If NO → REJECT THE FEATURE.**
 
@@ -130,9 +165,14 @@ Every future feature must answer YES to at least ONE:
 
 ```
 Order enters → Risk evaluated → Operator action → Customer outcome → Revenue outcome → Learning signal
+                                                                                             │
+                                                                              GROW PILLAR    │
+                                                                              ┌──────────────┘
+                                                                              ▼
+                                                                      UGC capture → Republish → More trust → Less RTS
 ```
 
-Every feature must connect to this loop.
+Every feature must connect to this loop. GROW feeds back into the loop by using customer content to build trust signals and reduce RTS indirectly.
 
 ---
 
@@ -173,7 +213,7 @@ Forbidden:
 - `(auth)` → Login/register
 - `(marketing)` → Landing page
 
-### Approved operational states ONLY:
+### Approved operation states ONLY:
 - `/overview` → LIVE (what's happening now)
 - `/confirm` → DECISION (what needs attention)
 - `/orders` → HISTORY (what happened)
@@ -187,6 +227,9 @@ Forbidden:
 - `/growth` → Growth metrics
 
 All other routes in `(app)` redirect to `/overview`.
+
+**No orphaned pages. No experimental routes. No duplicate trees.**
+- Redundant duplicates: `/dashboard`, `/operations`, `/intelligence`, `/success`, `/shield`, `/orders/new` — all deleted
 
 **No orphaned pages. No experimental routes. No duplicate trees.**
 - Redundant duplicates: `/dashboard`, `/operations`, `/intelligence`, `/success`, `/shield`, `/orders/new` — all deleted
@@ -251,6 +294,7 @@ When unsure about anything:
 - **Simplify**
 - **Delete code**
 - **Ask: Does this make operators faster at protecting revenue?**
+- **Or: Does this turn customers into a content team?**
 
 **If not → STOP.**
 
@@ -293,9 +337,9 @@ Before making ANY changes, read these:
 - (Current onboarding only asks for shop name + phone — incomplete)
 
 ## Pricing (MUST FIX)
-- **Current**: Free (0dt) + Croissance (129dt)
-- **Should be**: Free (0dt) + 49dt + 139dt (3 plans, not 2)
-- Missing middle tier at 49dt
+- **Brand doc standard**: ZioStart (0 TND) → ZioGrow (29 TND) → ZioPro (79 TND) → ZioMax (399 TND)
+- **Current implementation**: Only 2 plans — need to rebuild subscription table with 4 tiers
+- Konnect payment only (no Stripe)
 
 ---
 

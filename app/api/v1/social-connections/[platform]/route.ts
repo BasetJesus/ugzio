@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
+import { signState } from "@/lib/core/state-sign";
 import { saveSocialConnection, disconnectSocialConnection, getSocialConnections } from "@/services/social-connection.service";
 
 const OAUTH_CONFIGS: Record<string, { authUrl: (redirectUri: string, state: string) => string; tokenUrl: string; clientIdEnv: string; clientSecretEnv: string }> = {
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   const baseUrl = getBaseUrl(request);
   const redirectUri = `${baseUrl}/api/v1/social-connections/${platform}/callback`;
-  const state = `${orgId}:${Date.now()}`;
+  const state = signState(`${orgId}:${Date.now()}`);
   const authUrl = config.authUrl(redirectUri, state);
 
   return NextResponse.json({ authUrl });

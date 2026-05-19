@@ -22,7 +22,9 @@ NO other route groups allowed.
 
 ## Operational States Mapping
 
-UGZIO has **5 core operational states**. Every authenticated route maps to exactly one state.
+UGZIO has **5 core operational states + 2 GROW states**. Every authenticated route maps to exactly one state.
+
+### PROTECT Pillar States
 
 | State | Route | Purpose | Data State |
 |-------|-------|---------|------------|
@@ -32,6 +34,13 @@ UGZIO has **5 core operational states**. Every authenticated route maps to exact
 | **INGESTION** | `/orders/import` | Bring data in | CSV upload, validation |
 | **ECONOMICS** | `/settings/delivery` | Configure costs | Provider RTS cost, delivery days |
 
+### GROW Pillar States
+
+| State | Route | Purpose | Data State |
+|-------|-------|---------|------------|
+| **UGC REVIEW** | `/inbox` | Approve/reject customer content | Pending UGC, stats |
+| **GROWTH** | `/growth` | UGC performance metrics | Conversions, reposts, earned media |
+
 ### Redirect Rules
 
 All other routes in `(app)` redirect to `/overview`:
@@ -39,11 +48,15 @@ All other routes in `(app)` redirect to `/overview`:
 - `/dashboard` → `/overview`
 - `/operations` → `/overview`
 - `/shield` → `/overview`
-- `/inbox` → `/overview`
 - `/success` → `/overview`
-- `/blacklist` → `/overview`
 
-These are **placeholders only**. If you want to activate one, it must map to one of the 5 core states above.
+These are **placeholders only**. If you want to activate one, it must map to one of the core states above.
+
+### Active Auxiliary Routes (GROW Pillar)
+
+- `/inbox` → UGC review (approve/reject customer content)
+- `/growth` → Growth metrics dashboard
+- `/blacklist` → Risk management (shared blacklist)
 
 ---
 
@@ -118,15 +131,16 @@ Navigation should always:
 | `/confirm` | ✅ Active | DECISION | Confirmation queue |
 | `/orders` | ✅ Active | HISTORY | Order history |
 | `/orders/import` | ✅ Active | INGESTION | CSV upload |
-| `/orders/new` | ✅ Active | INGESTION | Manual order form |
 | `/orders/[id]` | ✅ Active | HISTORY | Order detail |
 | `/settings/delivery` | ✅ Active | ECONOMICS | Provider config |
-| `/dashboard` | 🔄 Redirect | - | → `/overview` |
-| `/operations` | 🔄 Redirect | - | → `/overview` |
-| `/shield` | 🔄 Redirect | - | → `/overview` |
-| `/inbox` | 🔄 Redirect | - | → `/overview` |
-| `/success` | 🔄 Redirect | - | → `/overview` |
-| `/blacklist` | 🔄 Redirect | - | → `/overview` |
+| `/inbox` | ✅ Active | UGC REVIEW | Approve/reject UGC (GROW) |
+| `/blacklist` | ✅ Active | RISK | Risk management (PROTECT) |
+| `/growth` | ✅ Active | GROWTH | Growth metrics (GROW) |
+| `/settings` | ✅ Active | SETTINGS | Settings hub |
+| `/settings/branding` | ✅ Active | SETTINGS | Brand profile, social connections |
+| `/settings/connectivity` | ✅ Active | SETTINGS | WhatsApp, API integrations |
+| `/settings/security` | ✅ Active | SETTINGS | Security settings |
+| `/settings/ugc` | ✅ Active | SETTINGS | UGC message templates |
 
 ### Auth Routes (`(auth)`)
 
@@ -140,6 +154,19 @@ Navigation should always:
 | Route | Purpose | State |
 |-------|---------|-------|
 | `/onboarding` | First-time org setup | Pre-app, redirects if org exists |
+| `/setup` | Post-registration setup | Pre-app, branding + connections |
+
+### Buyer Routes (No Auth — Token-Based)
+
+These routes are for **buyers** accessing via magic link — no session required.
+
+| Route | Purpose | Auth |
+|-------|---------|------|
+| `/order/[token]` | Buyer confirmation page | Token from magic link |
+| `/api/buyer/confirm` | Buyer confirm action | Token from magic link |
+| `/api/buyer/feedback` | Buyer feedback form | Token from magic link |
+
+The `(buyer)` route group is the only exception to the approved `(app)`, `(auth)`, `(marketing)` groups — buyer pages must never require a seller session.
 
 ---
 
@@ -156,6 +183,8 @@ Which state does this belong to?
 - **HISTORY** (`/orders`) — Historical records, search, filters
 - **INGESTION** (`/orders/import`) — Bringing data into the system
 - **ECONOMICS** (`/settings/delivery`) — Configuring costs, providers
+- **UGC REVIEW** (`/inbox`) — Approve/reject customer content
+- **GROWTH** (`/growth`) — UGC performance metrics
 
 ### Step 2: Follow Naming Convention
 
@@ -264,11 +293,13 @@ Before creating a dynamic route like `/foo/[id]`, ask:
 ## Remember
 
 > Routes should tell a story:
-> "I need to see what's happening" → `/overview`
-> "I need to make decisions" → `/confirm`
-> "I need to look up past orders" → `/orders`
-> "I need to import new orders" → `/orders/import`
-> "I need to configure my delivery costs" → `/settings/delivery`
+> **PROTECT:** "I need to see what's happening" → `/overview`
+> **PROTECT:** "I need to make decisions" → `/confirm`
+> **PROTECT:** "I need to look up past orders" → `/orders`
+> **PROTECT:** "I need to import new orders" → `/orders/import`
+> **PROTECT:** "I need to configure costs" → `/settings/delivery`
+> **GROW:** "I need to approve customer content" → `/inbox`
+> **GROW:** "I need to see growth metrics" → `/growth`
 
 If a route doesn't answer "why would an operator go here?" → it shouldn't exist.
 

@@ -8,7 +8,10 @@ Every feature, every integration, every design decision must pass through this f
 
 ## Purpose
 
-UGZIO exists to protect revenue for DTC sellers.
+UGZIO exists on two pillars:
+
+1. **PROTECT** — Protect revenue for DTC sellers by stopping fake orders before they ship
+2. **GROW** — Turn real customers into a content team for organic growth
 
 It is NOT:
 - An ERP
@@ -20,26 +23,34 @@ It is NOT:
 - A marketing automation tool
 - A multi-product expansion vehicle
 
-If a feature does not protect revenue, it should be rejected.
+If a feature does not serve either GROW or PROTECT, it should be rejected.
 
 ---
 
 ## What UGZIO IS
 
-UGZIO is a **Revenue Protection Operating System**.
+UGZIO is a **Revenue Protection Operating System** with two pillars.
 
-### Core Identity
+### PROTECT Pillar (Core Identity)
 
 1. **Failed delivery prevention layer** — Stops money from being lost to RTS (Return to Sender)
 2. **Operator decision system** — Gives sellers one clear action per risk signal
 3. **Risk-based confirmation workflow** — Pre-shipping verification that prioritizes by risk
 4. **Revenue outcome tracker** — Shows "Your actions saved X TND today"
 
-### Product North Star
+### GROW Pillar
 
-> "What orders will lose me money today, and what should I do about it?"
+1. **UGC capture engine** — Solicit, collect, and organize customer content automatically
+2. **Flywheel automation** — Automate UGC republishing to social channels
+3. **One-click repost** — Approve and repost customer content in a single action
+4. **Growth metrics** — Show "Your UGC earned X organic conversions today"
 
-Every screen must answer this question. If it doesn't, it doesn't belong.
+### Product North Stars
+
+- **PROTECT screens**: "What orders will lose me money today, and what should I do about it?"
+- **GROW screens**: "What UGC can I publish to grow today?"
+
+Every screen must answer one of these. If it doesn't, it doesn't belong.
 
 ---
 
@@ -75,7 +86,7 @@ This is the firewall. These boundaries are NOT negotiable.
 
 ---
 
-## Feature Admission Rule — THE 5 QUESTIONS
+## Feature Admission Rule — THE 6 QUESTIONS
 
 Every future feature MUST answer YES to at least ONE of these:
 
@@ -108,6 +119,11 @@ Every future feature MUST answer YES to at least ONE of these:
 The Core Loop:
 ```
 Order enters → Risk evaluated → Operator action → Customer outcome → Revenue outcome → Learning signal
+                                                                                             │
+                                                                              GROW PILLAR    │
+                                                                              ┌──────────────┘
+                                                                              ▼
+                                                                      UGC capture → Republish → More trust → Less RTS
 ```
 
 The feature must plug into this loop. It cannot:
@@ -115,9 +131,15 @@ The feature must plug into this loop. It cannot:
 - Create a new category of work outside this loop
 - Require operators to learn a new workflow
 
+### Question 6: Does this turn customers into a content team? (GROW pillar)
+
+- Example: UGC capture wizard → customers send photos/videos after delivery
+- Example: Repost automation → approved UGC auto-published to Instagram/TikTok
+- Example: UGC analytics → which content drives the most conversions
+
 ---
 
-## If NO to ALL 5 Questions → REJECT THE FEATURE
+## If NO to all 6 Questions → REJECT THE FEATURE
 
 No exceptions. No "we'll add it now and remove it later". Feature debt is harder to pay than technical debt.
 
@@ -183,7 +205,7 @@ When someone proposes a feature:
 
 ```
 1. Read this document
-2. Answer the 5 Feature Admission Questions
+2. Answer the 6 Feature Admission Questions
 3. If NO to all → "This doesn't fit UGZIO"
 4. If YES to at least one → "Where does this plug into the Core Loop?"
 5. If it strengthens the loop → "What's the simplest possible version?"
@@ -213,9 +235,10 @@ These rules are not "guidelines". They are the product constitution.
 Sellers use 5+ tools. All are complicated. All have feature bloat.
 
 UGZIO wins by being the ONE tool that:
-1. Shows exactly what's at risk RIGHT NOW
-2. Gives exactly ONE action per risk
-3. Proves exactly how much money was saved
+1. Shows exactly what's at risk RIGHT NOW (PROTECT)
+2. Gives exactly ONE action per risk or UGC item (PROTECT + GROW)
+3. Proves exactly how much money was saved and how much UGC was earned
+4. Turns customers into a content team without paid ads or agencies (GROW)
 
 That's it.
 

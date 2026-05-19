@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // ── Plans (MVP) ──
+  // ── Plans ──
   const free = await prisma.plan.upsert({
     where: { name: "free" },
     update: {},
@@ -24,11 +24,11 @@ async function main() {
     },
   });
 
-  const essentiel = await prisma.plan.upsert({
-    where: { name: "essentiel" },
+  const ziogrow = await prisma.plan.upsert({
+    where: { name: "ziogrow" },
     update: {},
     create: {
-      name: "essentiel",
+      name: "ziogrow",
       maxOrdersPerMonth: 500,
       maxUsersPerOrg: 1,
       hasZioConfirm: true,
@@ -38,16 +38,16 @@ async function main() {
       hasZioNetwork: false,
       aiInsightsPerMonth: 500,
       verificationsPerMonth: 500,
-      price: 49,
+      price: 29,
       currency: "TND",
     },
   });
 
-  const croissance = await prisma.plan.upsert({
-    where: { name: "croissance" },
+  const ziopro = await prisma.plan.upsert({
+    where: { name: "ziopro" },
     update: {},
     create: {
-      name: "croissance",
+      name: "ziopro",
       maxOrdersPerMonth: 99999,
       maxUsersPerOrg: 3,
       hasZioConfirm: true,
@@ -57,12 +57,31 @@ async function main() {
       hasZioNetwork: false,
       aiInsightsPerMonth: 99999,
       verificationsPerMonth: 99999,
-      price: 139,
+      price: 79,
       currency: "TND",
     },
   });
 
-  console.log("Seeded plans:", { free: free.name, essentiel: essentiel.name, croissance: croissance.name });
+  const ziomax = await prisma.plan.upsert({
+    where: { name: "ziomax" },
+    update: {},
+    create: {
+      name: "ziomax",
+      maxOrdersPerMonth: 99999,
+      maxUsersPerOrg: 99999,
+      hasZioConfirm: true,
+      hasZioBrain: true,
+      hasZioConnect: true,
+      hasZioFlow: true,
+      hasZioNetwork: true,
+      aiInsightsPerMonth: 99999,
+      verificationsPerMonth: 99999,
+      price: 399,
+      currency: "TND",
+    },
+  });
+
+  console.log("Seeded plans:", { free: free.name, ziogrow: ziogrow.name, ziopro: ziopro.name, ziomax: ziomax.name });
 
   // ── Feature Flags ──
   const flags = [
@@ -70,10 +89,10 @@ async function main() {
     { key: "zioconfirm", description: "ZioConfirm WhatsApp verification", planGate: null },
     { key: "zioinbox", description: "ZioInbox unified conversations", planGate: null },
     { key: "zioanalytics", description: "ZioAnalytics dashboard charts", planGate: null },
-    { key: "ziobrain", description: "ZioBrain AI insights", planGate: "croissance" },
-    { key: "zioconnect", description: "ZioConnect Shopify integration", planGate: "croissance" },
-    { key: "zioflow", description: "ZioFlow workflow automation", planGate: "croissance" },
-    { key: "zionetwork", description: "ZioNetwork cross-seller fraud graph", planGate: "croissance" },
+    { key: "ziobrain", description: "ZioBrain AI insights", planGate: "ziogrow" },
+    { key: "zioconnect", description: "ZioConnect Shopify integration", planGate: "ziopro" },
+    { key: "zioflow", description: "ZioFlow workflow automation", planGate: "ziopro" },
+    { key: "zionetwork", description: "ZioNetwork cross-seller fraud graph", planGate: "ziomax" },
   ];
 
   for (const f of flags) {

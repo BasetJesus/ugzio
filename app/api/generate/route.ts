@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireSession } from "@/services/auth.service";
+import { generateCaptionSchema, formatZodErrors } from "@/lib/validation";
 
 interface Caption {
   hook: string;
@@ -213,6 +215,13 @@ Format:
 
 export async function POST(req: Request) {
   try {
+    await requireSession();
+
+    const body = await req.json();
+    const parsed = generateCaptionSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
     const {
       topic,
       tone = "calm",
@@ -220,15 +229,12 @@ export async function POST(req: Request) {
       price = "",
       link,
       brand,
-    } = await req.json();
-
-    if (!topic?.trim()) {
-      return NextResponse.json({ error: "Topic is required" }, { status: 400 });
-    }
+    } = parsed.data;
 
     if (process.env.OPENAI_API_KEY) {
-      const systemPrompt = buildSystemPrompt(tone, platform, price, link, brand);
-      const userContent = `Product: "${topic}". Platform: ${platform}. Tone: ${tone}.${price ? ` Price: ${price} TND.` : ""}${link ? ` Link: ${link}.` : ""}${brand ? ` Brand niche: ${brand.niche}.` : ""}`;
+      const safeBrand = brand ? { niche: brand.niche ?? "", audience: brand.audience ?? "", brandTone: brand.brandTone ?? "", usp: brand.usp ?? "" } : undefined;
+      const systemPrompt = buildSystemPrompt(tone, platform, price, link, safeBrand);
+      const userContent = `Product: "${topic}". Platform: ${platform}. Tone: ${tone}.${price ? ` Price: ${price} TND.` : ""}${link ? ` Link: ${link}.` : ""}${safeBrand ? ` Brand niche: ${safeBrand.niche}.` : ""}`;
 
       const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",

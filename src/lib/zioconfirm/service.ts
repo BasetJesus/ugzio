@@ -80,8 +80,8 @@ export async function scheduleD3UgcAsk(orderId: string, templateId?: string) {
 
 const BASE = METADATA_BASE_URL
 
-function orderLink(orderId: string): string {
-  return `${BASE}/order/${orderId}`
+function orderLink(token: string): string {
+  return `${BASE}/order/${token}`
 }
 
 const MESSAGES: Record<string, (buyerName?: string, orderId?: string) => string> = {
@@ -114,7 +114,7 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
       data: { status: "PRE_SHIPPING_CONFIRM_SENT" },
     });
 
-    const confirmWithLink = `${CONFIRM_MESSAGE}\n\n${orderLink(order.id)}`;
+    const confirmWithLink = `${CONFIRM_MESSAGE}\n\n${orderLink(order.token)}`;
     await sendWhatsApp({
       orgId: order.organizationId,
       to: order.buyerPhone,
@@ -136,7 +136,7 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
     });
   }
 
-  let text = MESSAGES[eventType]?.(order.buyerName, order.id);
+  let text = MESSAGES[eventType]?.(order.buyerName, order.token);
 
   if (eventType === "D3_UGC_ASK") {
     const templateId = payload?.templateId as string | undefined;

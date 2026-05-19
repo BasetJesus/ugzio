@@ -7,6 +7,7 @@ import type { SystemState } from "@/lib/core/system-state"
 import SidebarNav from "@/components/nav/SidebarNav"
 import MobileBottomNav from "@/components/shared/MobileBottomNav"
 import { PageTransition } from "@/components/shared/PageTransition"
+import PostRegistrationPopup from "@/components/onboarding/PostRegistrationPopup"
 
 interface Props {
   children: React.ReactNode
@@ -17,14 +18,23 @@ interface Props {
   revenueAtRisk: number
   pendingCount?: number
   highRiskCount?: number
+  brandDescription?: string
 }
 
-export default function CoreShell({ children, orgName, planName, orgId, completedCount, revenueAtRisk, pendingCount = 0, highRiskCount = 0 }: Props) {
+export default function CoreShell({ children, orgName, planName, orgId, completedCount, revenueAtRisk, pendingCount = 0, highRiskCount = 0, brandDescription = "" }: Props) {
   const pathname = usePathname()
   const currentState = stateFromPath(pathname)
   const [displayState, setDisplayState] = useState<SystemState>(currentState)
   const [animating, setAnimating] = useState(false)
   const prevState = useRef(currentState)
+  const [showPostRegistration, setShowPostRegistration] = useState(false)
+
+  useEffect(() => {
+    if (!brandDescription && orgId) {
+      const t = setTimeout(() => setShowPostRegistration(true), 800)
+      return () => clearTimeout(t)
+    }
+  }, [brandDescription, orgId])
 
   useEffect(() => {
     if (prevState.current !== currentState) {
@@ -68,6 +78,10 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
         </main>
       </div>
       <MobileBottomNav pendingCount={pendingCount} highRiskCount={highRiskCount} />
+      <PostRegistrationPopup
+        open={showPostRegistration}
+        onClose={() => setShowPostRegistration(false)}
+      />
     </div>
   )
 }

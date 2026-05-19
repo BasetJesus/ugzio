@@ -4,6 +4,7 @@ import {
   getDeliveryProviders,
   createDeliveryProvider,
 } from "@/services/delivery-provider.service";
+import { deliveryProviderSchema, formatZodErrors } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -24,7 +25,11 @@ export async function POST(request: NextRequest) {
     const { orgId } = await requireSession();
 
     const body = await request.json();
-    const { name, rtsCostPerFailure, avgDeliveryDays, contactSuccessRate } = body;
+    const parsed = deliveryProviderSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
+    const { name, rtsCostPerFailure, avgDeliveryDays, contactSuccessRate } = parsed.data;
 
     const result = await createDeliveryProvider(orgId, {
       name,

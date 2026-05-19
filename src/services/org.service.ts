@@ -191,7 +191,7 @@ export function ensureOrgAccess(orgId: string): boolean {
   return true
 }
 
-export async function getOrgWithPlan(orgId: string): Promise<{ name: string; planName: string } | null> {
+export async function getOrgWithPlan(orgId: string): Promise<{ name: string; planName: string; brandDescription: string | null } | null> {
   try {
     const org = await prisma.organization.findUnique({
       where: { id: orgId },
@@ -201,6 +201,7 @@ export async function getOrgWithPlan(orgId: string): Promise<{ name: string; pla
     return {
       name: org.name,
       planName: org.subscription?.plan?.name ?? "free",
+      brandDescription: org.brandDescription,
     };
   } catch {
     return null;
@@ -250,5 +251,35 @@ export async function getActivationEvents(orgId: string): Promise<{ eventType: s
     return events;
   } catch {
     return [];
+  }
+}
+
+export async function registerUser(name: string, email: string, password: string) {
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return { success: false, error: "Email already registered" } as const;
+
+    const bcrypt = await import("bcryptjs");
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: { name, email, password: hashed },
+    });
+
+    const org = await createOrganization(name, user.id);
+
+    return { success: true, userId: user.id, orgId: org.id } as const;
+  } catch (e) {
+    console.error("[org.service] registerUser failed:", e);
+    return { success: false, error: "Registration failed" } as const;
+  }
+}
+
+export async function getUserByEmail(email: string) {
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user;
+  } catch {
+    return null;
   }
 }

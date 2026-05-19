@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server"
 import { buyerConfirmOrder } from "@/services/buyer-order.service"
+import { buyerConfirmSchema, formatZodErrors } from "@/lib/validation"
 
 export async function POST(req: Request) {
   try {
-    const { token, action } = await req.json()
-    if (!token || !action) {
-      return NextResponse.json({ success: false, error: "Missing fields" }, { status: 400 })
+    const body = await req.json()
+    const parsed = buyerConfirmSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: formatZodErrors(parsed.error) }, { status: 400 })
     }
+    const { token, action } = parsed.data
 
-    if (action !== "confirm" && action !== "question") {
-      return NextResponse.json({ success: false, error: "Invalid action" }, { status: 400 })
-    }
-
-    const result = await buyerConfirmOrder(token, action)
+    const result = await buyerConfirmOrder(token, action || "confirm")
     if (!result.success) {
       return NextResponse.json({ success: false, error: "Order not found" }, { status: 404 })
     }

@@ -20,86 +20,97 @@ export interface DashboardData {
   chartData: Array<{ day: string; rate: number }>;
 }
 
+const EMPTY_DASHBOARD: DashboardData = {
+  ordersToday: 0, needsConfirm: 0, pendingConfirm: 0, inboxCount: 0,
+  ugcCount: 0, totalOrders: 0, rtsPrevented: 0, revenueSavedAmount: 0,
+  deliveredRate: 0, riskAlerts: [], recentOrders: [], chartData: [],
+};
+
 export async function getDashboardData(orgId: string): Promise<DashboardData> {
-  const dayStart = todayStart();
+  try {
+    const dayStart = todayStart();
 
-  const [
-    ordersTodayVal,
-    needsConfirmVal,
-    pendingConfirm,
-    inboxCount,
-    ugcCount,
-    totalOrdersVal,
-    refusedOrders,
-    revenueSavedVal,
-    deliveredOrders,
-    highRiskAlerts,
-    recentOrders,
-  ] = await Promise.all([
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } } }),
-    getNeedsConfirmCount(orgId),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "PRE_SHIPPING_CONFIRM_SENT" } }),
-    prisma.conversation.count({ where: { organizationId: orgId } }),
-    prisma.ugcItem.count({ where: { order: { organizationId: orgId }, status: "received" } }),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "REFUSED" } }),
-    getRevenueAtRisk(orgId),
-    prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "DELIVERED" } }),
-    getHighRiskCreatedOrders(orgId, 5),
-    prisma.order.findMany({
-      where: { organizationId: orgId, deletedAt: null },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-  ]);
+    const [
+      ordersTodayVal,
+      needsConfirmVal,
+      pendingConfirm,
+      inboxCount,
+      ugcCount,
+      totalOrdersVal,
+      refusedOrders,
+      revenueSavedVal,
+      deliveredOrders,
+      highRiskAlerts,
+      recentOrders,
+    ] = await Promise.all([
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, createdAt: { gte: dayStart } } }),
+      getNeedsConfirmCount(orgId),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "PRE_SHIPPING_CONFIRM_SENT" } }),
+      prisma.conversation.count({ where: { organizationId: orgId } }),
+      prisma.ugcItem.count({ where: { order: { organizationId: orgId }, status: "received" } }),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null } }),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "REFUSED" } }),
+      getRevenueAtRisk(orgId),
+      prisma.order.count({ where: { organizationId: orgId, deletedAt: null, status: "DELIVERED" } }),
+      getHighRiskCreatedOrders(orgId, 5),
+      prisma.order.findMany({
+        where: { organizationId: orgId, deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+    ]);
 
-  const rtsRate = totalOrdersVal > 0 ? percentage(refusedOrders, totalOrdersVal) : 0;
-  const deliveredRateCalc = totalOrdersVal > 0 ? percentage(deliveredOrders, totalOrdersVal) : 0;
-  const revenueSavedAmount = revenueSavedVal;
+    const rtsRate = totalOrdersVal > 0 ? percentage(refusedOrders, totalOrdersVal) : 0;
+    const deliveredRateCalc = totalOrdersVal > 0 ? percentage(deliveredOrders, totalOrdersVal) : 0;
+    const revenueSavedAmount = revenueSavedVal;
 
-  const chartData = (await prisma.$queryRawUnsafe<
-    { day: string; total: bigint; refused: bigint }[]
-  >(
-    `SELECT
-      TO_CHAR(d.date, 'Dy') AS day,
-      COALESCE(SUM(CASE WHEN o.id IS NOT NULL THEN 1 ELSE 0 END), 0) AS total,
-      COALESCE(SUM(CASE WHEN o.status = 'REFUSED' THEN 1 ELSE 0 END), 0) AS refused
-    FROM (
-      SELECT DATE(now() - INTERVAL '6 days' + INTERVAL '1 day' * g) AS date
-      FROM generate_series(0, 6) AS g
-    ) d
-    LEFT JOIN "Order" o
-      ON o."organizationId" = $1
-      AND o."deletedAt" IS NULL
-      AND DATE(o."createdAt") = d.date
-    GROUP BY d.date
-    ORDER BY d.date ASC`,
-    orgId,
-  )).map((r) => {
-    const total = Number(r.total);
-    const refused = Number(r.refused);
+    const chartData = (await prisma.$queryRawUnsafe<
+      { day: string; total: bigint; refused: bigint }[]
+    >(
+      `SELECT
+        TO_CHAR(d.date, 'Dy') AS day,
+        COALESCE(SUM(CASE WHEN o.id IS NOT NULL THEN 1 ELSE 0 END), 0) AS total,
+        COALESCE(SUM(CASE WHEN o.status = 'REFUSED' THEN 1 ELSE 0 END), 0) AS refused
+      FROM (
+        SELECT DATE(now() - INTERVAL '6 days' + INTERVAL '1 day' * g) AS date
+        FROM generate_series(0, 6) AS g
+      ) d
+      LEFT JOIN "Order" o
+        ON o."organizationId" = $1
+        AND o."deletedAt" IS NULL
+        AND DATE(o."createdAt") = d.date
+      GROUP BY d.date
+      ORDER BY d.date ASC`,
+      orgId,
+    )).map((r) => {
+      const total = Number(r.total);
+      const refused = Number(r.refused);
+      return {
+        day: r.day,
+        rate: total > 0 ? Math.round((refused / total) * 100) : 0,
+      };
+    });
+
     return {
-      day: r.day,
-      rate: total > 0 ? Math.round((refused / total) * 100) : 0,
+      ordersToday: ordersTodayVal,
+      needsConfirm: needsConfirmVal,
+      pendingConfirm,
+      inboxCount,
+      ugcCount,
+      totalOrders: totalOrdersVal,
+      rtsPrevented: 100 - rtsRate,
+      revenueSavedAmount,
+      deliveredRate: deliveredRateCalc,
+      riskAlerts: highRiskAlerts,
+      recentOrders: recentOrders.map(o => ({
+        id: o.id, buyerName: o.buyerName, buyerPhone: o.buyerPhone,
+        amount: Number(o.amount), riskLevel: o.riskLevel, trustScore: o.trustScore,
+        status: o.status, product: o.product, organizationId: o.organizationId, createdAt: o.createdAt,
+      })),
+      chartData,
     };
-  });
-
-  return {
-    ordersToday: ordersTodayVal,
-    needsConfirm: needsConfirmVal,
-    pendingConfirm,
-    inboxCount,
-    ugcCount,
-    totalOrders: totalOrdersVal,
-    rtsPrevented: 100 - rtsRate,
-    revenueSavedAmount,
-    deliveredRate: deliveredRateCalc,
-    riskAlerts: highRiskAlerts,
-    recentOrders: recentOrders.map(o => ({
-      id: o.id, buyerName: o.buyerName, buyerPhone: o.buyerPhone,
-      amount: Number(o.amount), riskLevel: o.riskLevel, trustScore: o.trustScore,
-      status: o.status, product: o.product, organizationId: o.organizationId, createdAt: o.createdAt,
-    })),
-    chartData,
-  };
+  } catch (e) {
+    console.error("[dashboard.service] getDashboardData failed:", e);
+    return EMPTY_DASHBOARD;
+  }
 }

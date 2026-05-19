@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const limitReached = await checkFreePlanLimit(orgId);
     if (limitReached) {
       return NextResponse.json(
-        { error: "Limite mensuelle atteinte. Passe à Essentiel (49 TND/mois) ou Croissance (139 TND/mois)." },
+        { error: "Limite mensuelle atteinte. Passe à ZioGrow (29 TND/mois) ou ZioPro (79 TND/mois)." },
         { status: 403 },
       );
     }
