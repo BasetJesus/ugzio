@@ -271,7 +271,8 @@ export async function registerUser(name: string, email: string, password: string
     return { success: true, userId: user.id, orgId: org.id } as const;
   } catch (e) {
     console.error("[org.service] registerUser failed:", e);
-    return { success: false, error: "Registration failed" } as const;
+    const msg = e instanceof Error ? e.message : "Registration failed";
+    return { success: false, error: msg } as const;
   }
 }
 
