@@ -114,6 +114,8 @@ const dict: Record<string, DictEntry> = {
   "lang.en": { ar: "English", fr: "English", en: "English" },
 
   /* ── Sidebar navigation ── */
+  "nav.protect": { ar: "حماية", fr: "PROTECTION", en: "PROTECT" },
+  "nav.grow": { ar: "نمو", fr: "CROISSANCE", en: "GROW" },
   "nav.dashboard": { ar: "الرئيسية", fr: "Tableau de bord", en: "Dashboard" },
   "nav.activate": { ar: "تفعيل", fr: "ACTIVER", en: "ACTIVATE" },
   "nav.orders": { ar: "الطلبات", fr: "Commandes", en: "Orders" },

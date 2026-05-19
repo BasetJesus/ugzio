@@ -14,12 +14,15 @@ interface Props {
   highRiskCount?: number
 }
 
-const NAV_ITEMS = [
+const PROTECT_ITEMS = [
   { href: "/overview", label: "nav.overview", icon: "●" },
-  { href: "/orders", label: "nav.orders", icon: "▸" },
   { href: "/confirm", label: "nav.confirm", icon: "◆" },
+  { href: "/orders", label: "nav.orders", icon: "▸" },
+]
+
+const GROW_ITEMS = [
   { href: "/inbox", label: "nav.inbox", icon: "📥" },
-  { href: "/settings", label: "nav.settings", icon: "⚙" },
+  { href: "/growth", label: "nav.growth", icon: "📈" },
 ]
 
 export default function SidebarNav({ orgName, planName, completedCount, pendingCount = 0, highRiskCount = 0 }: Props) {
@@ -43,8 +46,12 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
         {!collapsed && (
           <>
             <div className="flex flex-col min-w-0 flex-1">
-              <p className="truncate text-xs font-medium text-[var(--text-primary)]">{orgName}</p>
-              <p className="text-[9px] text-[var(--text-muted)]">{planName}</p>
+              <p className="text-xs font-bold text-[var(--text-primary)]">UGZIO</p>
+              <p className="text-[9px] text-[var(--text-muted)]">
+                <span className="text-[var(--accent)]">PROTECT</span>
+                <span className="mx-1">·</span>
+                <span style={{ color: "#7c3aed" }}>GROW</span>
+              </p>
             </div>
             <button
               onClick={() => setCollapsed(true)}
@@ -57,7 +64,12 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
       </div>
 
       <nav className="flex-1 space-y-0.5 px-2 py-3">
-        {NAV_ITEMS.map((item) => {
+        {!collapsed && (
+          <p className="px-3 py-1 text-[9px] font-semibold uppercase tracking-widest text-[var(--accent)]/60">
+            {t("nav.protect")}
+          </p>
+        )}
+        {PROTECT_ITEMS.map((item) => {
           const active = pathname.startsWith(item.href)
           const badge = item.href === "/confirm" ? pendingCount : item.href === "/orders" ? highRiskCount : null
           return (
@@ -84,8 +96,56 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
             </Link>
           )
         })}
+
+        {!collapsed && (
+          <div className="mt-3 mb-1 px-3 py-1 text-[9px] font-semibold uppercase tracking-widest" style={{ color: "rgba(124, 58, 237, 0.6)" }}>
+            {t("nav.grow")}
+          </div>
+        )}
+        {GROW_ITEMS.map((item) => {
+          const active = pathname.startsWith(item.href)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`group flex items-center rounded-xl text-sm transition ${
+                collapsed ? "justify-center p-3" : "gap-3 px-3 py-2.5"
+              } ${
+                active
+                  ? "bg-purple-500/10 text-purple-400 font-medium"
+                  : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <span className="relative">
+                <span className="text-base">{item.icon}</span>
+              </span>
+              {!collapsed && <span>{t(item.label)}</span>}
+            </Link>
+          )
+        })}
       </nav>
 
+      <div className="px-2 pb-1">
+        {(["settings"] as const).map((item) => {
+          const active = pathname.startsWith("/" + item)
+          return (
+            <Link
+              key={item}
+              href={"/" + item}
+              className={`group flex items-center rounded-xl text-sm transition ${
+                collapsed ? "justify-center p-3" : "gap-3 px-3 py-2.5"
+              } ${
+                active
+                  ? "bg-[var(--bg-elevated)] text-[var(--text-primary)]"
+                  : "text-[var(--text-muted)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-secondary)]"
+              }`}
+            >
+              <span className="text-base">⚙</span>
+              {!collapsed && <span>{t("nav.settings")}</span>}
+            </Link>
+          )
+        })}
+      </div>
       <div className={`border-t border-[var(--border)] p-3 ${collapsed ? "flex justify-center" : ""}`}>
         {!collapsed && (
           <div className="flex items-center gap-2 mb-3">
