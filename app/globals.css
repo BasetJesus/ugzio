@@ -1,9 +1,14 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @theme inline {
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-fraunces);
+
+  --font-grotesk: "Space Grotesk", sans-serif;
+  --font-cairo: "Cairo", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
 
   --spacing-section: 2rem;
   --spacing-panel: 1.5rem;
@@ -28,21 +33,21 @@
   --text-tertiary: #71717a;
   --text-muted: #475569;
 
-  --risk-red: #ef4444;
-  --success-green: #059669;
-  --warning-amber: #f59e0b;
+  --risk-red: #FF3B30;
+  --success-green: #34C759;
+  --warning-amber: #FF9500;
 
-  --accent: #059669;
-  --accent-hover: #047857;
+  --accent: #FFD60A;
+  --accent-hover: #E6C200;
 
-  --status-danger: #ef4444;
-  --status-danger-bg: rgba(239,68,68,0.10);
-  --status-warning: #f59e0b;
-  --status-warning-bg: rgba(245,158,11,0.10);
-  --status-success: #059669;
-  --status-success-bg: rgba(5,150,105,0.08);
-  --status-info: #3b82f6;
-  --status-info-bg: rgba(59,130,246,0.10);
+  --status-danger: #FF3B30;
+  --status-danger-bg: rgba(255,59,48,0.10);
+  --status-warning: #FF9500;
+  --status-warning-bg: rgba(255,149,0,0.10);
+  --status-success: #34C759;
+  --status-success-bg: rgba(52,199,89,0.08);
+  --status-info: #0A84FF;
+  --status-info-bg: rgba(10,132,255,0.10);
 
   --nav-bg: rgba(12, 12, 14, 0.9);
 
@@ -53,10 +58,10 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
 
-  --btn-green: #16a34a;
-  --btn-green-hover: #22c55e;
-  --btn-red: #dc2626;
-  --btn-red-hover: #ef4444;
+  --btn-green: #34C759;
+  --btn-green-hover: #30D158;
+  --btn-red: #FF3B30;
+  --btn-red-hover: #FF453A;
 
   --state-calm: #4F46E5;
   --state-calm-bg: rgba(79, 70, 229, 0.06);
@@ -98,12 +103,12 @@
   --glow-calm: 0 0 20px rgba(79, 70, 229, 0.04);
   --glow-soft: 0 0 12px rgba(0, 0, 0, 0.02);
 
-  --brand-electric: #22c55e;
-  --brand-electric-dim: rgba(34, 197, 94, 0.12);
-  --brand-electric-glow: 0 0 25px rgba(34, 197, 94, 0.08), 0 0 50px rgba(34, 197, 94, 0.03);
-  --brand-green: #059669;
-  --brand-green-soft: #34d399;
-  --brand-gradient: linear-gradient(135deg, #059669 0%, #34d399 50%, #6ee7b7 100%);
+  --brand-electric: #FFD60A;
+  --brand-electric-dim: rgba(255, 214, 10, 0.12);
+  --brand-electric-glow: 0 0 25px rgba(255, 214, 10, 0.08), 0 0 50px rgba(255, 214, 10, 0.03);
+  --brand-green: #34C759;
+  --brand-green-soft: #30D158;
+  --brand-gradient: linear-gradient(135deg, #FFD60A 0%, #FF9500 50%, #FF3B30 100%);
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
@@ -129,21 +134,21 @@
   --text-tertiary: #9ca3af;
   --text-muted: #d1d5db;
 
-  --risk-red: #dc2626;
-  --success-green: #059669;
-  --warning-amber: #d97706;
+  --risk-red: #FF3B30;
+  --success-green: #34C759;
+  --warning-amber: #FF9500;
 
-  --accent: #059669;
-  --accent-hover: #047857;
+  --accent: #FFD60A;
+  --accent-hover: #E6C200;
 
-  --status-danger: #dc2626;
-  --status-danger-bg: rgba(220,38,38,0.06);
-  --status-warning: #d97706;
-  --status-warning-bg: rgba(217,119,6,0.06);
-  --status-success: #059669;
-  --status-success-bg: rgba(5,150,105,0.08);
-  --status-info: #2563eb;
-  --status-info-bg: rgba(37,99,235,0.06);
+  --status-danger: #FF3B30;
+  --status-danger-bg: rgba(255,59,48,0.06);
+  --status-warning: #FF9500;
+  --status-warning-bg: rgba(255,149,0,0.06);
+  --status-success: #34C759;
+  --status-success-bg: rgba(52,199,89,0.08);
+  --status-info: #0A84FF;
+  --status-info-bg: rgba(10,132,255,0.06);
 
   --nav-bg: rgba(245, 245, 240, 0.9);
 
@@ -199,12 +204,12 @@
   --glow-calm: 0 0 20px rgba(99, 102, 241, 0.06);
   --glow-soft: 0 0 12px rgba(255, 255, 255, 0.03);
 
-  --brand-electric: #00ff88;
-  --brand-electric-dim: rgba(0, 255, 136, 0.15);
-  --brand-electric-glow: 0 0 30px rgba(0, 255, 136, 0.12), 0 0 60px rgba(0, 255, 136, 0.04);
-  --brand-green: #059669;
-  --brand-green-soft: #34d399;
-  --brand-gradient: linear-gradient(135deg, #059669 0%, #34d399 50%, #6ee7b7 100%);
+  --brand-electric: #FFD60A;
+  --brand-electric-dim: rgba(255, 214, 10, 0.15);
+  --brand-electric-glow: 0 0 30px rgba(255, 214, 10, 0.12), 0 0 60px rgba(255, 214, 10, 0.04);
+  --brand-green: #34C759;
+  --brand-green-soft: #30D158;
+  --brand-gradient: linear-gradient(135deg, #FFD60A 0%, #FF9500 50%, #FF3B30 100%);
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
@@ -616,11 +621,11 @@ body {
 }
 
 .landing-glow-green {
-  box-shadow: 0 0 30px rgba(5,150,105,0.15), 0 0 60px rgba(5,150,105,0.05);
+  box-shadow: 0 0 30px rgba(255,214,10,0.15), 0 0 60px rgba(255,214,10,0.05);
 }
 
 .landing-text-gradient {
-  background: linear-gradient(135deg, #34d399 0%, #059669 40%, #047857 100%);
+  background: linear-gradient(135deg, #FFD60A 0%, #FF9500 40%, #FF3B30 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -653,7 +658,6 @@ body {
   .text-caption {
     font-size: 0.6875rem;
     font-weight: 500;
-    line-height: 1.3;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -686,6 +690,18 @@ body {
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+  }
+
+  .text-grotesk {
+    font-family: var(--font-grotesk);
+  }
+
+  .text-cairo {
+    font-family: var(--font-cairo);
+  }
+
+  .text-jetbrains {
+    font-family: var(--font-jetbrains);
   }
 }
 

@@ -6,14 +6,14 @@ import AnimatedWhatsAppMessage from "./AnimatedWhatsAppMessage"
 export default function HeroSection() {
   return (
     <section className="relative overflow-hidden pt-28 sm:pt-40 pb-16 sm:pb-20">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-purple-600/10 animate-glow-breathe pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#FFD60A]/5 animate-glow-breathe pointer-events-none" />
 
       <div className="section-container relative z-10">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
           <RevealOnScroll delay={0}>
             <div className="max-w-[36rem] text-left mx-auto sm:mx-none">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 mb-6 landing-glass">
-                <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFD60A] animate-pulse" />
                 <span className="text-[11px] text-white/50 tracking-wide">
                   🇹🇳 Pour les vendeurs COD tunisiens
                 </span>
@@ -36,8 +36,8 @@ export default function HeroSection() {
                   href="/overview?demo=true"
                   label="try_live_demo"
                   eventName="hero_cta_click"
-                  className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-green relative overflow-hidden group w-full sm:w-auto"
-                  style={{ backgroundColor: "#7c3aed" }}
+                  className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-sm font-semibold text-[#0A0A0F] transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation landing-glow-green relative overflow-hidden group w-full sm:w-auto"
+                  style={{ backgroundColor: "#FFD60A" }}
                 >
                   <span className="relative z-10">🚀 Démo Live</span>
                   <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors" />

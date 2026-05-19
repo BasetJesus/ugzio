@@ -130,13 +130,13 @@ export default function PricingSection() {
               <div
                 className={`relative rounded-2xl border p-6 sm:p-8 transition-all duration-300 hover:scale-[1.02] ${
                   plan.highlight
-                    ? "border-purple-500/30 bg-purple-500/[0.04] shadow-lg shadow-purple-500/5"
+                    ? "border-[#FFD60A]/30 bg-[#FFD60A]/[0.04] shadow-lg shadow-[#FFD60A]/5"
                     : "border-white/[0.06] bg-white/[0.02]"
                 }`}
               >
                 {plan.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-600 px-4 py-1 text-[10px] font-semibold text-white shadow-lg">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#FFD60A] px-4 py-1 text-[10px] font-semibold text-[#0A0A0F] shadow-lg">
                       ⭐ {plan.badge}
                     </span>
                   </div>
@@ -157,11 +157,11 @@ export default function PricingSection() {
 
                 <a
                   href={plan.href}
-                  className={`group relative w-full rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.98] overflow-hidden inline-flex items-center justify-center mb-6 ${
-                    plan.highlight ? "landing-glow-green" : "border border-white/15"
+                  className={`group relative w-full rounded-xl px-6 py-3.5 text-sm font-semibold transition-all hover:scale-[1.01] active:scale-[0.98] overflow-hidden inline-flex items-center justify-center mb-6 ${
+                    plan.highlight ? "landing-glow-green text-[#0A0A0F]" : "border border-white/15 text-white"
                   }`}
                   style={{
-                    backgroundColor: plan.highlight ? "#7c3aed" : "transparent",
+                    backgroundColor: plan.highlight ? "#FFD60A" : "transparent",
                   }}
                 >
                   <span className="relative z-10">{plan.cta}</span>

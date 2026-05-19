@@ -39,18 +39,23 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
       <div className={`flex items-center border-b border-[var(--border)] ${collapsed ? "justify-center p-3" : "gap-3 px-4 py-4"}`}>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)] text-xs font-bold text-white hover:bg-[var(--accent-hover)]"
+          className="relative flex h-8 w-8 items-center justify-center rounded-lg"
+          style={{ backgroundColor: "transparent" }}
         >
-          U
+          <span className="text-xs font-bold" style={{ color: "#FFD60A" }}>Z</span>
         </button>
         {!collapsed && (
           <>
             <div className="flex flex-col min-w-0 flex-1">
-              <p className="text-xs font-bold text-[var(--text-primary)]">UGZIO</p>
-              <p className="text-[9px] text-[var(--text-muted)]">
+              <p className="text-xs font-bold tracking-tight">
+                <span className="text-[var(--text-primary)]">UG</span>
+                <span style={{ color: "#FFD60A" }}>Z</span>
+                <span className="text-[var(--text-muted)]">IO</span>
+              </p>
+              <p className="text-[8px] text-[var(--text-muted)]">
                 <span className="text-[var(--accent)]">PROTECT</span>
                 <span className="mx-1">·</span>
-                <span style={{ color: "#7c3aed" }}>GROW</span>
+                <span style={{ color: "#FF9500" }}>GROW</span>
               </p>
             </div>
             <button
@@ -65,7 +70,7 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
 
       <nav className="flex-1 space-y-0.5 px-2 py-3">
         {!collapsed && (
-          <p className="px-3 py-1 text-[9px] font-semibold uppercase tracking-widest text-[var(--accent)]/60">
+          <p className="px-3 py-1 text-[9px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255, 214, 10, 0.6)" }}>
             {t("nav.protect")}
           </p>
         )}
@@ -98,7 +103,7 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
         })}
 
         {!collapsed && (
-          <div className="mt-3 mb-1 px-3 py-1 text-[9px] font-semibold uppercase tracking-widest" style={{ color: "rgba(124, 58, 237, 0.6)" }}>
+          <div className="mt-3 mb-1 px-3 py-1 text-[9px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255, 149, 0, 0.6)" }}>
             {t("nav.grow")}
           </div>
         )}
@@ -112,9 +117,9 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
                 collapsed ? "justify-center p-3" : "gap-3 px-3 py-2.5"
               } ${
                 active
-                  ? "bg-purple-500/10 text-purple-400 font-medium"
-                  : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
+                  ? "bg-orange-500/10 font-medium" : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
               }`}
+              style={active ? { color: "#FF9500" } : {}}
             >
               <span className="relative">
                 <span className="text-base">{item.icon}</span>
