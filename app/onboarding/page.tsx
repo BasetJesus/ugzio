@@ -22,8 +22,8 @@ export default async function OnboardingPage() {
   }
 
   const [orders, events] = await Promise.all([
-    getOrderCount(orgId),
-    getActivationEvents(orgId),
+    getOrderCount(orgId).catch(() => 0),
+    getActivationEvents(orgId).catch(() => []),
   ]);
 
   const activation = getActivationStatus(orgId, events);

@@ -6,36 +6,37 @@ import { createOrganization, updateOrganization, generateSampleData } from "@/se
 import { onboardingSchema, formatZodErrors } from "@/lib/validation";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let orgId = await getOrgFromUserId(session.user.id);
+    const body = await request.json();
+    const parsed = onboardingSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
+    }
+    const { shopName, sellerPhone } = parsed.data;
+    const { generateSample } = body;
+
+    let sampleData = null;
+
+    if (!orgId) {
+      const org = await createOrganization(shopName, session.user.id, sellerPhone);
+      orgId = org.id;
+    } else {
+      await updateOrganization(orgId, { name: shopName, sellerPhone, sellerName: shopName });
+    }
+
+    if (generateSample) {
+      sampleData = await generateSampleData(orgId);
+    }
+
+    return NextResponse.json({ success: true, orgId, sampleData });
+  } catch (e) {
+    console.error("[onboarding] failed:", e);
+    return NextResponse.json({ error: "Erreur de connexion à la base de données. Vérifie que Supabase est accessible." }, { status: 500 });
   }
-
-  let orgId = await getOrgFromUserId(session.user.id);
-  const body = await request.json();
-  const parsed = onboardingSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: formatZodErrors(parsed.error) }, { status: 400 });
-  }
-  const { shopName, sellerPhone } = parsed.data;
-  const { generateSample } = body;
-
-  let sampleData = null;
-
-  if (!orgId) {
-    const org = await createOrganization(shopName, session.user.id, sellerPhone);
-    orgId = org.id;
-  } else {
-    await updateOrganization(orgId, { name: shopName, sellerPhone, sellerName: shopName });
-  }
-
-  if (generateSample) {
-    sampleData = await generateSampleData(orgId);
-  }
-
-  return NextResponse.json({
-    success: true,
-    orgId,
-    sampleData,
-  });
 }
