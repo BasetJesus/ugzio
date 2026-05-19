@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { registerUser } from "@/services/org.service";
 import { registerSchema, formatZodErrors } from "@/lib/validation";
 
-const REGISTER_RATE_LIMIT = 5;
+const REGISTER_RATE_LIMIT = 50;
 const registerAttempts = new Map<string, { count: number; resetAt: number }>();
 
 function checkRegisterRateLimit(ip: string): boolean {
