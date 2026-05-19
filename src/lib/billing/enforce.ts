@@ -19,9 +19,13 @@ export async function enforcePlanGate(orgId: string, featureKey: string): Promis
 }
 
 export async function getOrgFromUserId(userId: string): Promise<string | null> {
-  const member = await prisma.organizationMember.findFirst({
-    where: { userId },
-    include: { organization: true },
-  });
-  return member?.organization.id ?? null;
+  try {
+    const member = await prisma.organizationMember.findFirst({
+      where: { userId },
+      include: { organization: true },
+    });
+    return member?.organization.id ?? null;
+  } catch {
+    return null;
+  }
 }

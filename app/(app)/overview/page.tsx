@@ -222,7 +222,7 @@ export default async function OverviewPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-panel">
         <div className="lg:col-span-2">
-          <RevenueStoryCard story={weeklyStory!} context={sellerContext ?? undefined} />
+          {weeklyStory && <RevenueStoryCard story={weeklyStory} context={sellerContext ?? undefined} />}
         </div>
         <div>
           <OperationalFeed events={recentActivity} />
