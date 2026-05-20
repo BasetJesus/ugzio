@@ -194,15 +194,6 @@ export default function ZioInboxClient({ initialConversations }: Props) {
   return (
     <div className="flex flex-col h-full">
       <div className="space-y-4 pb-4">
-        <div>
-          <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-            Zio<span className="text-[var(--accent)]">Inbox</span>
-          </h1>
-          <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-            Unified seller communication center — all your buyer conversations in one place.
-          </p>
-        </div>
-
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
           <input
