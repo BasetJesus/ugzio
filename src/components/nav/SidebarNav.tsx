@@ -22,6 +22,7 @@ const PROTECT_ITEMS = [
 ]
 
 const GROW_ITEMS = [
+  { href: "/capture", label: "nav.capture", icon: "📸" },
   { href: "/inbox", label: "nav.inbox", icon: "📥" },
   { href: "/growth", label: "nav.growth", icon: "📈" },
   { href: "/flow", label: "nav.flow", icon: "✨" },

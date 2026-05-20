@@ -123,6 +123,7 @@ const dict: Record<string, DictEntry> = {
   "nav.new-order": { ar: "+ طلب جديد", fr: "+ Nouvelle", en: "+ New Order" },
   "nav.confirm": { ar: "تأكيد", fr: "Confirmer", en: "Confirm" },
   "nav.collect": { ar: "تجميع", fr: "COLLECTER", en: "COLLECT" },
+  "nav.capture": { ar: "التقاط", fr: "Capture", en: "Capture" },
   "nav.inbox": { ar: "الوارد", fr: "Boîte", en: "Inbox" },
   "nav.growth": { ar: "نمو", fr: "Croissance", en: "Growth" },
   "nav.captions": { ar: "كابتشين", fr: "Captions", en: "Captions" },
