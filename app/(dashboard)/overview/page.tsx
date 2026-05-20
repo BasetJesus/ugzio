@@ -32,9 +32,9 @@ export default async function OverviewPage() {
       {/* ── Section 1: Header ── */}
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
         <Header
-          title="Overview"
+          title="ZioView"
           emoji="👋"
-          subtitle="Here's what's happening with your business today."
+          subtitle="Live revenue protection status"
         />
       </div>
 

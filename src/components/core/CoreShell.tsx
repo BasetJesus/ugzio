@@ -24,24 +24,24 @@ interface Props {
 
 function getHeaderForPath(pathname: string) {
   const p = pathname.replace(/\/$/, "")
-  if (p.startsWith("/orders/import")) return { title: "Import Orders", emoji: "📥", subtitle: "Bulk import orders from CSV" }
+  if (p.startsWith("/orders/import")) return { title: "ZioImport", emoji: "📥", subtitle: "Bulk import orders from CSV" }
   if (p.startsWith("/settings/branding")) return { title: "Branding", emoji: "🎨", subtitle: "Customize your brand appearance" }
   if (p.startsWith("/settings/connectivity")) return { title: "Connectivity", emoji: "🔗", subtitle: "Manage integrations and API connections" }
   if (p.startsWith("/settings/delivery")) return { title: "Delivery", emoji: "🚚", subtitle: "Configure delivery providers and costs" }
   if (p.startsWith("/settings/billing")) return { title: "Billing", emoji: "💳", subtitle: "Subscription and payment settings" }
   if (p.startsWith("/settings/security")) return { title: "Security", emoji: "🔒", subtitle: "Security preferences and access" }
-  if (p.startsWith("/settings/ugc")) return { title: "UGC Templates", emoji: "📝", subtitle: "Configure UGC request templates" }
+  if (p.startsWith("/settings/ugc")) return { title: "ZioTemplates", emoji: "📝", subtitle: "Configure UGC request templates" }
   if (p.startsWith("/settings")) return { title: "Settings", emoji: "⚙️", subtitle: "Configure your account and preferences" }
-  if (p === "/overview") return { title: "Overview", emoji: "👋", subtitle: "Live revenue protection status" }
-  if (p.startsWith("/confirm")) return { title: "Confirm", emoji: "✅", subtitle: "Review and confirm orders before shipping — every decision protects your revenue." }
-  if (p.startsWith("/orders")) return { title: "Orders", emoji: "📦", subtitle: "All orders and their status" }
-  if (p.startsWith("/inbox")) return { title: "Inbox", emoji: "📥", subtitle: "Customer content and messages" }
-  if (p.startsWith("/capture")) return { title: "UGC & Captions", emoji: "📸", subtitle: "Capture and organize customer content" }
+  if (p === "/overview") return { title: "ZioView", emoji: "👋", subtitle: "Live revenue protection status" }
+  if (p.startsWith("/confirm")) return { title: "ZioConfirm", emoji: "✅", subtitle: "Review and confirm orders before shipping — every decision protects your revenue." }
+  if (p.startsWith("/orders")) return { title: "ZioOrders", emoji: "📦", subtitle: "All orders and their status" }
+  if (p.startsWith("/inbox")) return { title: "ZioInbox", emoji: "📥", subtitle: "Customer content and messages" }
+  if (p.startsWith("/capture")) return { title: "ZioCapture", emoji: "📸", subtitle: "Capture and organize customer content" }
   if (p.startsWith("/flow")) return { title: "ZioFlow", emoji: "✨", subtitle: "Auto-repost flywheel" }
-  if (p.startsWith("/growth")) return { title: "Growth", emoji: "📈", subtitle: "UGC performance metrics" }
+  if (p.startsWith("/growth")) return { title: "ZioView", emoji: "📈", subtitle: "UGC performance metrics" }
   if (p.startsWith("/shield")) return { title: "ZioShield", emoji: "🛡️", subtitle: "Stop fake COD orders before they waste your logistics capital." }
-  if (p.startsWith("/blacklist")) return { title: "Blacklist", emoji: "🚫", subtitle: "Shared blacklist management" }
-  if (p.startsWith("/stats")) return { title: "Statistics", emoji: "📊", subtitle: "Advanced analytics" }
+  if (p.startsWith("/blacklist")) return { title: "ZioGuard", emoji: "🚫", subtitle: "Shared blacklist management" }
+  if (p.startsWith("/stats")) return { title: "ZioBrain", emoji: "🧠", subtitle: "AI-powered intelligence and analytics" }
   if (p.startsWith("/onboarding")) return { title: "Welcome", emoji: "🚀", subtitle: "Set up your shop" }
   return { title: "UGZIO", emoji: "🛡️", subtitle: "Protect & Grow" }
 }
