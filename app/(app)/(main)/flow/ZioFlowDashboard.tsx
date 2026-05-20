@@ -296,15 +296,6 @@ export default function ZioFlowDashboard(props: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-          Zio<span className="text-[var(--accent)]">Flow</span>
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-          Repost flywheel — publish approved UGC to your social channels.
-        </p>
-      </div>
-
       <div className="flex gap-2">
         <button
           onClick={() => setTab("publish")}

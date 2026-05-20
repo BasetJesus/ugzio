@@ -48,11 +48,6 @@ export default async function SettingsPage() {
 
   return (
     <div data-state="live" className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("settings.title")}</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-0.5">{l("settings.desc")}</p>
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CATEGORIES.map((cat) => (
           <Link

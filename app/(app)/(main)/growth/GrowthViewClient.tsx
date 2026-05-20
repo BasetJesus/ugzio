@@ -49,15 +49,6 @@ export default function GrowthViewClient({ metrics, opportunities, flowStats, lo
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-          Zio<span className="text-[var(--accent)]">View</span>
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-          Growth & UGC performance — how your customer content drives results.
-        </p>
-      </div>
-
       <div className="grid grid-cols-5 gap-2">
         {kpis.map((k) => (
           <div key={k.label} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">

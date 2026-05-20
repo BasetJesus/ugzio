@@ -42,9 +42,19 @@ export default function Header({
     >
       {/* ── Left: title area ── */}
       <div className="flex flex-col min-w-0 mr-4">
-        <h1 className="truncate text-[22px] sm:text-[26px] font-bold text-white leading-tight tracking-[-0.02em]">
-          {title}
-          {emoji ? ` ${emoji}` : ""}
+        <h1 className="truncate text-[22px] sm:text-[26px] font-bold leading-tight tracking-[-0.02em]">
+          {title.startsWith("Zio") ? (
+            <>
+              <span style={{ color: "#FFD60A" }}>ZIO</span>
+              <span className="text-white">{title.slice(3)}</span>
+              {emoji ? <span className="ml-2">{emoji}</span> : null}
+            </>
+          ) : (
+            <>
+              <span className="text-white">{title}</span>
+              {emoji ? <span className="ml-2">{emoji}</span> : null}
+            </>
+          )}
         </h1>
         {subtitle && (
           <p className="text-[13px] mt-0.5 truncate" style={{ color: "#6B7280" }}>

@@ -18,10 +18,6 @@ export default async function BlacklistPage() {
 
   return (
     <div data-state="live" className="space-y-section">
-      <div className="flex items-center justify-between">
-        <h1 className="text-display text-[var(--text-primary)]">{st(lang, "bl.title")}</h1>
-      </div>
-      <p className="text-sm text-[var(--text-secondary)] -mt-4">{st(lang, "bl.desc")}</p>
       <BlacklistClient />
     </div>
   );

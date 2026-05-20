@@ -42,11 +42,6 @@ export default async function DeliverySettingsPage() {
           </Link>
         </div>
 
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("settings")}</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{l("configure_delivery_costs")}</p>
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 px-4 py-3">
           <p className="text-[10px] text-[var(--accent)] uppercase tracking-wider font-medium">{l("active")}</p>

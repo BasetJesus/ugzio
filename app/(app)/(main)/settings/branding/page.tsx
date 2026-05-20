@@ -37,11 +37,6 @@ export default async function BrandingSettingsPage() {
         </Link>
       </div>
 
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("brand")}</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{l("customize_branding")}</p>
-      </div>
-
       <BrandingSettingsClient />
 
       <div className="mt-8">

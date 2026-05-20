@@ -41,15 +41,6 @@ export default function StatsClient({ rpStats, todayProtected, allTimeOutcomes, 
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-          Zio<span className="text-[var(--accent)]">Stats</span>
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-          Live revenue protection metrics — what UGZIO saved you today.
-        </p>
-      </div>
-
       <div className="grid grid-cols-2 gap-3">
         {kpis.map((s, i) => {
           const Icon = s.icon;

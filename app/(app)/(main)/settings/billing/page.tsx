@@ -31,11 +31,6 @@ export default async function BillingSettingsPage() {
         </a>
       </div>
 
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">الاشتراك والفواتير</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-0.5">خطة الاشتراك، الاستخدام، والمدفوعات</p>
-      </div>
-
       <BillingSettingsClient
         orgId={orgId}
         subscription={subscription}

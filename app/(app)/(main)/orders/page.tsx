@@ -29,8 +29,7 @@ export default async function OrdersPage() {
 
   return (
     <div data-state="history" className="space-y-section">
-      <div className="flex items-center justify-between">
-        <h1 className="text-display text-[var(--text-primary)]">{st(lang, "ord.title")}</h1>
+      <div className="flex justify-end">
         <Link
           href="/orders/import"
           className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent)]/90"

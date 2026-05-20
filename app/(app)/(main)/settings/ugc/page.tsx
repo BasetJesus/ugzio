@@ -36,13 +36,6 @@ export default async function UgcSettingsPage() {
         </Link>
       </div>
 
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("ugc_templates")}</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-          {l("configure_ugc_messages")}
-        </p>
-      </div>
-
       <UgcTemplateSettingsClient />
     </div>
   );

@@ -32,7 +32,7 @@ export default function MobileBottomNav({ pendingCount = 0, highRiskCount = 0 }:
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-xl pb-safe sm:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--border)] bg-[var(--bg-surface)]/90 backdrop-blur-xl pb-safe">
       <div className="flex items-stretch">
         {tabs.map((tab) => {
           const active = pathname.startsWith(tab.href)

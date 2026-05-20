@@ -37,11 +37,6 @@ export default async function ConnectivitySettingsPage() {
         </Link>
       </div>
 
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("connectivity")}</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{l("configure_connectivity")}</p>
-      </div>
-
       <IntegrationsClient />
       <ConnectivitySettingsClient />
     </div>

@@ -12,8 +12,8 @@ export default function Navbar() {
           </a>
           <a
             href="/overview?demo=true"
-            className="rounded-lg px-5 py-2.5 text-xs font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation"
-            style={{ backgroundColor: "#7c3aed" }}
+            className="rounded-lg px-5 py-2.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.97] touch-manipulation"
+            style={{ backgroundColor: "#FFD60A", color: "#0A0A0F" }}
           >
             Démo Live
           </a>

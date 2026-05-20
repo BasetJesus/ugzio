@@ -1,5 +1,4 @@
 import { Zap, Package, ShieldAlert, CheckCircle, Ban } from "lucide-react"
-import Header from "@/components/layout/Header"
 import MetricCard from "@/components/dashboard/MetricCard"
 import HighRiskOrders from "@/components/dashboard/HighRiskOrders"
 import RecentActivity from "@/components/dashboard/RecentActivity"
@@ -28,30 +27,17 @@ export default async function OverviewPage() {
   const growthSection = await getOverviewGrowthSection(orgId)
 
   return (
-    <div className="flex flex-col gap-5 p-6 sm:p-8" style={{ backgroundColor: "#0B0D12" }}>
-      {/* ── Section 1: Header ── */}
+    <div className="flex flex-col gap-5">
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
-        <Header
-          title="ZioView"
-          emoji="👋"
-          subtitle="Live revenue protection status"
-        />
-      </div>
-
-      {/* ── Section 2: KPI Row ── */}
-      <div
-        className="animate-fade-in-up"
-        style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
-      >
         <div className="flex flex-col xl:flex-row gap-4">
           <div className="w-full xl:w-[35%] shrink-0">
             <MetricCard
               label="Revenue Protected"
               value="1,248.750 DTN"
               change={18.6}
-              icon={<Zap size={18} color="#FFD700" />}
+              icon={<Zap size={18} color="var(--accent)" />}
               variant="large"
-              color="#FFD700"
+              color="var(--accent)"
               sparklineData={SPARKLINES.revenue}
             />
           </div>
@@ -60,7 +46,7 @@ export default async function OverviewPage() {
               label="Orders Received"
               value={142}
               change={12.4}
-              icon={<Package size={16} color="#22C55E" />}
+              icon={<Package size={16} color="var(--success-green)" />}
               variant="small"
               sparklineData={SPARKLINES.orders}
             />
@@ -68,7 +54,7 @@ export default async function OverviewPage() {
               label="At Risk"
               value={23}
               change={-8.3}
-              icon={<ShieldAlert size={16} color="#EF4444" />}
+              icon={<ShieldAlert size={16} color="var(--risk-red)" />}
               variant="small"
               invertColor
               sparklineData={SPARKLINES.atRisk}
@@ -77,7 +63,7 @@ export default async function OverviewPage() {
               label="Confirmations"
               value={89}
               change={24.7}
-              icon={<CheckCircle size={16} color="#22C55E" />}
+              icon={<CheckCircle size={16} color="var(--success-green)" />}
               variant="small"
               sparklineData={SPARKLINES.confirmations}
             />
@@ -85,16 +71,15 @@ export default async function OverviewPage() {
               label="RTS Prevented"
               value={16}
               change={20}
-              icon={<Ban size={16} color="#FFD700" />}
+              icon={<Ban size={16} color="var(--accent)" />}
               variant="small"
-              color="#FFD700"
+              color="var(--accent)"
               sparklineData={SPARKLINES.rts}
             />
           </div>
         </div>
       </div>
 
-      {/* ── Section 3: Middle Row ── */}
       <div
         className="animate-fade-in-up"
         style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
@@ -109,7 +94,6 @@ export default async function OverviewPage() {
         </div>
       </div>
 
-      {/* ── Section 4: Bottom Row (UGC, Captions, Channels) ── */}
       <div
         className="animate-fade-in-up"
         style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}

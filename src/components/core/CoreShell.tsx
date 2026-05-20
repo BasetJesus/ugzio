@@ -4,9 +4,8 @@ import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { stateFromPath } from "@/lib/core/system-state"
 import type { SystemState } from "@/lib/core/system-state"
-import Sidebar from "@/components/layout/Sidebar"
 import Header from "@/components/layout/Header"
-import MobileBottomNav from "@/components/shared/MobileBottomNav"
+import BottomNav from "@/components/shared/MobileBottomNav"
 import { PageTransition } from "@/components/shared/PageTransition"
 import PostRegistrationPopup from "@/components/onboarding/PostRegistrationPopup"
 
@@ -79,37 +78,30 @@ export default function CoreShell({ children, orgName, planName, orgId, userName
   }, [currentState])
 
   return (
-    <div className="mx-auto flex h-dvh bg-[var(--bg-base)]">
-      <Sidebar
-        planName={planName}
-        pendingCount={pendingCount}
-        highRiskCount={highRiskCount}
+    <div className="mx-auto flex h-dvh flex-col bg-[var(--bg-base)]">
+      <Header
+        title={header.title}
+        emoji={header.emoji}
+        subtitle={header.subtitle}
+        userName={userName}
+        shopName={orgName}
+        notificationCount={pendingCount}
       />
-      <div className="relative flex flex-1 flex-col sm:ml-48">
-        <Header
-          title={header.title}
-          emoji={header.emoji}
-          subtitle={header.subtitle}
-          userName={userName}
-          shopName={orgName}
-          notificationCount={pendingCount}
-        />
-        <main className="flex-1 overflow-y-auto pb-24 sm:pb-0">
-          <div
-            className={`px-5 py-5 sm:px-8 sm:py-5 ${
-              animating
-                ? "opacity-0"
-                : ""
-            }`}
-            key={displayState}
-          >
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </div>
-        </main>
-      </div>
-      <MobileBottomNav pendingCount={pendingCount} highRiskCount={highRiskCount} />
+      <main className="flex-1 overflow-y-auto pb-20">
+        <div
+          className={`px-4 py-4 sm:px-6 sm:py-5 ${
+            animating
+              ? "opacity-0"
+              : ""
+          }`}
+          key={displayState}
+        >
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </div>
+      </main>
+      <BottomNav pendingCount={pendingCount} highRiskCount={highRiskCount} />
       <PostRegistrationPopup
         open={showPostRegistration}
         onClose={() => setShowPostRegistration(false)}

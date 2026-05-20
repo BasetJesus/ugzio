@@ -161,15 +161,6 @@ export default function SecurityClient({ orgId }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">
-          {lang === "ar" ? "الأمان" : lang === "fr" ? "Sécurité" : "Security"}
-        </h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-0.5">
-          {lang === "ar" ? "إدارة أمان حسابك" : lang === "fr" ? "Gérer la sécurité de votre compte" : "Manage your account security"}
-        </p>
-      </div>
-
       <div className="space-y-4">
         {sections.map((section) => (
           <div key={section.id} className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-5">
