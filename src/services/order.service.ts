@@ -3,14 +3,11 @@ import { scoreAndPersist } from "@/services/risk.service";
 import { recordAnalyticsSnapshot } from "@/services/case-study.service";
 import { schedulePsychologicalSequence, schedulePreDeliveryConfirm } from "@/lib/zioconfirm/service";
 import { canTransition } from "@/lib/zioconfirm/state-machine";
-import { emitCritical } from "@/lib/events/queues";
-import { emit } from "@/lib/events/event-bus";
-import { EventType } from "@/lib/events/taxonomy";
+import { addEvent } from "@/services/operation-timeline.service";
 import { alertSeller, refusedAlert } from "@/lib/alerts/seller";
 import { scheduleD3UgcAsk } from "@/lib/zioconfirm/service";
 import { resolveDeliveryOutcome } from "@/services/attribution.service";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
-import { addEvent } from "@/services/operation-timeline.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
 import { incrementOrdersProcessed } from "@/lib/billing/usage";
@@ -154,11 +151,7 @@ export async function createOrder(orgId: string, data: {
       console.error("[order.service] Pre-delivery confirm scheduling failed:", e);
     }
 
-    await emitCritical(EventType.ORDER_CREATED, { orderId: order.id, orgId });
-
-    emit(EventType.ORDER_CREATED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "order.created", "system", {
       buyerName: data.buyerName,
       buyerPhone: data.buyerPhone,
       amount: Number(data.amount),
@@ -213,10 +206,8 @@ async function closeOperationalLoop(orgId: string, orderId: string, terminalStat
       },
     })
 
-    // 3. Emit completion event
-    emit(EventType.ORDER_COMPLETED, {
-      orderId,
-      orgId,
+    // 3. Record completion event
+    await addEvent(orgId, orderId, "order.completed", "system", {
       status: terminalStatus,
       buyerName: order.buyerName,
       buyerPhone: order.buyerPhone,
@@ -246,9 +237,7 @@ export async function transitionOrderStatus(orgId: string, orderId: string, newS
       data: { status: newStatus },
     });
 
-    emit(EventType.ORDER_STATUS_CHANGED, {
-      orderId,
-      orgId,
+    await addEvent(orgId, orderId, "order.status_changed", "system", {
       previousStatus,
       newStatus,
       buyerName: order.buyerName,

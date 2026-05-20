@@ -39,21 +39,4 @@ export function getRecommendedChannel(): ContactChannel {
   return CHANNELS.whatsapp;
 }
 
-export async function mockSendViaChannel(
-  channelType: ChannelType,
-  to: string,
-  text: string,
-): Promise<{ success: boolean; messageId?: string }> {
-  const channel = CHANNELS[channelType];
-  if (!channel?.enabled) {
-    return { success: false };
-  }
 
-  // Mock only — no real API calls
-  console.log(`[${channelType.toUpperCase()}] To: ${to} | Message: ${text.slice(0, 80)}...`);
-
-  return {
-    success: true,
-    messageId: `mock_${channelType}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-  };
-}

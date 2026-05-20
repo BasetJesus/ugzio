@@ -27,7 +27,7 @@ export {
 
 export {
   sendVerification,
-} from "./protect.service";
+} from "./confirmation.service";
 
 export {
   processIncomingMedia,
@@ -36,8 +36,14 @@ export {
   getUgcStats,
   approveUgcItem,
   rejectUgcItem,
+  getGrowthMetrics,
+  calculateUgcProbability,
+  getUgcIntelligence,
+  getUgcOpportunities,
+  getUgcMessage,
+  getUgcRequestTypes,
 } from "./grow.service";
-export type { UgcItemSummary, UgcStats } from "./grow.service";
+export type { UgcItemSummary, UgcStats, GrowthMetrics, UgcProbabilityScore, UgcFactor, UgcRequestType } from "./grow.service";
 
 export {
   listConversations,
@@ -60,6 +66,7 @@ export {
   getOrdersPageData,
   listOrders,
   getRevenueProtectionStats,
+  getPendingOutcomeOrders,
 } from "./demo-orchestrator.service";
 
 export {
@@ -113,7 +120,6 @@ export {
   getChannel,
   isChannelEnabled,
   getRecommendedChannel,
-  mockSendViaChannel,
 } from "./contact-channel.service";
 
 export {
@@ -125,9 +131,6 @@ export {
 } from "./attribution.service";
 export type { ActionEffectivenessRow, EffectivenessFilters } from "./attribution.service";
 
-export {
-  getPendingOutcomeOrders,
-} from "./demo-orchestrator.service";
 export type { PendingOutcomeOrder } from "./confirmation.service";
 
 export {
@@ -152,21 +155,6 @@ export {
   getSellerHealth,
 } from "./pilot.service";
 export type { QuickstartProgress, First48HoursData, Milestone, SuccessMoment, SellerHealth } from "./pilot.service";
-
-export {
-  calculateUgcProbability,
-  getUgcIntelligence,
-  getUgcOpportunities,
-  getUgcMessage,
-  getUgcRequestTypes,
-} from "./ugc-intelligence.service";
-export type { UgcProbabilityScore, UgcFactor, UgcRequestType } from "./ugc-intelligence.service";
-
-export {
-  getOrderMemory,
-  getBuyerMemory,
-} from "./behavioral-memory.service";
-export type { OrderMemory, BuyerMemory } from "./behavioral-memory.service";
 
 export {
   getConnectionStatus,
@@ -205,11 +193,6 @@ export type {
   UgcTemplateUpdate,
   TemplateVariables,
 } from "./ugc-template.service";
-
-export {
-  getGrowthMetrics,
-} from "./growth.service";
-export type { GrowthMetrics } from "./growth.service";
 
 export {
   getSellerContext,

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { sendWhatsApp } from "@/lib/events/queues";
+import { addEvent } from "@/services/operation-timeline.service";
 
 export type ContactMethod = "manual_call" | "whatsapp" | "sms";
 export type ContactOutcome = "confirmed" | "unreachable" | "suspicious" | "no_answer" | "failed";
@@ -52,11 +52,10 @@ export async function attemptContact(
       const text = TEMPLATES[templateKey]?.(order.buyerName, Number(order.amount))
         ?? TEMPLATES.confirm(order.buyerName, Number(order.amount));
 
-      await sendWhatsApp({
-        orgId,
+      await addEvent(orgId, orderId, "comm.message_sent", "system", {
         to: order.buyerPhone,
         type: "text",
-        content: { body: text },
+        template: templateKey,
       });
     }
 

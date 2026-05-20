@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession, AuthError } from "@/services/auth.service";
-import { sendVerification } from "@/services/protect.service";
+import { sendVerification } from "@/services/confirmation.service";
 
 export async function POST(request: NextRequest) {
   try {

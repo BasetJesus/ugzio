@@ -18,11 +18,11 @@ export default async function FlowPage() {
   if (!orgId) redirect("/onboarding");
 
   const [profile, ugcItems, connections, publishedPosts, stats] = await Promise.all([
-    getOrgCaptionProfile(orgId),
-    getUgcItems(orgId),
-    getSocialConnections(orgId),
-    getPublishedPosts(orgId),
-    getFlowStats(orgId),
+    getOrgCaptionProfile(orgId).catch(() => null),
+    getUgcItems(orgId).catch(() => []),
+    getSocialConnections(orgId).catch(() => []),
+    getPublishedPosts(orgId).catch(() => []),
+    getFlowStats(orgId).catch(() => ({ totalPublished: 0, totalQueued: 0, byPlatform: [] })),
   ]);
 
   return (

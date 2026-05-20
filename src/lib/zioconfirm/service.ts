@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { scheduleMessage, sendWhatsApp } from "@/lib/events/queues";
+import { addEvent } from "@/services/operation-timeline.service";
 import { alertSeller, cancelAlert } from "@/lib/alerts/seller";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
@@ -37,7 +37,10 @@ export async function schedulePsychologicalSequence(orderId: string) {
       },
     });
 
-    await scheduleMessage(event.type, { orderId }, event.delayMs);
+    await addEvent(order.organizationId, orderId, "comm.sequence_selected", "system", {
+      eventType: event.type,
+      delayMs: event.delayMs,
+    });
   }
 }
 
@@ -55,7 +58,11 @@ export async function schedulePreDeliveryConfirm(orderId: string, estimatedDeliv
   });
 
   const delayMs = Math.max(0, confirmTime.getTime() - Date.now());
-  await scheduleMessage("PRE_DELIVERY_CONFIRM", { orderId }, delayMs);
+  await addEvent("", orderId, "comm.message_sent", "system", {
+    eventType: "PRE_DELIVERY_CONFIRM",
+    scheduledFor: confirmTime.toISOString(),
+    delayMs,
+  });
 }
 
 export async function scheduleD3UgcAsk(orderId: string, templateId?: string) {
@@ -73,7 +80,11 @@ export async function scheduleD3UgcAsk(orderId: string, templateId?: string) {
 
   const payload: Record<string, unknown> = { orderId };
   if (templateId) payload.templateId = templateId;
-  await scheduleMessage("D3_UGC_ASK", payload, ms(72));
+  await addEvent("", orderId, "ugc.requested", "system", {
+    eventType: "D3_UGC_ASK",
+    scheduledFor: d3.toISOString(),
+    templateId: templateId ?? null,
+  });
 }
 
 // ─── Message content ───
@@ -115,11 +126,10 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
     });
 
     const confirmWithLink = `${CONFIRM_MESSAGE}\n\n${orderLink(order.token)}`;
-    await sendWhatsApp({
-      orgId: order.organizationId,
+    await addEvent(order.organizationId, orderId, "comm.message_sent", "system", {
       to: order.buyerPhone,
       type: "interactive",
-      content: { body: confirmWithLink, buttons: CONFIRM_BUTTONS },
+      template: "pre_delivery_confirm",
     });
 
     await prisma.messageTimelineEntry.updateMany({
@@ -165,11 +175,10 @@ export async function executeTimelineMessage(eventType: string, orderId: string,
 
   if (!text) return;
 
-  await sendWhatsApp({
-    orgId: order.organizationId,
+  await addEvent(order.organizationId, orderId, "comm.message_sent", "system", {
     to: order.buyerPhone,
     type: "text",
-    content: { body: text },
+    text,
   });
 
   await prisma.messageTimelineEntry.updateMany({
@@ -185,11 +194,10 @@ export async function handleConfirmButton(orderId: string, buttonId: string) {
   if (!order) return;
 
   const reply = async (text: string) => {
-    await sendWhatsApp({
-      orgId: order.organizationId,
+    await addEvent(order.organizationId, orderId, "comm.message_sent", "system", {
       to: order.buyerPhone,
       type: "text",
-      content: { body: text },
+      text,
     });
   };
 

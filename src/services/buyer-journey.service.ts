@@ -4,6 +4,7 @@ import {
   isValidJourneyEventType,
 } from "@/types/journey"
 import type { JourneyEventRecord, JourneyEventType, BehaviorTag } from "@/types/journey"
+import { addEvent } from "@/services/operation-timeline.service"
 
 export interface JourneyTimeline {
   orderId: string
@@ -32,14 +33,10 @@ export async function recordJourneyEvent(
       return { success: false }
     }
 
-    await prisma.buyerJourneyEvent.create({
-      data: {
-        organizationId: orgId,
-        orderId,
-        eventType,
-        metadata: metadata ? JSON.stringify(metadata) : null,
-        createdByUserId: userId ?? null,
-      },
+    await addEvent(orgId, orderId, `journey.${eventType.toLowerCase()}`, "buyer", {
+      ...(metadata ?? {}),
+      originalEventType: eventType,
+      userId: userId ?? null,
     })
 
     return { success: true }
@@ -55,18 +52,22 @@ export async function getOrderJourneyTimeline(
   orderId: string,
 ): Promise<JourneyTimeline> {
   try {
-    const events = await prisma.buyerJourneyEvent.findMany({
-      where: { organizationId: orgId, orderId },
-      orderBy: { occurredAt: "asc" },
+    const events = await prisma.operationEvent.findMany({
+      where: { organizationId: orgId, orderId, type: { startsWith: "journey." } },
+      orderBy: { createdAt: "asc" },
     })
 
-    const mapped: JourneyEventRecord[] = events.map((e) => ({
-      id: e.id,
-      eventType: e.eventType as JourneyEventType,
-      label: JOURNEY_EVENT_LABELS[e.eventType as JourneyEventType] ?? e.eventType,
-      metadata: e.metadata ? safeParseJson(e.metadata) : null,
-      occurredAt: e.occurredAt.toISOString(),
-    }))
+    const mapped: JourneyEventRecord[] = events.map((e) => {
+      const meta = e.metadata ? safeParseJson(e.metadata) : null
+      const originalType = (meta?.originalEventType as string) ?? e.type.replace("journey.", "")
+      return {
+        id: e.id,
+        eventType: originalType as JourneyEventType,
+        label: JOURNEY_EVENT_LABELS[originalType as JourneyEventType] ?? originalType,
+        metadata: meta,
+        occurredAt: e.createdAt.toISOString(),
+      }
+    })
 
     const behaviorTags = deriveBehaviorTags(mapped)
 
@@ -84,27 +85,32 @@ export async function getJourneyCohorts(
   days?: number,
 ): Promise<CohortCount[]> {
   try {
-    const where: Record<string, unknown> = { organizationId: orgId }
+    const typeFilter = eventTypes?.length
+      ? eventTypes.map((t) => `journey.${t.toLowerCase()}`)
+      : undefined
 
-    if (eventTypes && eventTypes.length > 0) {
-      where.eventType = { in: eventTypes }
+    const where: Record<string, unknown> = {
+      organizationId: orgId,
+      type: typeFilter ? { in: typeFilter } : { startsWith: "journey." },
     }
 
     if (days && days > 0) {
       const since = new Date()
       since.setDate(since.getDate() - days)
-      where.occurredAt = { gte: since }
+      where.createdAt = { gte: since }
     }
 
-    const events = await prisma.buyerJourneyEvent.findMany({ where })
+    const events = await prisma.operationEvent.findMany({ where })
 
     const grouped = new Map<string, { count: number; orderIds: Set<string> }>()
 
     for (const e of events) {
-      const existing = grouped.get(e.eventType) ?? { count: 0, orderIds: new Set() }
+      const meta = e.metadata ? safeParseJson(e.metadata) : null
+      const originalType = (meta?.originalEventType as string) ?? e.type.replace("journey.", "")
+      const existing = grouped.get(originalType) ?? { count: 0, orderIds: new Set() }
       existing.count++
       existing.orderIds.add(e.orderId)
-      grouped.set(e.eventType, existing)
+      grouped.set(originalType, existing)
     }
 
     return Array.from(grouped.entries())

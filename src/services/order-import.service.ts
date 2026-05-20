@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/db";
 import { safeNumber, safeString } from "@/lib/core/safe-render";
 import { createOrder } from "@/services/order.service";
-import { emit } from "@/lib/events/event-bus";
-import { EventType } from "@/lib/events/taxonomy";
+import { addEvent } from "@/services/operation-timeline.service";
 
 export interface ImportRow {
   customerName: string;
@@ -255,8 +254,8 @@ export async function importOrdersFromCSV(
       }
     }
 
-    emit(EventType.ORDER_BATCH_IMPORTED, {
-      orgId,
+    const batchEventOrderId = orderIds[0] ?? "batch";
+    await addEvent(orgId, batchEventOrderId, "order.batch_imported", "system", {
       count: orderIds.length,
       orderIds,
     });

@@ -79,8 +79,6 @@ model Organization {
   orders            Order[]
   deliveryProviders DeliveryProvider[]
   operationOutcomes OperationOutcome[]
-  automationRules   AutomationRule[]
-  workflowExecutions WorkflowExecution[]
   conversations     Conversation[]
   members           OrganizationMember[]
   webhookLogs       WebhookLog[]
@@ -211,7 +209,6 @@ model Order {
   confirmationAttempts ConfirmationAttempt[]
   outcome            OrderOutcome?
   operationOutcomes  OperationOutcome[]
-  workflowExecutions WorkflowExecution[]
   timeline           MessageTimelineEntry[]
   ugcItems           UgcItem[]
 }
@@ -281,41 +278,6 @@ model WebhookLog {
 }
 
 // ─── WORKFLOW AUTOMATION ──────────────────────────────────────────────────────
-
-model AutomationRule {
-  id                    String             @id @default(cuid())
-  organizationId        String
-  organization          Organization       @relation(fields: [organizationId], references: [id])
-  name                  String
-  enabled               Boolean            @default(true)
-  trigger               String
-  conditions            String             @default("[]")
-  actions               String             @default("[]")
-  priority              Int                @default(0)
-  maxExecutionsPerHour  Int                @default(10)
-  executionCount        Int                @default(0)
-  lastTriggeredAt       DateTime?
-  createdAt             DateTime           @default(now())
-  executions            WorkflowExecution[]
-}
-
-model WorkflowExecution {
-  id               String         @id @default(cuid())
-  automationRuleId String
-  automationRule   AutomationRule @relation(fields: [automationRuleId], references: [id])
-  organizationId   String
-  organization     Organization   @relation(fields: [organizationId], references: [id])
-  orderId          String?
-  order            Order?         @relation(fields: [orderId], references: [id])
-  triggeredBy      String
-  eventPayload     String
-  conditionsMatched Boolean
-  actionsDispatched String
-  status           String         @default("queued")
-  errorMessage     String?
-  executedAt       DateTime       @default(now())
-  completedAt      DateTime?
-}
 
 // ─── ZIOINBOX ────────────────────────────────────────────────────────────────
 
@@ -413,22 +375,6 @@ model AIEvaluation {
   sellerRating        Int?
   outcomeAfter14d     String?
   evaluatedAt         DateTime     @default(now())
-}
-
-// ─── BUYER JOURNEY EVENTS (v2) ────────────────────────────────────────────────
-
-model BuyerJourneyEvent {
-  id           String   @id @default(cuid())
-  organizationId String
-  orderId      String
-  eventType    String
-  metadata     String?  // JSON blob, never queried by value
-  createdByUserId String?
-  occurredAt   DateTime @default(now())
-
-  @@index([organizationId, orderId])
-  @@index([eventType, occurredAt])
-  @@index([occurredAt])
 }
 
 // ─── OPERATION TIMELINE (v4) ────────────────────────────────────────────────

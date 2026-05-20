@@ -1,4 +1,4 @@
-import { sendWhatsApp } from "@/lib/events/queues";
+import { addEvent } from "@/services/operation-timeline.service";
 
 export async function alertSeller(orgId: string, message: string) {
   const { prisma } = await import("@/lib/db");
@@ -6,11 +6,10 @@ export async function alertSeller(orgId: string, message: string) {
   if (!org?.sellerPhone) return;
 
   try {
-    await sendWhatsApp({
-      orgId,
+    await addEvent(orgId, "alert", "comm.message_sent", "system", {
       to: org.sellerPhone,
       type: "text",
-      content: { body: message },
+      message,
     });
   } catch (err) {
     console.error(`[SellerAlert] Failed to send to ${org.sellerPhone}:`, err);

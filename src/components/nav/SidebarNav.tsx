@@ -17,6 +17,7 @@ const PROTECT_ITEMS = [
   { href: "/confirm", label: "nav.confirm", icon: "◆" },
   { href: "/orders", label: "nav.orders", icon: "▸" },
   { href: "/shield", label: "nav.shield", icon: "🛡" },
+  { href: "/blacklist", label: "nav.blacklist", icon: "🚫" },
 ]
 
 const GROW_ITEMS = [

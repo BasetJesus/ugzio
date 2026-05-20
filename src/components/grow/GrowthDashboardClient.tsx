@@ -1,6 +1,6 @@
 "use client"
 
-import type { GrowthMetrics } from "@/services/growth.service"
+import type { GrowthMetrics } from "@/services/grow.service"
 import { MiniKpiCard } from "@/components/shared/KpiCard"
 import SystemNarrative from "@/components/shared/SystemNarrative"
 

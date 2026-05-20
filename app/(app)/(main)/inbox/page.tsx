@@ -14,21 +14,21 @@ export default async function InboxPage() {
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
-  const conversations = await listConversations(orgId);
+  const conversations = await listConversations(orgId).catch(() => []);
 
   const serialized = conversations.map((c) => ({
     id: c.id,
     buyerName: c.buyerName,
     buyerPhone: c.buyerPhone,
     orderId: c.orderId,
-    createdAt: c.createdAt.toISOString(),
-    updatedAt: c.updatedAt.toISOString(),
+    createdAt: c.createdAt?.toISOString?.() ?? new Date().toISOString(),
+    updatedAt: c.updatedAt?.toISOString?.() ?? new Date().toISOString(),
     order: c.order ? { trustScore: c.order.trustScore, status: c.order.status } : null,
-    messages: c.messages.map((m) => ({
+    messages: (c.messages ?? []).map((m) => ({
       id: m.id,
       direction: m.direction,
       content: m.content,
-      createdAt: m.createdAt.toISOString(),
+      createdAt: m.createdAt?.toISOString?.() ?? new Date().toISOString(),
     })),
   }));
 

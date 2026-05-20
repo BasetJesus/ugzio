@@ -15,8 +15,8 @@ export default async function CapturePage() {
   if (!orgId) redirect("/onboarding");
 
   const [items, stats] = await Promise.all([
-    getUgcItems(orgId),
-    getUgcStats(orgId),
+    getUgcItems(orgId).catch(() => []),
+    getUgcStats(orgId).catch(() => ({ total: 0, received: 0, approved: 0, rejected: 0, rate: 0 })),
   ]);
 
   return <ZioCaptureClient items={items} stats={stats} />;

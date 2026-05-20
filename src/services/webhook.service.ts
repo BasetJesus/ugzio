@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { enqueueWebhookJob } from "@/lib/events/queues";
+
 
 export async function logWebhookEvent(data: {
   eventId: string;
@@ -76,31 +76,20 @@ export async function processWebhookMessages(entries: WebhookEntry[], signature:
             });
 
             if (result.logged) {
-              await enqueueWebhookJob("MESSAGE_RECEIVED", {
-                webhookLogId: message.id,
-                message,
-                phoneNumberId,
-              });
+              // TODO: process incoming WhatsApp message (confirm, media, text)
             }
           }
         }
 
         if (value.statuses) {
           for (const status of value.statuses) {
-            const result = await logWebhookEvent({
+            await logWebhookEvent({
               provider: "meta",
               eventType: `status:${status.status}`,
               eventId: status.id,
               payload: JSON.stringify(status),
               signature,
             });
-
-            if (result.logged) {
-              await enqueueWebhookJob("STATUS_UPDATE", {
-                webhookLogId: status.id,
-                status,
-              });
-            }
           }
         }
       }

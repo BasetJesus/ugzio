@@ -17,10 +17,16 @@ export default async function StatsPage() {
   if (!orgId) redirect("/onboarding");
 
   const [rpStats, todayProtected, allTimeOutcomes, overview] = await Promise.all([
-    getRevenueProtectionStats(orgId),
-    getTodayProtectedRevenue(orgId),
-    getOutcomeStats(orgId),
-    getOverviewData(orgId),
+    getRevenueProtectionStats(orgId).catch(() => ({
+      totalRevenueAtRisk: 0, estimatedPreventableLoss: 0, ordersAtRisk: 0, highRiskOrders: 0, avgRiskScore: 0,
+      todayStats: { totalActions: 0, revenueSaved: 0, lossPrevented: 0, confirmations: 0, cancellations: 0, unreachable: 0, confirmationRate: 0 },
+    })),
+    getTodayProtectedRevenue(orgId).catch(() => []),
+    getOutcomeStats(orgId).catch(() => ({ totalActions: 0, revenueSaved: 0, lossPrevented: 0, confirmations: 0, cancellations: 0, unreachable: 0, confirmationRate: 0 })),
+    getOverviewData(orgId).catch(() => ({
+      stats: { ordersToday: 0, ordersThisWeek: 0, revenueToday: 0, revenueThisWeek: 0, atRiskOrders: 0, pendingVerifications: 0, ugcReceived: 0, deliveredRate: 0 },
+      liveOrders: [], riskAlerts: [], ugcOpportunities: [],
+    })),
   ]);
 
   return (

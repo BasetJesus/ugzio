@@ -1,13 +1,11 @@
 import { prisma } from "@/lib/db";
-import { emit } from "@/lib/events/event-bus";
-import { EventType } from "@/lib/events/taxonomy";
+import { addEvent } from "@/services/operation-timeline.service";
 import { transitionOrderStatus } from "./order.service";
 import { calculateActionOutcome } from "@/services/revenue-protection.service";
 import { recordOutcome } from "@/services/operation-outcome.service";
 import { getProviderRtsCost } from "@/services/delivery-provider.service";
 import { recordAction } from "@/services/attribution.service";
 import { recordJourneyEvent } from "@/services/buyer-journey.service";
-import { addEvent } from "@/services/operation-timeline.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import type { OrderStatus } from "@/types/order";
 
@@ -208,26 +206,6 @@ export async function markConfirmed(
       operator,
     })
 
-    emit(EventType.OPERATOR_CONFIRMED, {
-      orderId,
-      orgId,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
-      amount: Number(order.amount),
-      confirmedBy: operator,
-      method,
-      revenueSaved: outcome.revenueSaved,
-    })
-
-    emit(EventType.OPERATOR_VERIFIED_CUSTOMER, {
-      orderId,
-      orgId,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
-      verified: true,
-      trustDelta: 15,
-    })
-
     await addEvent(orgId, orderId, "operator.confirmed", "operator", {
       method,
       orderAmount: Number(order.amount),
@@ -288,14 +266,6 @@ export async function markUnreachable(
       })
     }
 
-    emit(EventType.OPERATOR_MARKED_UNREACHABLE, {
-      orderId,
-      orgId,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
-      attemptMethod: method,
-    })
-
     await addEvent(orgId, orderId, "operator.marked_unreachable", "operator", {
       method,
       orderAmount: Number(order.amount),
@@ -351,11 +321,7 @@ export async function markSuspicious(
       })
     }
 
-    emit(EventType.OPERATOR_VERIFIED_CUSTOMER, {
-      orderId,
-      orgId,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
+    await addEvent(orgId, orderId, "operator.verified_customer", "operator", {
       verified: false,
       trustDelta: -20,
     })
@@ -473,16 +439,6 @@ export async function cancelOrder(
       })
     }
 
-    emit(EventType.OPERATOR_CANCELLED, {
-      orderId,
-      orgId,
-      buyerName: order.buyerName,
-      buyerPhone: order.buyerPhone,
-      reason,
-      cancelledBy: operator,
-      lossPrevented: outcome.lossPrevented,
-    })
-
     await addEvent(orgId, orderId, "operator.cancelled", "operator", {
       reason,
       orderAmount: Number(order.amount),
@@ -592,4 +548,58 @@ function buildRecommendation(confirmStatus: ConfirmStatus, riskLevel: string): s
     return "Flagged for review. Do not ship until risk is resolved."
   }
   return "Standard confirmation — contact buyer to verify order."
+}
+
+// ──────────────────────────────────────────
+// Merged from protect.service.ts
+// ──────────────────────────────────────────
+
+const CONFIRM_MESSAGE = "Commande mte3ek wajda 😍\nMazelt habb tconfirmi?";
+const CONFIRM_BUTTONS = [
+  { id: "confirm", title: "✅ Ayi Confirmi" },
+  { id: "cancel", title: "❌ Batel" },
+  { id: "reschedule", title: "🔄 Wa9t akher" },
+];
+
+async function ensureActivationEvent(orgId: string, eventType: string) {
+  try {
+    const existing = await prisma.activationEvent.findFirst({
+      where: { organizationId: orgId, eventType },
+    });
+    if (!existing) {
+      await prisma.activationEvent.create({
+        data: { organizationId: orgId, eventType },
+      });
+    }
+  } catch (e) {
+    console.error("[confirmation.service] ensureActivationEvent failed:", e);
+  }
+}
+
+export async function sendVerification(orgId: string, orderId: string) {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, organizationId: orgId, deletedAt: null },
+    });
+    if (!order) return { success: false };
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: "PRE_SHIPPING_CONFIRM_SENT" },
+    });
+
+    await addEvent(orgId, order.id, "comm.message_sent", "system", {
+      to: order.buyerPhone,
+      type: "interactive",
+      template: "confirm",
+      message: CONFIRM_MESSAGE,
+    });
+
+    await ensureActivationEvent(orgId, "FIRST_VERIFICATION_SENT");
+
+    return { success: true };
+  } catch (e) {
+    console.error("[confirmation.service] sendVerification failed:", e);
+    return { success: false };
+  }
 }

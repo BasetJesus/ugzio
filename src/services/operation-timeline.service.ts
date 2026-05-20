@@ -22,6 +22,12 @@ export type OperationEventType =
   | "customer_story_shared"
   | "review_received"
   // Canonical names (dot-separated)
+  | "order.created"
+  | "order.batch_imported"
+  | "order.status_changed"
+  | "order.completed"
+  | "risk.scored"
+  | "risk.order_flagged"
   | "buyer.responded"
   | "buyer.confirmed"
   | "buyer.requested_delay"
@@ -30,6 +36,7 @@ export type OperationEventType =
   | "operator.cancelled"
   | "operator.scheduled_retry"
   | "operator.added_note"
+  | "operator.verified_customer"
   | "comm.message_sent"
   | "comm.whatsapp_opened"
   | "comm.whatsapp_message_sent"
@@ -39,6 +46,8 @@ export type OperationEventType =
   | "delivery.completed"
   | "customer.story_shared"
   | "customer.review_received"
+  | "system.overview_refreshed"
+  | `journey.${string}`
 
 export type ActorType = "system" | "operator" | "buyer"
 

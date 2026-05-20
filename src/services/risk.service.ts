@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/db";
-import { computeScore, computeAndAlert } from "@/lib/zioshield/scoring";
-import { addToBlacklist, removeFromBlacklist } from "@/lib/zioshield/blacklist";
-import { reportToZioGuard, clearZioGuardEntry } from "@/services/zioguard.service";
+import { reportToZioGuard, clearZioGuardEntry, checkZioGuard } from "@/services/zioguard.service";
 import { determineRiskLevel } from "@/lib/risk/config";
-import { emit } from "@/lib/events/event-bus";
-import { EventType } from "@/lib/events/taxonomy";
+import { addEvent } from "@/services/operation-timeline.service";
+import { alertSeller, highRiskAlert } from "@/lib/alerts/seller";
 import type { ScoreResult, RiskDashboardStats, RecentRiskOrder, BlacklistEntry, RiskSignal, RiskExplanation, RiskAlertItem, RiskAggregateStats } from "@/types/risk";
 import type { RiskLevel } from "@/types/order";
 
@@ -26,6 +24,76 @@ async function ensureActivationEvent(orgId: string, eventType: string) {
 // ─── Re-exports (gateway through this service) ───
 export { determineRiskLevel } from "@/lib/risk/config";
 
+const WEIGHTS = {
+  replyDelayMinutes: (delay: number) => (delay > 20 ? 30 : 0),
+  changedAddress: (changed: boolean) => (changed ? 20 : 0),
+  noConfirmIn6h: (expired: boolean) => (expired ? 35 : 0),
+  hesitationMessages: (count: number) => (count > 2 ? 15 : 0),
+  firstTimeOrder: (isFirst: boolean) => (isFirst ? 10 : 0),
+};
+
+async function computeScore(phone: string, orgId: string, excludeOrderId?: string): Promise<ScoreResult> {
+  const signals: string[] = [];
+  let score = 50;
+
+  const previousOrders = await prisma.order.findMany({
+    where: { organizationId: orgId, buyerPhone: phone, id: { not: excludeOrderId }, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const isFirst = previousOrders.length === 0;
+  if (isFirst) {
+    score += WEIGHTS.firstTimeOrder(true);
+    signals.push("first-time-order");
+  }
+
+  const latestPending = previousOrders.find((o) => o.status === "PENDING_RESCHEDULE");
+  if (latestPending) {
+    score += WEIGHTS.hesitationMessages(3);
+    signals.push("hesitation");
+  }
+
+  const prevFailed = previousOrders.filter(
+    (o) => o.status === "REFUSED" || o.status === "INTELLIGENT_CANCEL",
+  );
+  if (prevFailed.length > 0) {
+    score += prevFailed.length * 10;
+    signals.push("prior-failures");
+  }
+
+  const guard = await checkZioGuard(phone);
+  if (guard.flagged) {
+    score += Math.min(guard.flagCount * 15, 40);
+    signals.push("zio-guard-flagged");
+  }
+
+  score = Math.max(0, Math.min(100, score));
+
+  let riskLevel: "low" | "medium" | "high";
+  if (score < 30) riskLevel = "low";
+  else if (score <= 60) riskLevel = "medium";
+  else riskLevel = "high";
+
+  return { score, riskLevel, signals };
+}
+
+async function computeAndAlert(phone: string, orgId: string, buyerName: string, orderId: string) {
+  const result = await computeScore(phone, orgId, orderId);
+
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { trustScore: 100 - result.score, riskLevel: result.riskLevel },
+  });
+
+  if (result.riskLevel === "high") {
+    await alertSeller(orgId, highRiskAlert(buyerName, result.score));
+  }
+
+  await ensureActivationEvent(orgId, "FIRST_TRUST_SCORE");
+
+  return result;
+}
+
 export async function scorePhone(orgId: string, phone: string, excludeOrderId?: string): Promise<ScoreResult> {
   try {
     return await computeScore(phone, orgId, excludeOrderId);
@@ -43,9 +111,7 @@ export async function scoreAndPersist(
   try {
     const result = await computeAndAlert(phone, orgId, buyerName, orderId);
 
-    emit(EventType.RISK_SCORED, {
-      orderId,
-      orgId,
+    await addEvent(orgId, orderId, "risk.scored", "system", {
       riskScore: result.score,
       riskLevel: result.riskLevel,
       trustScore: 100 - result.score,
@@ -116,6 +182,20 @@ export function generateRiskSignals(order: {
 
 export function evaluateTrustScore(riskScore: number): number {
   return Math.max(0, Math.min(100, 100 - riskScore));
+}
+
+async function addToBlacklist(orgId: string, phone: string): Promise<void> {
+  await prisma.order.updateMany({
+    where: { organizationId: orgId, buyerPhone: phone, deletedAt: null },
+    data: { riskLevel: "high", trustScore: 0 },
+  });
+}
+
+async function removeFromBlacklist(orgId: string, phone: string): Promise<void> {
+  await prisma.order.updateMany({
+    where: { organizationId: orgId, buyerPhone: phone, riskLevel: "high", deletedAt: null },
+    data: { riskLevel: "medium", trustScore: 50 },
+  });
 }
 
 export function flagOrder(orgId: string, orderId: string): Promise<void> {
@@ -357,9 +437,7 @@ export async function blacklistPhone(orgId: string, phone: string) {
     });
 
     if (flaggedOrder) {
-      emit(EventType.RISK_ORDER_FLAGGED, {
-        orderId: flaggedOrder.id,
-        orgId,
+      await addEvent(orgId, flaggedOrder.id, "risk.order_flagged", "system", {
         buyerPhone: phone,
         buyerName: flaggedOrder.buyerName,
         riskScore: 100 - flaggedOrder.trustScore,

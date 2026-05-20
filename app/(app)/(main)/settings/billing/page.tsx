@@ -15,9 +15,9 @@ export default async function BillingSettingsPage() {
   if (!orgId) redirect("/onboarding");
 
   const [subscription, usage, plans] = await Promise.all([
-    getSubscription(orgId),
-    getUsage(orgId),
-    getAllPlans(),
+    getSubscription(orgId).catch(() => null),
+    getUsage(orgId).catch(() => ({ ordersProcessed: 0, ordersLimit: 0, verificationsSent: 0, verificationsLimit: 0, aiInsightsGenerated: 0, aiInsightsLimit: 0 })),
+    getAllPlans().catch(() => []),
   ]);
 
   return (

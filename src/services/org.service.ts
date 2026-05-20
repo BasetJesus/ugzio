@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
-import { emit } from "@/lib/events/event-bus";
-import { EventType } from "@/lib/events/taxonomy";
+import { addEvent } from "@/services/operation-timeline.service";
 
 export interface ActivationStatus {
   hasOrders: boolean
@@ -95,18 +94,14 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
 
     if (isHighRisk) highRiskCount++
 
-    emit(EventType.ORDER_CREATED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "order.created", "system", {
       buyerName: buyer.name,
       buyerPhone: buyer.phone,
       amount: buyer.amount,
       product: buyer.product,
     })
 
-    emit(EventType.RISK_SCORED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "risk.scored", "system", {
       riskScore: 100 - trustScore,
       riskLevel,
       trustScore,
@@ -134,27 +129,21 @@ export async function generateSampleData(orgId: string): Promise<{ ordersCreated
 
     highRiskCount++
 
-    emit(EventType.ORDER_CREATED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "order.created", "system", {
       buyerName: buyer.name,
       buyerPhone: buyer.phone,
       amount: buyer.amount,
       product: buyer.product,
     })
 
-    emit(EventType.RISK_SCORED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "risk.scored", "system", {
       riskScore: 85,
       riskLevel: "high",
       trustScore: 15,
       signals: ["first-time-order", "high-amount", "unusual-region", "prior-failures"],
     })
 
-    emit(EventType.RISK_ORDER_FLAGGED, {
-      orderId: order.id,
-      orgId,
+    await addEvent(orgId, order.id, "risk.order_flagged", "system", {
       buyerPhone: buyer.phone,
       buyerName: buyer.name,
       riskScore: 85,

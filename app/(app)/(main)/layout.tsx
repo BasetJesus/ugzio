@@ -2,12 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { registerCoreSubscribers } from "@/lib/events/subscribers";
 import { getNeedsConfirmCount } from "@/services/demo-orchestrator.service";
 import { getOrgWithPlan, getActivationEventCount } from "@/services/org.service";
 import CoreShell from "@/components/core/CoreShell";
-
-registerCoreSubscribers();
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);

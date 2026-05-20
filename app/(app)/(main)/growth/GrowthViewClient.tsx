@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles, Target, TrendingUp, Users, Image, Send } from "lucide-react";
-import type { GrowthMetrics } from "@/services/growth.service";
+import type { GrowthMetrics } from "@/services/grow.service";
 import type { LoopCompletionStats } from "@/services/overview.service";
 
 interface UgcOpportunity {

@@ -15,9 +15,9 @@ export default async function ShieldPage() {
   if (!orgId) redirect("/onboarding");
 
   const [alerts, aggregate, dashboard] = await Promise.all([
-    getHighRiskAlerts(orgId, 20),
-    getAggregateRiskStats(orgId),
-    getRiskDashboard(orgId),
+    getHighRiskAlerts(orgId, 20).catch(() => []),
+    getAggregateRiskStats(orgId).catch(() => ({ averageScore: 0, highRiskCount: 0, todayOrders: 0, totalOrders: 0, revenueAtRisk: 0 })),
+    getRiskDashboard(orgId).catch(() => ({ recentOrders: [], totalOrders: 0, todayOrders: 0, todayRevenue: 0, highRiskCount: 0, verificationRate: 0 })),
   ]);
 
   return (
