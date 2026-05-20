@@ -27,6 +27,7 @@
     "bullmq": "^5.76.6",
     "framer-motion": "^12.38.0",
     "ioredis": "^5.10.1",
+    "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "next-auth": "^4.24.14",
     "posthog-js": "^1.373.4",

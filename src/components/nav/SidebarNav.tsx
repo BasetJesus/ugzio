@@ -18,11 +18,14 @@ const PROTECT_ITEMS = [
   { href: "/overview", label: "nav.overview", icon: "●" },
   { href: "/confirm", label: "nav.confirm", icon: "◆" },
   { href: "/orders", label: "nav.orders", icon: "▸" },
+  { href: "/shield", label: "nav.shield", icon: "🛡" },
 ]
 
 const GROW_ITEMS = [
   { href: "/inbox", label: "nav.inbox", icon: "📥" },
   { href: "/growth", label: "nav.growth", icon: "📈" },
+  { href: "/flow", label: "nav.flow", icon: "✨" },
+  { href: "/stats", label: "nav.stats", icon: "📊" },
   { href: "/captions", label: "nav.captions", icon: "✍" },
 ]
 

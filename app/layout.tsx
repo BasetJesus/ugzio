@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Inter, Geist_Mono, Fraunces } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Space_Grotesk, Inter, Cairo } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
 import { SessionProvider } from "@/lib/auth/session-provider";
@@ -7,19 +7,22 @@ import AnalyticsProvider from "@/components/shared/AnalyticsProvider";
 import { ToastProvider } from "@/components/shared/Toast";
 import "./globals.css";
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space",
+  weight: ["500", "700"],
+});
+
 const inter = Inter({
+  subsets: ["latin"],
   variable: "--font-inter",
-  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
+const cairo = Cairo({
+  subsets: ["arabic"],
+  variable: "--font-cairo",
+  weight: ["500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -28,14 +31,15 @@ export const metadata: Metadata = {
   description:
     "UGZIO protège votre revenue COD et génère des captions IA pour votre e-commerce en Tunisie.",
   manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "UGZIO",
+  },
   formatDetection: {
     telephone: true,
     address: false,
     email: false,
-  },
-  other: {
-    "mobile-web-app-capable": "yes",
-    "apple-touch-fullscreen": "yes",
   },
   openGraph: {
     title: "UGZIO — Protection & Croissance pour E-commerce Tunisie",
@@ -58,11 +62,16 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f5f5f0" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0f" },
   ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -73,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${inter.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${cairo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

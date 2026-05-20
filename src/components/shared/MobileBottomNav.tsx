@@ -24,8 +24,10 @@ export default function MobileBottomNav({ pendingCount = 0, highRiskCount = 0 }:
     { href: "/overview", label: "nav.overview", icon: "●" },
     { href: "/orders", label: "nav.orders", icon: "▸", badge: highRiskCount > 0 ? highRiskCount : null },
     { href: "/confirm", label: "nav.confirm", icon: "◆", badge: pendingCount > 0 ? pendingCount : null },
+    { href: "/shield", label: "nav.shield", icon: "🛡" },
     { href: "/inbox", label: "nav.inbox", icon: "📥" },
-    { href: "/captions", label: "nav.captions", icon: "✍" },
+    { href: "/flow", label: "nav.flow", icon: "✨" },
+    { href: "/stats", label: "nav.stats", icon: "📊" },
     { href: "/settings", label: "nav.settings", icon: "⚙" },
   ]
 
