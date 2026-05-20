@@ -112,6 +112,13 @@ const dict: Record<string, DictEntry> = {
   "nav.capture": { ar: "التقاط", fr: "Capture", en: "Capture" },
   "nav.inbox": { ar: "الوارد", fr: "Boîte", en: "Inbox" },
   "nav.growth": { ar: "نمو", fr: "Croissance", en: "Growth" },
+  "nav.overview": { ar: "نظرة عامة", fr: "Vue d'ensemble", en: "Overview" },
+  "nav.shield": { ar: "الدرع", fr: "Bouclier", en: "Shield" },
+  "nav.blacklist": { ar: "القائمة السوداء", fr: "Liste noire", en: "Blacklist" },
+  "nav.flow": { ar: "تدفق", fr: "Flux", en: "Flow" },
+  "nav.stats": { ar: "إحصائيات", fr: "Statistiques", en: "Stats" },
+  "nav.settings": { ar: "الإعدادات", fr: "Paramètres", en: "Settings" },
+  "nav.logout": { ar: "تسجيل الخروج", fr: "Déconnexion", en: "Logout" },
 
   /* ── Dashboard ── */
   "dash.title": { ar: "شنو اللي يخسرني فلوس اليوم؟", fr: "Qu'est-ce qui va me faire perdre de l'argent aujourd'hui ?", en: "What will lose you money today?" },
