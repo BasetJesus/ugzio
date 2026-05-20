@@ -67,6 +67,7 @@ const dict: Record<string, DictEntry> = {
   "bl.remove": { ar: "حيد", fr: "Retirer", en: "Remove" },
 
   /* ── Caption Generator ── */
+  "captions.title": { ar: "كابتشينات", fr: "Captions", en: "Captions" },
   "cg.edit-profile": { ar: "بدّل البروفيل", fr: "Modifier le profil", en: "Edit Profile" },
   "cg.topic-placeholder": { ar: "شنو تحب تبيع؟", fr: "Quoi vendre ?", en: "What are you selling?" },
   "cg.link-placeholder": { ar: "رابط المنتوج (اختياري)", fr: "Lien du produit (optionnel)", en: "Product link (optional)" },
@@ -124,6 +125,7 @@ const dict: Record<string, DictEntry> = {
   "nav.collect": { ar: "تجميع", fr: "COLLECTER", en: "COLLECT" },
   "nav.inbox": { ar: "الوارد", fr: "Boîte", en: "Inbox" },
   "nav.growth": { ar: "نمو", fr: "Croissance", en: "Growth" },
+  "nav.captions": { ar: "كابتشين", fr: "Captions", en: "Captions" },
   "nav.track": { ar: "تتبّع", fr: "SUIVRE", en: "TRACK" },
   "nav.zioshield": { ar: "ZioShield", fr: "ZioShield", en: "ZioShield" },
   "nav.success": { ar: "النجاح", fr: "Succès", en: "Success" },
@@ -232,6 +234,41 @@ const dict: Record<string, DictEntry> = {
 
   /* ── Inbox page ── */
   "inbox.title": { ar: "صندوق UGC", fr: "Boîte UGC", en: "UGC Inbox" },
+
+  /* ── Order Status ── */
+  "status.created": { ar: "تم الإنشاء", fr: "Créée", en: "Created" },
+  "status.confirmed": { ar: "مؤكد", fr: "Confirmée", en: "Confirmed" },
+  "status.shipped": { ar: "تم الشحن", fr: "Expédiée", en: "Shipped" },
+  "status.delivered": { ar: "تم التسليم", fr: "Livrée", en: "Delivered" },
+  "status.refused": { ar: "مرفوض", fr: "Refusée", en: "Refused" },
+  "status.cancelled": { ar: "ملغى", fr: "Annulée", en: "Cancelled" },
+
+  /* ── Actions ── */
+  "actions.verify": { ar: "تحقق", fr: "Vérifier", en: "Verify" },
+  "actions.ship": { ar: "شحن", fr: "Expédier", en: "Ship" },
+  "actions.block": { ar: "حظر", fr: "Bloquer", en: "Block" },
+  "actions.contact": { ar: "تواصل", fr: "Contacter", en: "Contact" },
+  "actions.viewDetails": { ar: "عرض التفاصيل", fr: "Voir détails", en: "View details" },
+
+  /* ── Confirm prompt ── */
+  "confirm.question": { ar: "هل تؤكد استلام طلبك؟", fr: "Confirmez-vous votre commande?", en: "Confirm your order?" },
+  "confirm.yes": { ar: "نعم، أؤكد", fr: "Oui, je confirme", en: "Yes, confirm" },
+  "confirm.reschedule": { ar: "وقت آخر", fr: "Autre moment", en: "Reschedule" },
+  "confirm.cancel": { ar: "إلغاء", fr: "Annuler", en: "Cancel" },
+
+  /* ── Risk labels (legacy aliases) ── */
+  "risk.blocked": { ar: "محظور", fr: "Bloqué", en: "Blocked" },
+
+  /* ── KPI cards (legacy camelCase aliases) ── */
+  "kpi.ordersToday": { ar: "طلبات اليوم", fr: "Commandes aujourd'hui", en: "Orders Today" },
+  "kpi.highRisk": { ar: "خطر عالٍ", fr: "Risque élevé", en: "High Risk" },
+  "kpi.revenueSaved": { ar: "إيرادات محفوظة", fr: "Revenus sauvegardés", en: "Revenue Saved" },
+  "kpi.rtsPrevented": { ar: "إرجاع منع", fr: "Retours évités", en: "RTS Prevented" },
+
+  /* ── Outcome labels ── */
+  "outcome.delivered": { ar: "😊 تم التسليم", fr: "😊 Livré", en: "😊 Delivered" },
+  "outcome.refused": { ar: "😞 مرفوض", fr: "😞 Refusé", en: "😞 Refused" },
+  "outcome.unreachable": { ar: "📵 لا يرد", fr: "📵 Injoignable", en: "📵 Unreachable" },
 
   /* ── Sidebar ── */
   "nav.protection": { ar: "حماية", fr: "Protection", en: "Protection" },

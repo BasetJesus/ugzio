@@ -34,7 +34,7 @@ export default async function BuyerOrderPage({ params }: Props) {
       <BuyerHero order={order} />
       <BuyerTrustBadge sellerName={order.sellerName} trustScore={order.trustScore} />
       <BuyerOrderInfo order={order} />
-      <BuyerConfirmationButton token={order.token} orderId={order.orderId} sellerPhone={order.sellerPhone} />
+      <BuyerConfirmationButton token={order.token} orderId={order.orderId} sellerName={order.sellerName} sellerPhone={order.sellerPhone} />
       <BuyerProductSuggestion order={order} />
       <BuyerDeliveryTimeline order={order} />
       <BuyerDeliveryExpectation estimatedDays={order.estimatedDeliveryDays} phase={order.phase} />

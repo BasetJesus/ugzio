@@ -1,10 +1,8 @@
 import { Queue } from "bullmq";
-import IORedis from "ioredis";
 import { EventType } from "./taxonomy";
+import { createRedisClient } from "./redis-config";
 
-const redis = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
-  maxRetriesPerRequest: null,
-});
+const redis = createRedisClient();
 
 // ── CRITICAL events → BullMQ (durable) ──
 

@@ -13,6 +13,7 @@ import { recordJourneyEvent } from "@/services/buyer-journey.service";
 import { addEvent } from "@/services/operation-timeline.service";
 import { JOURNEY_EVENT_TYPES } from "@/types/journey";
 import { FREE_TIER_LIMIT } from "@/lib/constants";
+import { incrementOrdersProcessed } from "@/lib/billing/usage";
 import type { OrderStatus, OrderSummary, RiskLevel, DeliveryState, PaymentStatus, OrderTableItem, OrdersPageData } from "@/types/order";
 
 async function ensureActivationEvent(orgId: string, eventType: string) {
@@ -108,6 +109,12 @@ export async function createOrder(orgId: string, data: {
   buyerWilaya?: string;
 }) {
   try {
+    const blocked = await checkFreePlanLimit(orgId);
+    if (blocked) {
+      console.warn("[order.service] Plan limit reached for", orgId);
+      return null;
+    }
+
     const order = await prisma.order.create({
       data: {
         organizationId: orgId,
@@ -152,6 +159,12 @@ export async function createOrder(orgId: string, data: {
 
     await ensureActivationEvent(orgId, "FIRST_ORDER_CREATED");
     await recordAnalyticsSnapshot(orgId, "baseline");
+
+    try {
+      await incrementOrdersProcessed(orgId);
+    } catch (e) {
+      console.error("[order.service] Usage meter increment failed:", e);
+    }
 
     return order;
   } catch (e) {

@@ -96,6 +96,7 @@ model Organization {
   brandDescription  String?
   logo              String?
   socialLinks       String?            @default("{}")
+  captionProfile    String?            @default("{}")
   whatsappConnection WhatsAppConnection?
   ugcTemplates      UgcRequestTemplate[]
   socialConnections SocialConnection[]

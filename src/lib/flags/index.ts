@@ -17,7 +17,7 @@ export async function checkFeatureFlag(
 
   // Plan gate
   if (flag.planGate) {
-    const planNames = ["free", "croissance"];
+    const planNames = ["free", "ziogrow", "ziopro", "ziomax"];
     const planIndex = planNames.indexOf(planName);
     const gateIndex = planNames.indexOf(flag.planGate);
     if (planIndex < gateIndex) return false;

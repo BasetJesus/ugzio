@@ -13,6 +13,7 @@ const CATEGORIES = [
   { href: "/settings/connectivity", labelKey: "settings.connectivity", descKey: "settings.connectivity-desc", icon: "🔌" },
   { href: "/settings/branding", labelKey: "settings.branding", descKey: "settings.branding-desc", icon: "🎨" },
   { href: "/settings/security", labelKey: "settings.security", descKey: "settings.security-desc", icon: "🔒" },
+  { href: "/settings/billing", labelKey: "settings.billing", descKey: "settings.billing-desc", icon: "💳" },
 ];
 
 const LABELS: Record<string, Record<string, string>> = {
@@ -28,6 +29,8 @@ const LABELS: Record<string, Record<string, string>> = {
   "settings.branding-desc": { ar: "الوصف، وسائل التواصل الاجتماعي، الهوية", fr: "Description, réseaux sociaux, identité", en: "Description, social links, identity" },
   "settings.security": { ar: "الأمان", fr: "Sécurité", en: "Security" },
   "settings.security-desc": { ar: "كلمة المرور، المصادقة الثنائية، البيانات", fr: "Mot de passe, 2FA, données", en: "Password, 2FA, data" },
+  "settings.billing": { ar: "الاشتراك والفواتير", fr: "Abonnement & Facturation", en: "Billing & Subscription" },
+  "settings.billing-desc": { ar: "الخطة، الاستخدام، المدفوعات", fr: "Forfait, utilisation, paiements", en: "Plan, usage, payments" },
 };
 
 export default async function SettingsPage() {

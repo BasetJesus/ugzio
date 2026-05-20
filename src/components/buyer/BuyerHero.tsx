@@ -111,12 +111,15 @@ export default function BuyerHero({ order }: Props) {
           {order.brandDescription || cfg.subtitle}
         </p>
         {cfg.celebration && (
-          <div className="mt-4 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-medium text-emerald-400 border border-emerald-500/20 animate-pulse">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20 animate-pulse">
               🛡️ Commande protégée
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-500/10 px-3 py-1 text-[10px] font-medium text-indigo-400 border border-indigo-500/20">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1.5 text-[10px] font-medium text-indigo-400 border border-indigo-500/20">
               ✓ UGZIO Verified
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1.5 text-[10px] font-medium text-amber-400 border border-amber-500/20">
+              🎁 Confirmez pour débloquer
             </span>
           </div>
         )}

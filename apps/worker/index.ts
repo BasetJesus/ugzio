@@ -1,11 +1,9 @@
 import { Worker } from "bullmq";
-import IORedis from "ioredis";
 import { startWebhookWorker } from "@/lib/events/webhook-worker";
 import { executeTimelineMessage } from "@/lib/zioconfirm/service";
+import { createRedisClient } from "@/lib/events/redis-config";
 
-const redis = new IORedis(process.env.REDIS_URL || "redis://localhost:6379", {
-  maxRetriesPerRequest: null,
-});
+const redis = createRedisClient();
 
 // ── Critical events worker ──
 

@@ -25,6 +25,7 @@ export default function MobileBottomNav({ pendingCount = 0, highRiskCount = 0 }:
     { href: "/orders", label: "nav.orders", icon: "▸", badge: highRiskCount > 0 ? highRiskCount : null },
     { href: "/confirm", label: "nav.confirm", icon: "◆", badge: pendingCount > 0 ? pendingCount : null },
     { href: "/inbox", label: "nav.inbox", icon: "📥" },
+    { href: "/captions", label: "nav.captions", icon: "✍" },
     { href: "/settings", label: "nav.settings", icon: "⚙" },
   ]
 

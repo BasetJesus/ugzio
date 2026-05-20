@@ -79,7 +79,7 @@ KPI cards must be screenshot-shareable (organic growth via WhatsApp forwards).
 
 ## Design
 - Warm off-white base (`--bg-base: #f5f5f0`), white cards with subtle borders
-- Primary: `var(--accent)` = protection green `#059669`
+- Primary: `var(--accent)` = brand yellow `#FFD60A`
 - Mobile-first (sellers use phones), bottom nav on <768px, sidebar on >=768px
 - Theme classes: `theme-dark` = actual dark mode, `theme-light` = warm light (default)
 - All colors via CSS variables in `globals.css` — no raw hex in components

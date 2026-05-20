@@ -24,13 +24,23 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ugzio.vercel.app"),
-  title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
+  title: "UGZIO — Protection & Croissance pour E-commerce Tunisie",
   description:
-    "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+    "UGZIO protège votre revenue COD et génère des captions IA pour votre e-commerce en Tunisie.",
+  manifest: "/manifest.webmanifest",
+  formatDetection: {
+    telephone: true,
+    address: false,
+    email: false,
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-touch-fullscreen": "yes",
+  },
   openGraph: {
-    title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
+    title: "UGZIO — Protection & Croissance pour E-commerce Tunisie",
     description:
-      "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+      "UGZIO protège votre revenue COD et génère des captions IA pour votre e-commerce en Tunisie.",
     url: "https://ugzio.vercel.app",
     siteName: "UGZIO",
     locale: "fr_FR",
@@ -38,14 +48,21 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "UGZIO — Réduction des Annulations Ecommerce en Tunisie",
+    title: "UGZIO — Protection & Croissance pour E-commerce Tunisie",
     description:
-      "UGZIO réduit les annulations ecommerce Tunisie. Automatisation post-achat, confiance acheteur, WhatsApp psychology engine. Protégez votre revenue COD.",
+      "UGZIO protège votre revenue COD et génère des captions IA pour votre e-commerce en Tunisie.",
   },
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0f" },
+  ],
 };
 
 export default function RootLayout({
@@ -63,6 +80,11 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{
           __html: `(function(){try{var e=localStorage.getItem("ugzio-theme");if(!e||e==="light"){document.documentElement.classList.add("theme-light")}else{document.documentElement.classList.add("theme-dark")}}catch(e){document.documentElement.classList.add("theme-light")}})()`
         }} />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="UGZIO" />
       </head>
       <body className="min-h-dvh bg-[var(--bg-base)] text-[var(--text-primary)]">
         <ThemeProvider>

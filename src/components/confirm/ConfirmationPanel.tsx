@@ -203,7 +203,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
     setSubmitting(`${orderId}_${action}`);
     const item = items.find((i) => i.orderId === orderId);
     try {
-      await fetch(`/api/confirm/${orderId}`, {
+      await fetch(`/api/v1/confirm/${orderId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
@@ -304,7 +304,7 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
             submitting={submitting}
             onSelect={() => {
               setSelected({ item, psychology: psychologyMap?.[item.orderId], timeline: null, timelineLoading: true })
-              fetch("/api/journey/timeline/" + item.orderId)
+              fetch("/api/v1/journey/timeline/" + item.orderId)
                 .then((r) => r.json())
                 .then((data) => setSelected((prev) => prev ? { ...prev, timeline: data, timelineLoading: false } : null))
                 .catch(() => setSelected((prev) => prev ? { ...prev, timeline: null, timelineLoading: false } : null))

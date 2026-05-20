@@ -39,8 +39,9 @@ export const TIMELINE_EVENTS = {
 // ── Plan Tiers ──
 export const PLANS = {
   FREE: "free",
-  ESSENTIEL: "essentiel",
-  CROISSANCE: "croissance",
+  ZIOGROW: "ziogrow",
+  ZIOPRO: "ziopro",
+  ZIOMAX: "ziomax",
 } as const;
 
 export const FREE_TIER_LIMIT = 3;
@@ -76,5 +77,5 @@ export const API = {
   ZIO_SHIELD_BLACKLIST: "/api/v1/zioshield/blacklist",
   ZIO_CONFIRM_SEND: "/api/v1/zioconfirm/send",
   CONVERSATIONS: "/api/v1/conversations",
-  GENERATE: "/api/generate",
+  GENERATE: "/api/v1/generate",
 } as const;

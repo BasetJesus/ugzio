@@ -34,7 +34,7 @@ export default function BuyerFeedback({ order }: Props) {
   const handleSubmit = async () => {
     if (!selected) return
     try {
-      await fetch("/api/buyer/feedback", {
+      await fetch("/api/v1/buyer/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: order.token, satisfaction: selected, note }),

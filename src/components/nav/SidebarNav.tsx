@@ -23,6 +23,7 @@ const PROTECT_ITEMS = [
 const GROW_ITEMS = [
   { href: "/inbox", label: "nav.inbox", icon: "📥" },
   { href: "/growth", label: "nav.growth", icon: "📈" },
+  { href: "/captions", label: "nav.captions", icon: "✍" },
 ]
 
 export default function SidebarNav({ orgName, planName, completedCount, pendingCount = 0, highRiskCount = 0 }: Props) {

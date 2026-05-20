@@ -10,6 +10,7 @@ import FinalCtaSection from "@/components/landing/FinalCtaSection"
 import Footer from "@/components/landing/Footer"
 import PsychFlowSection from "@/components/landing/PsychFlowSection"
 import TrustMetricsSection from "@/components/landing/TrustMetricsSection"
+import CaptionDemoSection from "@/components/landing/CaptionDemoSection"
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -48,6 +49,7 @@ export default function LandingPage() {
         <RealitySection />
         <LiveDemoSection />
         <PsychologySection />
+        <CaptionDemoSection />
         <UgcSection />
         <OutcomeSection />
         <PricingSection />

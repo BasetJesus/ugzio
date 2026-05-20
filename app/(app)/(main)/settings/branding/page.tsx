@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import BrandingSettingsClient from "@/components/settings/BrandingSettingsClient";
+import CaptionProfileForm from "@/components/settings/CaptionProfileForm";
 import Link from "next/link";
 import { getServerLang } from "@/lib/core/server-lang";
 
@@ -42,6 +43,10 @@ export default async function BrandingSettingsPage() {
       </div>
 
       <BrandingSettingsClient />
+
+      <div className="mt-8">
+        <CaptionProfileForm />
+      </div>
     </div>
   );
 }

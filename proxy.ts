@@ -9,7 +9,6 @@ export async function proxy(request: NextRequest) {
     "/",
     "/login",
     "/register",
-    "/onboarding",
     "/waitlist",
   ];
 
