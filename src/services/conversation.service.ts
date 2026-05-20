@@ -8,7 +8,7 @@ export async function listConversations(orgId: string) {
       take: 50,
       include: {
         order: { select: { trustScore: true, status: true } },
-        messages: { select: { createdAt: true }, orderBy: { createdAt: "desc" }, take: 1 },
+        messages: { select: { id: true, direction: true, content: true, createdAt: true }, orderBy: { createdAt: "desc" }, take: 1 },
       },
     });
   } catch {
