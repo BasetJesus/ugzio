@@ -155,123 +155,128 @@ export default function HighRiskOrders({ orders = MOCK_ORDERS }: HighRiskOrdersP
         </Link>
       </div>
 
-      {/* ── Column headers ── */}
-      <div
-        className="grid grid-cols-[1fr_1.5fr_1fr_0.8fr_1.2fr] gap-3 pb-2 mb-1"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        {["Order", "Customer", "Risk Score", "Amount", "Action"].map((h) => (
-          <span
-            key={h}
-            className="text-[11px] font-medium uppercase tracking-[0.05em]"
-            style={{ color: "#6B7280" }}
-          >
-            {h}
-          </span>
-        ))}
-      </div>
-
-      {/* ── Rows ── */}
-      {orders.map((order, idx) => {
-        const isSelected = selectedId === order.id
-        return (
+      {/* ── Scrollable table ── */}
+      <div className="overflow-x-auto -mx-1">
+        <div className="min-w-[600px]">
+        {/* ── Column headers ── */}
         <div
-          key={order.id}
-          onClick={() => setSelectedId(isSelected ? null : order.id)}
-          className="grid grid-cols-[1fr_1.5fr_1fr_0.8fr_1.2fr] gap-3 items-center transition-all duration-150 rounded-lg -mx-1 px-1 cursor-pointer"
-          style={{
-            height: 52,
-            borderBottom: idx < orders.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-            borderLeft: isSelected ? "3px solid #FFD700" : "3px solid transparent",
-            backgroundColor: isSelected ? "#1E2029" : "transparent",
-            paddingLeft: isSelected ? "3px" : "5px",
-          }}
-          onMouseEnter={(e) => {
-            if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = "#2A303C"
-          }}
-          onMouseLeave={(e) => {
-            if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"
-          }}
+          className="grid grid-cols-[1fr_1.5fr_1fr_0.8fr_1.2fr] gap-3 pb-2 mb-1"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
         >
-          {/* Order ref */}
-          <div className="min-w-0">
-            <p className="text-[13px] font-medium text-white truncate">{order.orderRef}</p>
-            <p className="text-[11px] truncate" style={{ color: "#6B7280" }}>{order.timeLabel}</p>
-          </div>
-
-          {/* Customer */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 text-[12px] font-bold"
-              style={{ backgroundColor: "#25D366", color: "white" }}
-            >
-              {order.customer.initial}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1">
-                <span className="text-[13px] font-bold text-white truncate">{order.customer.name}</span>
-                {order.customer.verified && <BadgeCheck size={13} color="#22C55E" className="shrink-0" />}
-              </div>
-              <p className="text-[11px] truncate" style={{ color: "#6B7280" }}>{order.customer.phone}</p>
-            </div>
-          </div>
-
-          {/* Risk Score */}
-          <div className="flex items-center gap-2.5">
-            <RiskScore score={order.riskScore} size="table" />
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold truncate" style={{ color: riskColor(order.riskScore) }}>
-                {riskLabel(order.riskScore)}
-              </p>
-              <p className="text-[10px] truncate" style={{ color: "#6B7280" }}>
-                {order.riskSignals[0]}
-              </p>
-            </div>
-          </div>
-
-          {/* Amount */}
-          <div>
-            <p className="text-[13px] font-bold text-white">{formatAmount(order.amount)}</p>
+          {["Order", "Customer", "Risk Score", "Amount", "Action"].map((h) => (
             <span
-              className="inline-block rounded px-1.5 py-0.5 text-[10px] font-medium leading-none"
-              style={{ backgroundColor: "#2A303C", color: "#9CA3AF" }}
+              key={h}
+              className="text-[11px] font-medium uppercase tracking-[0.05em]"
+              style={{ color: "#6B7280" }}
             >
-              COD
+              {h}
             </span>
-          </div>
-
-          {/* Action */}
-          <div className="flex items-center gap-1.5 justify-end">
-            {order.status === "to_confirm" ? (
-              <button
-                className="rounded-full border px-3 py-1 text-[11px] font-semibold transition-colors hover:opacity-80"
-                style={{ borderColor: "#FFD700", color: "#FFD700" }}
-              >
-                To Confirm
-              </button>
-            ) : (
-              <button
-                className="rounded-full border px-3 py-1 text-[11px] font-semibold"
-                style={{ borderColor: "#22C55E", color: "#22C55E" }}
-              >
-                Confirmed
-              </button>
-            )}
-            <button
-              className="flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:opacity-80"
-              style={{ backgroundColor: "#2A303C" }}
-            >
-              <Send size={13} style={{ color: "#9CA3AF" }} />
-            </button>
-            <button
-              className="flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:opacity-80"
-            >
-              <Ellipsis size={14} style={{ color: "#6B7280" }} />
-            </button>
-          </div>
+          ))}
         </div>
-        )
-      })}
+
+        {/* ── Rows ── */}
+        {orders.map((order, idx) => {
+          const isSelected = selectedId === order.id
+          return (
+          <div
+            key={order.id}
+            onClick={() => setSelectedId(isSelected ? null : order.id)}
+            className="grid grid-cols-[1fr_1.5fr_1fr_0.8fr_1.2fr] gap-3 items-center transition-all duration-150 rounded-lg px-1 cursor-pointer"
+            style={{
+              height: 52,
+              borderBottom: idx < orders.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+              borderLeft: isSelected ? "3px solid #FFD700" : "3px solid transparent",
+              backgroundColor: isSelected ? "#1E2029" : "transparent",
+              paddingLeft: isSelected ? "3px" : "5px",
+            }}
+            onMouseEnter={(e) => {
+              if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = "#2A303C"
+            }}
+            onMouseLeave={(e) => {
+              if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"
+            }}
+          >
+            {/* Order ref */}
+            <div className="min-w-0">
+              <p className="text-[13px] font-medium text-white truncate">{order.orderRef}</p>
+              <p className="text-[11px] truncate" style={{ color: "#6B7280" }}>{order.timeLabel}</p>
+            </div>
+
+            {/* Customer */}
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 text-[12px] font-bold"
+                style={{ backgroundColor: "#25D366", color: "white" }}
+              >
+                {order.customer.initial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <span className="text-[13px] font-bold text-white truncate">{order.customer.name}</span>
+                  {order.customer.verified && <BadgeCheck size={13} color="#22C55E" className="shrink-0" />}
+                </div>
+                <p className="text-[11px] truncate" style={{ color: "#6B7280" }}>{order.customer.phone}</p>
+              </div>
+            </div>
+
+            {/* Risk Score */}
+            <div className="flex items-center gap-2.5">
+              <RiskScore score={order.riskScore} size="table" />
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold truncate" style={{ color: riskColor(order.riskScore) }}>
+                  {riskLabel(order.riskScore)}
+                </p>
+                <p className="text-[10px] truncate" style={{ color: "#6B7280" }}>
+                  {order.riskSignals[0]}
+                </p>
+              </div>
+            </div>
+
+            {/* Amount */}
+            <div>
+              <p className="text-[13px] font-bold text-white">{formatAmount(order.amount)}</p>
+              <span
+                className="inline-block rounded px-1.5 py-0.5 text-[10px] font-medium leading-none"
+                style={{ backgroundColor: "#2A303C", color: "#9CA3AF" }}
+              >
+                COD
+              </span>
+            </div>
+
+            {/* Action */}
+            <div className="flex items-center gap-1.5 justify-end">
+              {order.status === "to_confirm" ? (
+                <button
+                  className="rounded-full border px-3 py-1 text-[11px] font-semibold transition-colors hover:opacity-80"
+                  style={{ borderColor: "#FFD700", color: "#FFD700" }}
+                >
+                  To Confirm
+                </button>
+              ) : (
+                <button
+                  className="rounded-full border px-3 py-1 text-[11px] font-semibold"
+                  style={{ borderColor: "#22C55E", color: "#22C55E" }}
+                >
+                  Confirmed
+                </button>
+              )}
+              <button
+                className="flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:opacity-80"
+                style={{ backgroundColor: "#2A303C" }}
+              >
+                <Send size={13} style={{ color: "#9CA3AF" }} />
+              </button>
+              <button
+                className="flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:opacity-80"
+              >
+                <Ellipsis size={14} style={{ color: "#6B7280" }} />
+              </button>
+            </div>
+          </div>
+          )
+        })}
+        </div>
+      </div>
     </div>
   )
 }
