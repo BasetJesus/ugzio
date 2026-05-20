@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db"
 import {
-  JOURNEY_EVENT_TYPES,
   JOURNEY_EVENT_LABELS,
   isValidJourneyEventType,
 } from "@/types/journey"
@@ -19,7 +18,7 @@ export interface CohortCount {
   uniqueOrders: number
 }
 
-// ─── RECORD ────────────────────────────────────────────────────────
+// --- RECORD --------------------------------------------------------
 
 export async function recordJourneyEvent(
   orgId: string,
@@ -49,7 +48,7 @@ export async function recordJourneyEvent(
   }
 }
 
-// ─── TIMELINE ──────────────────────────────────────────────────────
+// --- TIMELINE ------------------------------------------------------
 
 export async function getOrderJourneyTimeline(
   orgId: string,
@@ -77,7 +76,7 @@ export async function getOrderJourneyTimeline(
   }
 }
 
-// ─── COHORTS ───────────────────────────────────────────────────────
+// --- COHORTS -------------------------------------------------------
 
 export async function getJourneyCohorts(
   orgId: string,
@@ -121,7 +120,7 @@ export async function getJourneyCohorts(
   }
 }
 
-// ─── BEHAVIOR TAGS ─────────────────────────────────────────────────
+// --- BEHAVIOR TAGS -------------------------------------------------
 
 export function deriveBehaviorTags(events: JourneyEventRecord[]): BehaviorTag[] {
   const tags: BehaviorTag[] = []
@@ -178,7 +177,7 @@ export function deriveBehaviorTags(events: JourneyEventRecord[]): BehaviorTag[] 
   return [...new Set(tags)]
 }
 
-// ─── HELPERS ───────────────────────────────────────────────────────
+// --- HELPERS -------------------------------------------------------
 
 function safeParseJson(raw: string): Record<string, unknown> | null {
   try {
@@ -188,7 +187,7 @@ function safeParseJson(raw: string): Record<string, unknown> | null {
   }
 }
 
-// ─── COHORT HELPER PRESETS ────────────────────────────────────────
+// --- COHORT HELPER PRESETS ----------------------------------------
 
 export const COHORT_PRESETS: Record<
   string,

@@ -8,8 +8,6 @@ import LanguageToggle from "@/components/shared/LanguageToggle"
 
 interface Props {
   orgName: string
-  planName: string
-  completedCount: number
   pendingCount?: number
   highRiskCount?: number
 }
@@ -30,7 +28,7 @@ const GROW_ITEMS = [
   { href: "/captions", label: "nav.captions", icon: "✍" },
 ]
 
-export default function SidebarNav({ orgName, planName, completedCount, pendingCount = 0, highRiskCount = 0 }: Props) {
+export default function SidebarNav({ orgName, pendingCount = 0, highRiskCount = 0 }: Props) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
@@ -185,3 +183,4 @@ export default function SidebarNav({ orgName, planName, completedCount, pendingC
     </aside>
   )
 }
+

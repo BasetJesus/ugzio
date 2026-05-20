@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { registerCoreSubscribers } from "@/lib/events/subscribers";
-import { getRevenueAtRisk, getNeedsConfirmCount } from "@/services/demo-orchestrator.service";
+import { getNeedsConfirmCount } from "@/services/demo-orchestrator.service";
 import { getOrgWithPlan, getActivationEventCount } from "@/services/org.service";
 import CoreShell from "@/components/core/CoreShell";
 
@@ -16,10 +16,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
 
-  const [org, completedCount, revenueAtRisk, pendingCount] = await Promise.all([
+  const [org, completedCount, pendingCount] = await Promise.all([
     getOrgWithPlan(orgId),
     getActivationEventCount(orgId),
-    getRevenueAtRisk(orgId),
     getNeedsConfirmCount(orgId),
   ]);
 
@@ -29,7 +28,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
       planName={org?.planName ?? "free"}
       orgId={orgId}
       completedCount={completedCount}
-      revenueAtRisk={revenueAtRisk}
       pendingCount={pendingCount}
       brandDescription={org?.brandDescription ?? ""}
     >

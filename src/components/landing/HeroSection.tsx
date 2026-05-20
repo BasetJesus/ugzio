@@ -1,4 +1,4 @@
-import RevealOnScroll from "./RevealOnScroll"
+﻿import RevealOnScroll from "./RevealOnScroll"
 import TrackedCTA from "./TrackedCTA"
 import FloatingPhone from "./FloatingPhone"
 import AnimatedWhatsAppMessage from "./AnimatedWhatsAppMessage"
@@ -48,7 +48,7 @@ export default function HeroSection() {
                   eventName="hero_cta_click"
                   className="inline-flex items-center justify-center rounded-xl border border-white/15 px-7 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass w-full sm:w-auto"
                 >
-                  📲 Rejoindre l'attente
+                  📲 Rejoindre l&apos;attente
                 </TrackedCTA>
               </div>
 

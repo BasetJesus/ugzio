@@ -1,6 +1,6 @@
 import { EventEmitter } from "events"
 import { appendEvent } from "./event-store"
-import { EventType, LEGACY_EVENT_MAP } from "./taxonomy"
+import { LEGACY_EVENT_MAP } from "./taxonomy"
 import type { EventType as CanonicalEvent, EventPayloadMap } from "./taxonomy"
 import { validateBusEvent } from "./validate"
 
@@ -48,3 +48,4 @@ export function removeAllListeners(event?: CanonicalEvent): void {
 export function listenerCount(event: CanonicalEvent): number {
   return emitter.listenerCount(event)
 }
+

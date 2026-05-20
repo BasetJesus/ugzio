@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useEffect, useState } from "react"
 import ConfettiBurst from "@/components/shared/ConfettiBurst"
 
@@ -21,7 +23,9 @@ export default function BuyerConfirmCelebration({ sellerName, open, onComplete }
       setTimeout(onComplete, 400)
     }, 3000)
     return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [open, onComplete])
+  // onComplete intentionally omitted — its identity changes on every render but the logic is stable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   if (!open) return null
 

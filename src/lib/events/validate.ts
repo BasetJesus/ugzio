@@ -1,5 +1,5 @@
-import { getEventCategory, LEGACY_EVENT_MAP } from "./taxonomy"
-import type { EventType, EventPayloadMap } from "./taxonomy"
+import { LEGACY_EVENT_MAP } from "./taxonomy"
+import type { EventType } from "./taxonomy"
 
 const BUS_EVENT_TYPES: ReadonlySet<string> = new Set([
   "order.created",
@@ -158,3 +158,4 @@ export function validateOperationEvent(type: string, metadata: unknown): void {
     validationWarnings++
   }
 }
+

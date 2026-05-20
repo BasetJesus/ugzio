@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { importExternalOrder } from "@/services/integrations/base-integration.service";
 import { prisma } from "@/lib/db";
 
@@ -20,7 +21,6 @@ interface WebhookPayload {
 function verifySignature(payload: string, signature: string | null, secret: string | undefined): boolean {
   if (!secret) return true;
   if (!signature) return false;
-  const crypto = require("crypto");
   const expected = crypto.createHmac("sha256", secret).update(payload).digest("hex");
   return signature === expected;
 }
@@ -76,12 +76,11 @@ export async function POST(request: NextRequest) {
         platformOrderId: data.orderId,
       }, platform);
 
-      results.push({
-        orgId: integration.organizationId,
-        success: result.success,
-        orderId: result.success ? (result as any).orderId : undefined,
-        error: !result.success ? (result as any).error ?? "Import failed" : undefined,
-      });
+      if (result.success) {
+        results.push({ orgId: integration.organizationId, success: true, orderId: result.orderId });
+      } else {
+        results.push({ orgId: integration.organizationId, success: false, error: result.error ?? "Import failed" });
+      }
     }
 
     return NextResponse.json({ received: true, results });

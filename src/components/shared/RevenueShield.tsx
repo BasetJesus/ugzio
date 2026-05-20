@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect, useRef } from "react"
 
@@ -76,7 +76,7 @@ export default function RevenueShield({ protectedAmount, estimatedLossPrevented 
             {displayAmount.toFixed(0)} TND
           </p>
           <p className="text-xs text-white/40 mt-1">
-            Revenu protégé grâce aux décisions de l'opérateur
+            Revenu protégé grâce aux décisions de l&apos;opérateur
           </p>
           {continuityLabel && (
             <p className="text-[10px] text-indigo-400 mt-0.5">

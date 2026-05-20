@@ -34,7 +34,28 @@ export async function logWebhookEvent(data: {
 
 export type WebhookMessageType = "MESSAGE_RECEIVED" | "STATUS_UPDATE";
 
-export async function processWebhookMessages(entries: any[], signature: string) {
+interface MetaMessage {
+  id: string;
+  type?: string;
+  [key: string]: unknown;
+}
+interface MetaStatus {
+  id: string;
+  status?: string;
+  [key: string]: unknown;
+}
+interface WebhookEntry {
+  changes?: {
+    value?: {
+      metadata?: { phone_number_id?: string };
+      messages?: MetaMessage[];
+      statuses?: MetaStatus[];
+    };
+    field?: string;
+  }[];
+}
+
+export async function processWebhookMessages(entries: WebhookEntry[], signature: string) {
   try {
     for (const entry of entries) {
       const changes = entry.changes || [];

@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import type { UgcItemSummary, UgcStats } from "@/services/grow.service";
 import {
   CheckCircle, XCircle, Image, Download, Filter,
-  MessageSquare, Sparkles
 } from "lucide-react";
 
 interface Props {
@@ -94,8 +93,6 @@ export default function ZioCaptureClient({ items, stats }: Props) {
   const [localItems, setLocalItems] = useState(items);
   const [acting, setActing] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterMode>("all");
-  const [requestTarget, setRequestTarget] = useState<string | null>(null);
-
   const handleAction = useCallback(async (id: string, action: "approve" | "reject") => {
     setActing(id);
     try {
@@ -114,7 +111,6 @@ export default function ZioCaptureClient({ items, stats }: Props) {
   }, []);
 
   const filtered = filter === "all" ? localItems : localItems.filter((i) => i.status === filter);
-  const pendingCount = localItems.filter((i) => i.status === "received").length;
 
   const kpis = [
     { label: "Total", value: stats.total },
@@ -175,12 +171,6 @@ export default function ZioCaptureClient({ items, stats }: Props) {
           {filtered.map((item) => (
             <UgcCard key={item.id} item={item} onAction={handleAction} acting={acting} />
           ))}
-        </div>
-      )}
-
-      {requestTarget && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-xs font-bold text-[var(--text-primary)] shadow-lg z-50 font-space">
-          UGC requested from buyer
         </div>
       )}
     </div>

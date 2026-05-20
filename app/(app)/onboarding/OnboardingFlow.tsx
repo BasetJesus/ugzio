@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -116,7 +116,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
             </button>
 
             <p className="text-center text-[10px] text-[var(--text-tertiary)]">
-              Des données d'exemple seront générées pour te montrer le fonctionnement
+              Des données d&apos;exemple seront générées pour te montrer le fonctionnement
             </p>
           </form>
         </div>
@@ -136,7 +136,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
             </div>
             <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--state-calm-bg)] text-[10px] text-[var(--state-calm)] animate-pulse">•</span>
-              Génération des commandes d'exemple...
+              Génération des commandes d&apos;exemple...
             </div>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
           <div className="rounded-xl border border-[var(--success-green-border)] bg-[var(--state-protected-bg)] p-6">
             <p className="text-2xl mb-2">🎯</p>
             <h1 className="text-xl font-bold text-[var(--text-primary)]">Boutique prête</h1>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">Voici ce qu'on a préparé</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Voici ce qu&apos;on a préparé</p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 text-left">
               <div className="rounded-lg bg-[var(--bg-card)] border border-[var(--border)] p-3">
@@ -171,7 +171,7 @@ export default function OnboardingFlow({ existingOrgId }: Props) {
               </div>
               <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
                 <span className="text-[var(--accent)]">→</span>
-                <span>File de confirmation prête pour l'action</span>
+                <span>File de confirmation prête pour l&apos;action</span>
               </div>
             </div>
 

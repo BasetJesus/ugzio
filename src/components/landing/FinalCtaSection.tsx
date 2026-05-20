@@ -1,4 +1,4 @@
-import RevealOnScroll from "./RevealOnScroll"
+﻿import RevealOnScroll from "./RevealOnScroll"
 import TrackedCTA from "./TrackedCTA"
 
 export default function FinalCtaSection() {
@@ -40,7 +40,7 @@ export default function FinalCtaSection() {
               eventName="final_cta_click"
               className="inline-flex items-center justify-center rounded-xl border border-white/15 px-8 py-4 text-sm font-medium text-white/60 hover:text-white hover:border-white/30 transition-all touch-manipulation landing-glass min-w-[200px]"
             >
-              🇹🇳 Rejoindre l'attente
+              🇹🇳 Rejoindre l&apos;attente
             </TrackedCTA>
           </div>
 

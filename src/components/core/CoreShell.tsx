@@ -15,13 +15,12 @@ interface Props {
   planName: string
   orgId: string
   completedCount: number
-  revenueAtRisk: number
   pendingCount?: number
   highRiskCount?: number
   brandDescription?: string
 }
 
-export default function CoreShell({ children, orgName, planName, orgId, completedCount, revenueAtRisk, pendingCount = 0, highRiskCount = 0, brandDescription = "" }: Props) {
+export default function CoreShell({ children, orgName, orgId, pendingCount = 0, highRiskCount = 0, brandDescription = "" }: Props) {
   const pathname = usePathname()
   const currentState = stateFromPath(pathname)
   const [displayState, setDisplayState] = useState<SystemState>(currentState)
@@ -56,9 +55,7 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
     <div className="mx-auto flex min-h-dvh bg-[var(--bg-base)]">
       <SidebarNav
         orgName={orgName}
-        planName={planName}
-        completedCount={completedCount}
-        pendingCount={pendingCount}
+pendingCount={pendingCount}
         highRiskCount={highRiskCount}
       />
       <div className="relative flex flex-1 flex-col">
@@ -85,3 +82,7 @@ export default function CoreShell({ children, orgName, planName, orgId, complete
     </div>
   )
 }
+
+
+
+

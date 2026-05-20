@@ -10,7 +10,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const token = formData.get("token") as string | null;
     const file = formData.get("file") as File | null;
-    const caption = formData.get("caption") as string | null;
 
     if (!token || !file) {
       return NextResponse.json({ error: "token and file are required" }, { status: 400 });
@@ -61,3 +60,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Erreur lors du téléchargement. Réessayez." }, { status: 500 });
   }
 }
+

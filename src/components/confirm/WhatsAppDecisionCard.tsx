@@ -65,7 +65,7 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
     setTimeout(() => setConfirming(false), 1500)
   }, [onAction, item.orderId])
 
-  const handleVoiceSend = useCallback((_blob: Blob) => {
+  const handleVoiceSend = useCallback(() => {
     setShowVoice(false)
     onAction(item.orderId, "confirm")
   }, [onAction, item.orderId])
@@ -198,3 +198,4 @@ export default function WhatsAppDecisionCard({ item, psychology, onAction, onSel
     </div>
   )
 }
+

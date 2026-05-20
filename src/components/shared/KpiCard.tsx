@@ -59,7 +59,7 @@ export default function KpiCard({ label, value, tier = "neutral", emotion, child
   )
 }
 
-export function MiniKpiCard({ label, value, tier = "neutral", emotion, shareable = true }: Props) {
+export function MiniKpiCard({ label, value, tier = "neutral", shareable = true }: Props) {
   return (
     <div className={`relative rounded-xl border p-3 overflow-hidden ${tierStyles[tier]}`}>
       {shareable && (
@@ -87,3 +87,4 @@ export function EmotionBadge({ emotion, label }: { emotion: EmotionTier; label?:
     </span>
   )
 }
+

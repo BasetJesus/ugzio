@@ -50,10 +50,6 @@ export const t = {
   },
 }
 
-type NestedKeyOf<T> = T extends Record<string, unknown>
-  ? { [K in keyof T & string]: T[K] extends Record<string, unknown> ? NestedKeyOf<T[K]> | `${K}` : `${K}` }[keyof T & string]
-  : never
-
 function lookup(obj: Record<string, unknown>, path: string): Record<Lang, string> | null {
   const parts = path.split(".")
   let current: unknown = obj
@@ -81,3 +77,4 @@ export const LANG_FLAGS: Record<Lang, { flag: string; label: string }> = {
   fr: { flag: "🇫🇷", label: "Français" },
   en: { flag: "🇬🇧", label: "English" },
 }
+

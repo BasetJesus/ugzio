@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useState, useEffect, useCallback } from "react";
 import SocialConnectButton from "./SocialConnectButton";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
@@ -26,7 +28,7 @@ interface ConnectedAccount {
 }
 
 export default function BrandingSettingsClient() {
-  const [profile, setProfile] = useState<SellerProfile | null>(null);
+  const [, setProfile] = useState<SellerProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -213,3 +215,4 @@ export default function BrandingSettingsClient() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -397,7 +397,7 @@ Supprimer
 
       <div className="rounded-lg bg-[var(--bg-surface)] p-4">
         <p className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
-          Comment c'est utilisé
+          Comment c&apos;est utilisé
         </p>
         <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
           <li>• Coût RTS = montant perdu par retour (transport + emballage)</li>

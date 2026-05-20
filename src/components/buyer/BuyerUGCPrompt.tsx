@@ -79,8 +79,8 @@ export default function BuyerUGCPrompt({ order }: Props) {
 
       trackUGCTrigger(order.orderId, { method: "web_upload" })
       setMode("success")
-    } catch (e: any) {
-      setError(e.message || "Erreur lors de l'envoi. Réessayez.")
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Erreur lors de l'envoi. Réessayez.")
     } finally {
       setUploading(false)
     }

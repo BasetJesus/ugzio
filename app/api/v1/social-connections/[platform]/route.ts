@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import { signState } from "@/lib/core/state-sign";
-import { saveSocialConnection, disconnectSocialConnection, getSocialConnections } from "@/services/social-connection.service";
+import { disconnectSocialConnection, getSocialConnections } from "@/services/social-connection.service";
 
 const OAUTH_CONFIGS: Record<string, { authUrl: (redirectUri: string, state: string) => string; tokenUrl: string; clientIdEnv: string; clientSecretEnv: string }> = {
   instagram: {
@@ -70,3 +70,4 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   return NextResponse.json({ success: true });
 }
+

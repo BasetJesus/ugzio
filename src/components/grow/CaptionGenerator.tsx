@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface Caption {
   hook: string;
@@ -8,13 +8,6 @@ interface Caption {
   hashtags: string[];
   cta: string;
   full: string;
-}
-
-interface BrandProfile {
-  niche?: string;
-  audience?: string;
-  brandTone?: string;
-  usp?: string;
 }
 
 const TONES = [
@@ -185,3 +178,4 @@ export default function CaptionGenerator() {
     </div>
   );
 }
+

@@ -66,7 +66,6 @@ export async function createCheckout(orgId: string, planName: string) {
       include: { plan: true },
     });
 
-    const subId = existingSub?.id;
     const currentPlan = existingSub?.plan.name ?? "free";
     const description = currentPlan === "free"
       ? `UGZIO ${planName} — ${plan.price} TND/mois`
@@ -246,3 +245,4 @@ export async function getAllPlans() {
     return [];
   }
 }
+

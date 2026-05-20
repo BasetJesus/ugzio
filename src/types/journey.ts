@@ -1,4 +1,4 @@
-import { EventType, getEventLabel, toCanonical } from "@/lib/events/taxonomy"
+import { toCanonical } from "@/lib/events/taxonomy"
 
 // ─── LEGACY JOURNEY EVENT TYPES (backward compat) ──────────────────
 // These map to the canonical taxonomy. New code should use EventType from taxonomy directly.
@@ -79,3 +79,4 @@ export interface JourneyEventRecord {
   metadata: Record<string, unknown> | null
   occurredAt: string
 }
+

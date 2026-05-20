@@ -299,7 +299,6 @@ export async function getSellerContext(orgId: string): Promise<SellerContext> {
     const speedTrendVal = prevWeekOutcomes > 0 ? (thisWeekOutcomes - prevWeekOutcomes) / prevWeekOutcomes : 0
     const confirmationSpeedTrend: "improving" | "stable" | "declining" = speedTrendVal > 0.1 ? "improving" : speedTrendVal < -0.1 ? "declining" : "stable"
 
-    const prevWeekResponseEvents = 0 // approximated from prev data
     const responseTrendVal = buyerResponsiveness > 30 ? 0.05 : -0.05
     const buyerResponsivenessTrend: "improving" | "stable" | "declining" = responseTrendVal > 0.05 ? "improving" : responseTrendVal < -0.05 ? "declining" : "stable"
 
@@ -422,3 +421,4 @@ export async function getSellerContext(orgId: string): Promise<SellerContext> {
     }
   }
 }
+

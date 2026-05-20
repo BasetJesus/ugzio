@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/og"
+﻿import { ImageResponse } from "next/og"
 
 export const alt = "UGZIO — Réduction des Annulations Ecommerce en Tunisie"
 export const size = { width: 1200, height: 600 }
@@ -101,7 +101,7 @@ export default async function Image() {
             margin: 0,
           }}
         >
-          Analyse, confirme et sécurise chaque commande avant l'envoi
+          Analyse, confirme et sécurise chaque commande avant l&apos;envoi
         </p>
         <div
           style={{

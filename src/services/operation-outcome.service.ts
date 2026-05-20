@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { safeNumber, safeString } from "@/lib/core/safe-render";
+import { safeNumber } from "@/lib/core/safe-render";
 
 export type OutcomeAction = "confirm" | "cancel" | "unreachable" | "suspicious" | "retry";
 
@@ -193,3 +193,4 @@ export async function getOutcomeStats(orgId: string, startDate?: Date): Promise<
     };
   }
 }
+

@@ -1,9 +1,11 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
-import { Shield, Users, AlertTriangle } from "lucide-react";
+import { Shield, AlertTriangle } from "lucide-react";
 
 interface BlacklistEntry {
   phone: string;
@@ -160,3 +162,4 @@ export default function BlacklistClient() {
     </div>
   );
 }
+

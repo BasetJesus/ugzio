@@ -66,7 +66,7 @@ async function main() {
       const product = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
       const createdAt = randomDaysAgo(14);
 
-      const order = await prisma.order.create({
+      await prisma.order.create({
         data: {
           organizationId: orgId,
           buyerName: buyer.name,
@@ -94,3 +94,4 @@ main().catch((e) => {
   console.error("Simulation failed:", e);
   process.exit(1);
 });
+

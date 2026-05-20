@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getSocialConnections, disconnectSocialConnection } from "@/services/social-connection.service";
+import { getSocialConnections } from "@/services/social-connection.service";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -14,3 +14,4 @@ export async function GET() {
   const connections = await getSocialConnections(orgId);
   return NextResponse.json({ connections });
 }
+

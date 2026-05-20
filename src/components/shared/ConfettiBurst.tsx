@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 interface Particle {
   id: number
@@ -75,3 +75,4 @@ function ConfettiBurstInner({ onComplete }: { onComplete?: () => void }) {
     </div>
   )
 }
+

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import type { SuccessMoment } from "@/services/pilot.service"
@@ -65,11 +65,11 @@ export default function SuccessMomentsFeed({ moments }: Props) {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
         <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
-          <p className="text-caption text-[var(--text-tertiary)]">Aujourd'hui</p>
+          <p className="text-caption text-[var(--text-tertiary)]">Aujourd&apos;hui</p>
           <p className="text-display text-[var(--text-primary)] mt-1">Activité</p>
         </div>
         <div className="px-panel py-6 text-center">
-          <p className="text-xs text-[var(--text-secondary)]">Aucune activité aujourd'hui</p>
+          <p className="text-xs text-[var(--text-secondary)]">Aucune activité aujourd&apos;hui</p>
           <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Les résultats apparaîtront ici</p>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function SuccessMomentsFeed({ moments }: Props) {
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
       <div className="px-panel pt-panel pb-3 border-b border-[var(--border)]">
-        <p className="text-caption text-[var(--text-tertiary)]">Aujourd'hui</p>
+        <p className="text-caption text-[var(--text-tertiary)]">Aujourd&apos;hui</p>
         <h2 className="text-display text-[var(--text-primary)] mt-1">Moments de succès</h2>
       </div>
 

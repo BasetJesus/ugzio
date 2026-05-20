@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { safeNumber } from "@/lib/core/safe-render";
 import { getProviderRtsCost } from "@/services/delivery-provider.service";
 import { getTodayOutcomeStats, OutcomeStats } from "@/services/operation-outcome.service";
 
@@ -83,7 +82,7 @@ export function calculateActionOutcome(
   trustScore: number,
   rtsCost: number = DEFAULT_RTS_COST
 ): { revenueSaved: number; lossPrevented: number } {
-  const { failureProbability, estimatedRtsLoss, estimatedRevenueAtRisk } = calculateEstimatedRtsLoss(
+  const { estimatedRtsLoss, estimatedRevenueAtRisk } = calculateEstimatedRtsLoss(
     orderAmount,
     riskLevel,
     trustScore,
@@ -275,3 +274,5 @@ export function getPreventableLossPercent(totalAtRisk: number, protectedToday: n
   if (totalAtRisk + protectedToday <= 0) return 0;
   return Math.round((protectedToday / (totalAtRisk + protectedToday)) * 100);
 }
+
+

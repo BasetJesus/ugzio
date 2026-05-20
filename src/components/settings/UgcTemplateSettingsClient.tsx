@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -362,7 +362,7 @@ export default function UgcTemplateSettingsClient() {
             Créer votre premier modèle
           </button>
           <p className="text-xs text-[var(--text-tertiary)] mt-3">
-            Utilise un message par défaut si aucun modèle n'est configuré
+            Utilise un message par défaut si aucun modèle n&apos;est configuré
           </p>
         </div>
       ) : (
@@ -426,10 +426,10 @@ Supprimer
           Variables du modèle
         </p>
         <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
-          <li>• <code className="text-[var(--accent)]">{`{{buyerName}}`}</code> — Nom de l'acheteur (ex: Mohamed)</li>
+          <li>• <code className="text-[var(--accent)]">{`{{buyerName}}`}</code> — Nom de l&apos;acheteur (ex: Mohamed)</li>
           <li>• <code className="text-[var(--accent)]">{`{{product}}`}</code> — Nom du produit (ex: TV Samsung 55&quot;)</li>
           <li>• <code className="text-[var(--accent)]">{`{{orderAmount}}`}</code> — Montant de la commande (ex: 1200)</li>
-          <li>• <code className="text-[var(--accent)]">{`{{incentive}}`}</code> — Valeur de l'incitation de ce modèle</li>
+          <li>• <code className="text-[var(--accent)]">{`{{incentive}}`}</code> — Valeur de l&apos;incitation de ce modèle</li>
         </ul>
       </div>
     </div>

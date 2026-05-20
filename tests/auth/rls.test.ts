@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { prisma } from "@/lib/db";
 
 describe("RLS Tenant Isolation", () => {
   it("placeholder — requires PostgreSQL with RLS policies", async () => {
@@ -10,3 +9,4 @@ describe("RLS Tenant Isolation", () => {
     expect(true).toBe(true);
   });
 });
+

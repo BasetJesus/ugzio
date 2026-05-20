@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Globe, ShoppingCart, Store, ExternalLink, Link2, Unlink, Check, X } from "lucide-react";
+import { Globe, ShoppingCart, Store, Link2, Unlink, Check } from "lucide-react";
 
 interface Integration {
   id: string;

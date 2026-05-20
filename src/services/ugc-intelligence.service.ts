@@ -39,10 +39,6 @@ export async function calculateUgcProbability(
     })
 
     const previousOrders = buyerOrders.filter((o) => o.id !== orderId)
-    const deliveredCount = buyerOrders.filter(
-      (o) => o.status === "DELIVERED" || o.status === "UGC_REQUESTED" || o.status === "UGC_RECEIVED",
-    ).length
-
     const existingUgc = await prisma.ugcItem.count({
       where: { order: { organizationId: orgId, buyerPhone: order.buyerPhone } },
     })
@@ -204,3 +200,4 @@ function emptyScore(reason: string): UgcProbabilityScore {
     recommendedRequestType: "whatsapp_feedback",
   }
 }
+

@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db"
-import type { OperationEventType } from "./operation-timeline.service"
 
 export interface OrderMemory {
   orderId: string
@@ -170,3 +169,4 @@ function safeParseJson(raw: string): Record<string, unknown> | null {
     return null
   }
 }
+

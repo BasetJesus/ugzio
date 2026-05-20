@@ -6,7 +6,6 @@ import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/conf
 import type { PsychologyPreview } from "@/types/whatsapp";
 import type { JourneyTimeline as JourneyTimelineData } from "@/services/buyer-journey.service";
 import WhatsAppDecisionCard from "@/components/confirm/WhatsAppDecisionCard";
-import PsychologyCard from "@/components/shared/PsychologyCard";
 import JourneyTimelineComponent from "@/components/shared/JourneyTimeline";
 import ConfettiBurst from "@/components/shared/ConfettiBurst";
 import EmptyState from "@/components/shared/EmptyState";
@@ -328,3 +327,4 @@ export default function ConfirmationPanel({ items, pendingCount, contactedCount,
     </div>
   );
 }
+
