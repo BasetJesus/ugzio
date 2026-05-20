@@ -61,7 +61,7 @@ pendingCount={pendingCount}
       <div className="relative flex flex-1 flex-col">
         <main className="flex-1 overflow-y-auto pb-24 sm:pb-0">
           <div
-            className={`px-4 py-5 sm:px-8 sm:py-6 ${
+            className={`px-5 py-6 sm:px-10 sm:py-7 ${
               animating
                 ? "opacity-0"
                 : ""

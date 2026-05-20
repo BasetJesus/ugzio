@@ -2,36 +2,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
-import { getRevenueAtRisk, getNeedsConfirmCount, getRevenueProtectionStats, getLoopCompletionStats } from "@/services/demo-orchestrator.service";
-import type { LoopCompletionStats } from "@/services/overview.service";
-import { getRecentActivity } from "@/services/operation-timeline.service";
-import { getWeeklyStory, getTrustMomentum } from "@/services/behavioral-outcome.service";
-import { getQuickstartProgress, getFirst48Hours, getSuccessMoments, getSellerHealth } from "@/services/pilot.service";
-import { getConnectionStatus } from "@/services/whatsapp-connection.service";
-import { getCommunicationPerformance } from "@/services/communication-performance.service";
-import { getSellerContext, getDailyMomentum } from "@/services/seller-context.service";
+import { getRevenueAtRisk, getNeedsConfirmCount, getRevenueProtectionStats } from "@/services/demo-orchestrator.service";
 import type { RevenueProtectionStats } from "@/services/demo-orchestrator.service";
+import { getRecentActivity } from "@/services/operation-timeline.service";
 import type { OperationEventRecord } from "@/services/operation-timeline.service";
-import type { WeeklyStory, TrustMomentumData } from "@/services/behavioral-outcome.service";
-import type { QuickstartProgress, First48HoursData, SuccessMoment, SellerHealth } from "@/services/pilot.service";
-import type { WhatsAppConnectionState, CommunicationPerformance } from "@/types/whatsapp";
-import type { SellerContext, DailyMomentum } from "@/services/seller-context.service";
+import { getSellerContext } from "@/services/seller-context.service";
+import type { SellerContext } from "@/services/seller-context.service";
 import KpiCard, { MiniKpiCard } from "@/components/shared/KpiCard";
 import RevenueShield from "@/components/shared/RevenueShield";
 import SystemNarrative from "@/components/shared/SystemNarrative";
 import OperationalFeed from "@/components/live/OperationalFeed";
-import RevenueStoryCard from "@/components/shared/RevenueStoryCard";
-import TrustMomentumCard from "@/components/shared/TrustMomentumCard";
-import SellerQuickstartCard from "@/components/shared/SellerQuickstartCard";
-import First48HoursTracker from "@/components/shared/First48HoursTracker";
-import SuccessMomentsFeed from "@/components/shared/SuccessMomentsFeed";
-import SellerHealthCard from "@/components/shared/SellerHealthCard";
-import WhatsAppConnectionCard from "@/components/shared/WhatsAppConnectionCard";
-import CommunicationPerformanceCard from "@/components/shared/CommunicationPerformanceCard";
 import OperationalPresenceLayer from "@/components/shared/OperationalPresenceLayer";
-import SellerBusinessProfileCard from "@/components/shared/SellerBusinessProfileCard";
 import MorningBriefCard from "@/components/shared/MorningBriefCard";
-import DailyMomentumCard from "@/components/shared/DailyMomentumCard";
 import Link from "next/link";
 import { getServerLang, st } from "@/lib/core/server-lang";
 
@@ -59,24 +41,14 @@ export default async function OverviewPage() {
 
   const lang = await getServerLang();
 
-  let [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum, loopCompletion] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as WeeklyStory | null, null as TrustMomentumData | null, null as QuickstartProgress | null, null as First48HoursData | null, [] as SuccessMoment[], null as SellerHealth | null, null as WhatsAppConnectionState | null, null as CommunicationPerformance | null, null as SellerContext | null, null as DailyMomentum | null, null as LoopCompletionStats | null];
+  let [revenueAtRisk, needsAction, protectionStats, recentActivity, sellerContext] = [0, 0, null as RevenueProtectionStats | null, [] as OperationEventRecord[], null as SellerContext | null];
   try {
-    [revenueAtRisk, needsAction, protectionStats, recentActivity, weeklyStory, trustMomentum, quickstart, first48, successMoments, sellerHealth, whatsappConnection, commPerf, sellerContext, dailyMomentum, loopCompletion] = await Promise.all([
+    [revenueAtRisk, needsAction, protectionStats, recentActivity, sellerContext] = await Promise.all([
       getRevenueAtRisk(orgId),
       getNeedsConfirmCount(orgId),
       getRevenueProtectionStats(orgId),
-      getRecentActivity(orgId, 8),
-      getWeeklyStory(orgId),
-      getTrustMomentum(orgId),
-      getQuickstartProgress(orgId),
-      getFirst48Hours(orgId),
-      getSuccessMoments(orgId, 8),
-      getSellerHealth(orgId),
-      getConnectionStatus(orgId),
-      getCommunicationPerformance(orgId),
+      getRecentActivity(orgId, 6),
       getSellerContext(orgId),
-      getDailyMomentum(orgId),
-      getLoopCompletionStats(orgId),
     ]);
   } catch (e) {
     console.error("[overview] service error", e);
@@ -187,74 +159,15 @@ export default async function OverviewPage() {
         </div>
       )}
 
-      {loopCompletion && loopCompletion.totalCompleted > 0 && (
-        <div>
-          <SectionHeader icon="🧠" label={st(lang, "ov.section-learning")} subtitle={`${loopCompletion.learningSignals} ${st(lang, "ov.learning-signals")}`} />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-            <MiniKpiCard label={st(lang, "ov.loop-completed")} value={loopCompletion.totalCompleted} tier="neutral" emotion="achievement" />
-            <MiniKpiCard label={st(lang, "ov.completion-rate")} value={`${loopCompletion.completionRate}%`} tier={loopCompletion.completionRate >= 50 ? "low" : "medium"} emotion={loopCompletion.completionRate >= 50 ? "protective" : "calm"} />
-            <MiniKpiCard label={st(lang, "ov.learning-signals")} value={loopCompletion.learningSignals} tier="neutral" emotion="achievement" />
-            <MiniKpiCard label={st(lang, "ov.protected-revenue")} value={`${loopCompletion.successfulCompletions}/${loopCompletion.totalCompleted}`} tier="low" emotion="protective" />
-          </div>
-          <p className="text-[10px] text-[var(--text-tertiary)]/60 mt-2">{st(lang, "ov.loop-description")}</p>
-        </div>
-      )}
-
       <SectionHeader icon="⚡" label={st(lang, "ov.section-act")} subtitle={needsAction > 0 ? `${needsAction} ${st(lang, "ov.pending-count").replace("{n}", "")}` : undefined} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
-        {sellerContext && (
-          <MorningBriefCard context={sellerContext} revenueAtRisk={revenueAtRisk} needsAction={needsAction} />
-        )}
-        {dailyMomentum && (
-          <DailyMomentumCard data={dailyMomentum} hasOutcomes={hasOutcomes} />
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
-        {whatsappConnection && (
-          <WhatsAppConnectionCard data={whatsappConnection} />
-        )}
-        {commPerf && (
-          <CommunicationPerformanceCard data={commPerf} />
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-panel">
-        <div className="lg:col-span-2">
-          {weeklyStory && <RevenueStoryCard story={weeklyStory} context={sellerContext ?? undefined} />}
-        </div>
-        <div>
-          <OperationalFeed events={recentActivity} />
-        </div>
-      </div>
-
-      <SectionHeader icon="📈" label={st(lang, "ov.section-growth")} />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-panel">
-        {sellerContext && (
-          <SellerBusinessProfileCard context={sellerContext} />
-        )}
-        {sellerHealth && (
-          <SellerHealthCard data={sellerHealth} sellerStyle={sellerStyle} />
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-panel">
-        {quickstart && (
-          <SellerQuickstartCard data={quickstart} />
-        )}
-        {first48 && (
-          <First48HoursTracker data={first48} />
-        )}
-        {successMoments.length > 0 && (
-          <SuccessMomentsFeed moments={successMoments} />
-        )}
-      </div>
-
-      {trustMomentum && (
-        <TrustMomentumCard data={trustMomentum} sellerStyle={sellerStyle} />
+      {sellerContext && (
+        <MorningBriefCard context={sellerContext} revenueAtRisk={revenueAtRisk} needsAction={needsAction} />
       )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-panel">
+        <OperationalFeed events={recentActivity} />
+      </div>
     </div>
     </OperationalPresenceLayer>
   );
