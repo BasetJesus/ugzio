@@ -27,6 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       completedCount={completedCount}
       pendingCount={pendingCount}
       brandDescription={org?.brandDescription ?? ""}
+      userName={session.user.name ?? "User"}
     >
       {children}
     </CoreShell>

@@ -1,69 +1,34 @@
-"use client"
 
-import Link from "next/link"
-import { copy, type CopyKey } from "@/lib/core/copy"
-
-interface EmptyStateAction {
-  label?: string
-  href?: string
-  onClick?: () => void
-}
 
 interface EmptyStateProps {
-  icon?: string
+  icon?: React.ReactNode
   title?: string
-  description?: string
-  action?: EmptyStateAction
-  titleKey?: CopyKey
-  descKey?: CopyKey
-  actionKey?: CopyKey
+  subtitle?: string
+  titleKey?: string
+  descKey?: string
+  action?: React.ReactNode
 }
 
 export default function EmptyState({
-  icon = "—",
-  title,
-  description,
+  icon,
+  title = "No orders yet",
+  subtitle = "Mazelna ma jatch command. Les nouvelles commandes apparaîtront ici.",
   action,
-  titleKey,
-  descKey,
-  actionKey,
 }: EmptyStateProps) {
-  const resolvedTitle = title ?? (titleKey ? copy(titleKey) : "Aucune donnée")
-  const resolvedDesc = description ?? (descKey ? copy(descKey) : undefined)
-  const resolvedAction = action ?? (actionKey ? { label: copy(actionKey) } : undefined)
-
   return (
-    <div className="flex flex-col items-center py-16 text-center px-5">
-      <div className="h-12 w-12 rounded-full flex items-center justify-center mb-4 bg-[var(--bg-card)]">
-        <span className="text-base text-[var(--text-tertiary)]">{icon}</span>
+    <div className="flex flex-col items-center justify-center py-16 px-6">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full mb-5" style={{ backgroundColor: "rgba(255,215,0,0.12)" }}>
+        {icon ?? (
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        )}
       </div>
-      <p className="text-base font-medium text-[var(--text-primary)]">
-        {resolvedTitle}
+      <p className="text-[16px] font-bold text-white mb-1.5 text-center">{title}</p>
+      <p className="text-[13px] text-center max-w-xs" style={{ color: "#6B7280" }}>
+        {subtitle}
       </p>
-      {resolvedDesc && (
-        <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-xs">
-          {resolvedDesc}
-        </p>
-      )}
-      {resolvedAction && (
-        <div className="mt-4">
-          {resolvedAction.href ? (
-            <Link
-              href={resolvedAction.href}
-              className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
-            >
-              {resolvedAction.label ?? "Action"}
-            </Link>
-          ) : (
-            <button
-              onClick={resolvedAction.onClick}
-              className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--accent-hover)] transition-colors"
-            >
-              {resolvedAction.label ?? "Action"}
-            </button>
-          )}
-        </div>
-      )}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   )
 }

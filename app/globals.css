@@ -2,13 +2,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", monospace;
   --font-serif: var(--font-fraunces);
 
   --font-grotesk: "Space Grotesk", sans-serif;
   --font-cairo: "Cairo", sans-serif;
   --font-jetbrains: "JetBrains Mono", monospace;
+
+  --color-uz-background: #0B0D12;
+  --color-uz-surface: #161A23;
+  --color-uz-surface2: #2A303C;
+  --color-uz-border: #2A303C;
+  --color-uz-border-light: rgba(255, 255, 255, 0.06);
+  --color-uz-yellow: #FFD700;
+  --color-uz-yellow-hover: #E6C200;
+  --color-uz-white: #FFFFFF;
+  --color-uz-gray: #6B7280;
+  --color-uz-gray-light: #9CA3AF;
+  --color-uz-risk-red: #EF4444;
+  --color-uz-risk-orange: #F97316;
+  --color-uz-risk-green: #22C55E;
+  --color-uz-risk-yellow: #EAB308;
+  --color-uz-blue: #3B82F6;
+  --color-uz-purple: #8B5CF6;
 
   --spacing-section: 2.5rem;
   --spacing-panel: 2rem;
@@ -238,6 +255,8 @@ body {
 }
 
 :root {
+  --bg-base: #0B0D12;
+  --text-primary: #FFFFFF;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -1057,4 +1076,116 @@ body {
   .pr-safe {
     padding-right: env(safe-area-inset-right, 0px);
   }
+}
+
+/* ── Selection ── */
+::selection {
+  background-color: #FFD700;
+  color: #000000;
+}
+
+/* ── Scrollbar (desktop) ── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #2A303C;
+}
+::-webkit-scrollbar-thumb {
+  background: #FFD700;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E6C200;
+}
+
+/* ── Focus ring ── */
+:focus-visible {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* ── Animations ── */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: var(--line-length, 1000); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes riskArc {
+  from { stroke-dashoffset: var(--arc-length, 213.6); }
+  to { stroke-dashoffset: var(--arc-target, 0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Interactive elements ── */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  transition: all 0.15s ease;
+}
+button:active,
+a:active,
+[role="button"]:active {
+  transform: scale(0.95);
+}
+
+/* ── Notification badge pulse ── */
+.notification-badge {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── Sidebar active item ── */
+.sidebar-active {
+  animation: slideInLeft 0.25s ease-out;
+}
+
+/* ── Shimmer loading ── */
+.shimmer-base {
+  background: linear-gradient(90deg, #161A23 25%, #2A303C 50%, #161A23 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Sonner toasts ── */
+.sonner-brand[data-type="success"] {
+  border-left: 3px solid #22C55E !important;
+}
+.sonner-brand[data-type="error"] {
+  border-left: 3px solid #EF4444 !important;
+}
+.sonner-brand[data-type="info"] {
+  border-left: 3px solid #FFD700 !important;
 }

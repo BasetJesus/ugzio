@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, Cairo } from "next/font/google";
+import { Space_Grotesk, Inter, Cairo, JetBrains_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/ui/theme-provider";
 import { SessionProvider } from "@/lib/auth/session-provider";
 import AnalyticsProvider from "@/components/shared/AnalyticsProvider";
 import { ToastProvider } from "@/components/shared/Toast";
+import BrandToaster from "@/components/shared/BrandToaster";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -16,7 +17,13 @@ const spaceGrotesk = Space_Grotesk({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  weight: ["400", "500", "600"],
 });
 
 const cairo = Cairo({
@@ -82,7 +89,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${cairo.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${cairo.variable} ${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -102,6 +109,7 @@ export default function RootLayout({
               <AnalyticsProvider>
                 <ToastProvider>
                   {children}
+                  <BrandToaster />
                 </ToastProvider>
               </AnalyticsProvider>
             </SessionProvider>
