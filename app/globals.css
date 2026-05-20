@@ -243,7 +243,6 @@
 html,
 body {
   height: 100%;
-  overflow: hidden;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;

@@ -30,7 +30,7 @@ export default function DashboardShell({ children, sidebarProps }: DashboardShel
         ugcPendingCount={sidebarProps?.ugcPendingCount ?? 0}
       />
       <div
-        className="flex flex-1 flex-col overflow-x-hidden min-h-screen transition-all duration-200 ease-out md:ml-16 pb-16 md:pb-0"
+        className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto min-h-screen transition-all duration-200 ease-out md:ml-16 pb-16 md:pb-0"
         style={isDesktop ? { marginLeft: isCollapsed ? 64 : 192 } : undefined}
       >
         <MobileHeader />
