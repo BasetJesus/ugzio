@@ -104,9 +104,13 @@ export async function checkFreePlanLimit(orgId: string): Promise<boolean> {
 export async function createOrder(orgId: string, data: {
   buyerName: string;
   buyerPhone: string;
-  product?: string;
+  product?: string | null;
   amount: number;
-  buyerWilaya?: string;
+  buyerWilaya?: string | null;
+  buyerAddress?: string | null;
+  currency?: string;
+  source?: string | null;
+  externalId?: string | null;
 }) {
   try {
     const blocked = await checkFreePlanLimit(orgId);
@@ -122,7 +126,11 @@ export async function createOrder(orgId: string, data: {
         buyerPhone: data.buyerPhone,
         product: data.product ?? null,
         buyerWilaya: data.buyerWilaya ?? null,
+        buyerAddress: data.buyerAddress ?? null,
         amount: Number(data.amount),
+        currency: data.currency ?? "TND",
+        source: data.source ?? null,
+        externalId: data.externalId ?? null,
         status: "CREATED",
       },
     });

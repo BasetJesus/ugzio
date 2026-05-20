@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import { getOrgFromUserId } from "@/lib/billing/enforce";
 import ConnectivitySettingsClient from "@/components/settings/ConnectivitySettingsClient";
+import IntegrationsClient from "@/components/settings/IntegrationsClient";
 import Link from "next/link";
 import { getServerLang } from "@/lib/core/server-lang";
 
@@ -41,6 +42,7 @@ export default async function ConnectivitySettingsPage() {
         <p className="text-xs text-[var(--text-secondary)] mt-0.5">{l("configure_connectivity")}</p>
       </div>
 
+      <IntegrationsClient />
       <ConnectivitySettingsClient />
     </div>
   );

@@ -101,6 +101,7 @@ model Organization {
   ugcTemplates      UgcRequestTemplate[]
   socialConnections SocialConnection[]
   zioFlowPosts      ZioFlowPost[]
+  integrations      OrganizationIntegration[]
   createdAt         DateTime           @default(now())
 }
 
@@ -202,6 +203,8 @@ model Order {
   status             String               @default("CREATED")
   verificationStatus String               @default("none")     // deprecated, use status
   confirmStatus      String               @default("pending_confirmation")
+  source             String?              // shopify|youcan|woocommerce|tiktak|csv|manual
+  externalId         String?              // platform-specific order ID
   deletedAt          DateTime?
   createdAt          DateTime             @default(now())
   conversations      Conversation[]
@@ -564,4 +567,26 @@ model ZioFlowPost {
 
   @@index([organizationId, status])
   @@index([ugcItemId])
+}
+
+// ─── PLATFORM INTEGRATIONS (Shopify, YouCan, WooCommerce, TikTak Pro, etc.) ──
+
+model OrganizationIntegration {
+  id              String   @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  platform        String   // shopify|youcan|woocommerce|tiktak
+  label           String?  // user-friendly name, e.g. "My Shopify Store"
+  apiKey          String?  // API key or token (encrypted in production)
+  apiSecret       String?  // API secret (encrypted in production)
+  storeUrl        String?  // store URL / domain
+  webhookSecret   String?  // webhook verification secret
+  settings        String?  // JSON string for platform-specific config
+  isActive        Boolean  @default(true)
+  lastSyncAt      DateTime?
+  lastOrderId     String?  // last imported order ID for incremental sync
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([organizationId, platform])
 }
