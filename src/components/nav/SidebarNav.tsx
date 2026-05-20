@@ -26,7 +26,6 @@ const GROW_ITEMS = [
   { href: "/growth", label: "nav.growth", icon: "📈" },
   { href: "/flow", label: "nav.flow", icon: "✨" },
   { href: "/stats", label: "nav.stats", icon: "📊" },
-  { href: "/captions", label: "nav.captions", icon: "✍" },
 ]
 
 export default function SidebarNav({ orgName, pendingCount = 0, highRiskCount = 0 }: Props) {

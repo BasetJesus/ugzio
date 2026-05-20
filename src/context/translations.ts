@@ -67,20 +67,6 @@ const dict: Record<string, DictEntry> = {
   "bl.remove": { ar: "حيد", fr: "Retirer", en: "Remove" },
 
   /* ── Caption Generator ── */
-  "captions.title": { ar: "كابتشينات", fr: "Captions", en: "Captions" },
-  "cg.edit-profile": { ar: "بدّل البروفيل", fr: "Modifier le profil", en: "Edit Profile" },
-  "cg.topic-placeholder": { ar: "شنو تحب تبيع؟", fr: "Quoi vendre ?", en: "What are you selling?" },
-  "cg.link-placeholder": { ar: "رابط المنتوج (اختياري)", fr: "Lien du produit (optionnel)", en: "Product link (optional)" },
-  "cg.platform-label": { ar: "المنصة", fr: "Plateforme", en: "Platform" },
-  "cg.tone-label": { ar: "النغمة", fr: "Ton", en: "Tone" },
-  "cg.generate-loading": { ar: "جاري التوليد...", fr: "Génération en cours...", en: "Generating..." },
-  "cg.generate": { ar: "ولّد الكابتشينات", fr: "Générer les Captions", en: "Generate Captions" },
-  "cg.error": { ar: "التوليد فشل", fr: "Échec de la génération", en: "Generation failed" },
-  "cg.copied": { ar: "تم النسخ ✓", fr: "Copié ✓", en: "Copied ✓" },
-  "cg.copy": { ar: "انسخ", fr: "Copier", en: "Copy" },
-  "cg.regenerate": { ar: "ولّد واحد آخر", fr: "Générer un autre", en: "Regenerate" },
-  "cg.take-photo": { ar: "تصوّر", fr: "Prendre une Photo", en: "Take Photo" },
-  "cg.upload-gallery": { ar: "رفع من المعرض", fr: "Charger depuis la Galerie", en: "Upload from Gallery" },
 
   /* ── Brand Profile form ── */
   "bp.welcome": { ar: "مرحباً بيك 👋", fr: "Bienvenue 👋", en: "Welcome 👋" },
@@ -126,19 +112,6 @@ const dict: Record<string, DictEntry> = {
   "nav.capture": { ar: "التقاط", fr: "Capture", en: "Capture" },
   "nav.inbox": { ar: "الوارد", fr: "Boîte", en: "Inbox" },
   "nav.growth": { ar: "نمو", fr: "Croissance", en: "Growth" },
-  "nav.captions": { ar: "كابتشين", fr: "Captions", en: "Captions" },
-  "nav.shield": { ar: "شيلد", fr: "Bouclier", en: "Shield" },
-  "nav.flow": { ar: "تدفق", fr: "Flux", en: "Flow" },
-  "nav.stats": { ar: "إحصائيات", fr: "Statistiques", en: "Stats" },
-  "nav.track": { ar: "تتبّع", fr: "SUIVRE", en: "TRACK" },
-  "nav.zioshield": { ar: "ZioShield", fr: "ZioShield", en: "ZioShield" },
-  "nav.success": { ar: "النجاح", fr: "Succès", en: "Success" },
-  "nav.blacklist": { ar: "القائمة السودا", fr: "Liste noire", en: "Blacklist" },
-  "nav.overview": { ar: "نظرة عامة", fr: "Aperçu", en: "Overview" },
-  "nav.import": { ar: "استيراد", fr: "Importer", en: "Import" },
-  "nav.settings": { ar: "الإعدادات", fr: "Paramètres", en: "Settings" },
-  "nav.logout": { ar: "تسجيل الخروج", fr: "Déconnexion", en: "Logout" },
-  "nav.onboarding": { ar: "البداية ({n}/4)", fr: "Onboarding ({n}/4)", en: "Setup ({n}/4)" },
 
   /* ── Dashboard ── */
   "dash.title": { ar: "شنو اللي يخسرني فلوس اليوم؟", fr: "Qu'est-ce qui va me faire perdre de l'argent aujourd'hui ?", en: "What will lose you money today?" },

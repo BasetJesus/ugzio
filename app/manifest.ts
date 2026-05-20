@@ -46,11 +46,7 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: "Confirm",
         url: "/confirm",
       },
-      {
-        name: "Captions",
-        short_name: "Captions",
-        url: "/captions",
-      },
     ],
   };
 }
+
