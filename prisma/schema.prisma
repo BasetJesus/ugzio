@@ -100,6 +100,7 @@ model Organization {
   whatsappConnection WhatsAppConnection?
   ugcTemplates      UgcRequestTemplate[]
   socialConnections SocialConnection[]
+  zioFlowPosts      ZioFlowPost[]
   createdAt         DateTime           @default(now())
 }
 
@@ -231,6 +232,7 @@ model UgcItem {
   mediaType  String   // image|video
   buyerPhone String
   status     String   @default("received") // received|approved|rejected
+  flowPosts  ZioFlowPost[]
   createdAt  DateTime @default(now())
 }
 
@@ -541,4 +543,25 @@ model ZioGuardEntry {
   flagCount     Int      @default(1) // how many unique sellers flagged this phone
   firstSeenAt   DateTime @default(now())
   lastFlaggedAt DateTime @updatedAt
+}
+
+// ─── ZIOFLOW (Repost Flywheel) ───────────────────────────────────────────────
+
+model ZioFlowPost {
+  id                String          @id @default(cuid())
+  organizationId    String
+  organization      Organization    @relation(fields: [organizationId], references: [id])
+  ugcItemId         String
+  ugcItem           UgcItem         @relation(fields: [ugcItemId], references: [id])
+  platform          String          // instagram|facebook|tiktok
+  status            String          @default("queued") // queued|published|failed
+  publishedUrl      String?         // URL of the published post
+  errorMessage      String?
+  scheduledFor      DateTime?
+  publishedAt       DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([organizationId, status])
+  @@index([ugcItemId])
 }
