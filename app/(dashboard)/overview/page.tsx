@@ -1,5 +1,3 @@
-"use client"
-
 import { Zap, Package, ShieldAlert, CheckCircle, Ban } from "lucide-react"
 import Header from "@/components/layout/Header"
 import MetricCard from "@/components/dashboard/MetricCard"
@@ -7,6 +5,11 @@ import HighRiskOrders from "@/components/dashboard/HighRiskOrders"
 import RecentActivity from "@/components/dashboard/RecentActivity"
 import UGCCaptured from "@/components/dashboard/UGCCaptured"
 import { ChannelPerformance, TopCaptions } from "@/components/dashboard/ChannelPerformance"
+import { getOverviewGrowthSection } from "@/services/overview.service"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth/options"
+import { redirect } from "next/navigation"
+import { getOrgFromUserId } from "@/lib/billing/enforce"
 
 const SPARKLINES = {
   revenue: [320, 450, 380, 520, 490, 610, 580, 720, 680, 810, 950, 1050, 990, 1120, 1248],
@@ -16,7 +19,14 @@ const SPARKLINES = {
   rts: [8, 12, 10, 15, 13, 18, 16, 14, 12, 17, 15, 18, 16, 15, 16],
 }
 
-export default function OverviewPage() {
+export default async function OverviewPage() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) redirect("/login")
+  const orgId = await getOrgFromUserId(session.user.id)
+  if (!orgId) redirect("/onboarding")
+
+  const growthSection = await getOverviewGrowthSection(orgId)
+
   return (
     <div className="flex flex-col gap-5 p-6 sm:p-8 overflow-y-auto h-full" style={{ backgroundColor: "#0B0D12" }}>
       {/* ── Section 1: Header ── */}
@@ -34,7 +44,6 @@ export default function OverviewPage() {
         style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
       >
         <div className="flex flex-col xl:flex-row gap-4">
-          {/* Large card — 35% on xl, full width below */}
           <div className="w-full xl:w-[35%] shrink-0">
             <MetricCard
               label="Revenue Protected"
@@ -46,7 +55,6 @@ export default function OverviewPage() {
               sparklineData={SPARKLINES.revenue}
             />
           </div>
-          {/* Small cards — 4 columns */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
             <MetricCard
               label="Orders Received"
@@ -86,7 +94,7 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* ── Section 3: Middle Row (HighRiskOrders + RecentActivity) ── */}
+      {/* ── Section 3: Middle Row ── */}
       <div
         className="animate-fade-in-up"
         style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
@@ -107,9 +115,9 @@ export default function OverviewPage() {
         style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <UGCCaptured />
-          <TopCaptions />
-          <ChannelPerformance />
+          <UGCCaptured items={growthSection.ugcItems} href="/capture" />
+          <TopCaptions captions={growthSection.topCaptions} href="/capture" />
+          <ChannelPerformance channels={growthSection.channelPerformance} href="/growth" />
         </div>
       </div>
     </div>
