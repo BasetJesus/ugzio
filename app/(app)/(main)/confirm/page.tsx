@@ -7,10 +7,8 @@ import { getConfirmationQueue, getPendingOutcomeOrders } from "@/services/demo-o
 import { getPsychologyPreview } from "@/services/whatsapp-sequence.service";
 import type { ConfirmationQueueItem, PendingOutcomeOrder } from "@/services/confirmation.service";
 import type { PsychologyPreview } from "@/types/whatsapp";
-import Header from "@/components/layout/Header";
 import MetricCard from "@/components/dashboard/MetricCard";
 import ConfirmationPanel from "@/components/confirm/ConfirmationPanel";
-import { getServerLang, st } from "@/lib/core/server-lang";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +18,6 @@ export default async function ConfirmPage() {
 
   const orgId = await getOrgFromUserId(session.user.id);
   if (!orgId) redirect("/onboarding");
-
-  const lang = await getServerLang();
 
   let queue: { items: ConfirmationQueueItem[]; total: number; pendingCount: number; contactedCount: number } = { items: [], total: 0, pendingCount: 0, contactedCount: 0 };
   let pendingOutcomes: PendingOutcomeOrder[] = [];
@@ -55,11 +51,6 @@ export default async function ConfirmPage() {
     });
   }
 
-  const needsAttention = queue.pendingCount > 0;
-  const subtitle = needsAttention
-    ? `${queue.pendingCount} pending — ${highRiskItems.length} orders at risk, ${revenueAtRisk.toFixed(0)} TND exposed`
-    : "All orders confirmed. Your revenue is protected.";
-
   const sparklines = {
     risk: [18, 25, 22, 30, 28, 35, 32, 28, 25, 30, 27, 23, 25, 22, 23],
     revenue: [320, 450, 380, 520, 490, 610, 580, 720, 680, 810, 950, 1050, 990, 1120, 1248],
@@ -69,20 +60,8 @@ export default async function ConfirmPage() {
 
   return (
     <div className="flex flex-col gap-5 p-6 sm:p-8 overflow-y-auto h-full" style={{ backgroundColor: "#0B0D12" }}>
-      {/* ── Section 1: Header ── */}
+      {/* ── KPI Row ── */}
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
-        <Header
-          title="Confirm"
-          emoji="✅"
-          subtitle={subtitle}
-        />
-      </div>
-
-      {/* ── Section 2: KPI Row ── */}
-      <div
-        className="animate-fade-in-up"
-        style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
-      >
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricCard
             label="Revenue at Risk"
@@ -123,10 +102,10 @@ export default async function ConfirmPage() {
         </div>
       </div>
 
-      {/* ── Section 3: Confirmation Panel ── */}
+      {/* ── Confirmation Panel ── */}
       <div
         className="animate-fade-in-up"
-        style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
+        style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
       >
         <ConfirmationPanel
           items={queue.items}

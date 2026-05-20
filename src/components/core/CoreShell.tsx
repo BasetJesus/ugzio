@@ -33,13 +33,13 @@ function getHeaderForPath(pathname: string) {
   if (p.startsWith("/settings/ugc")) return { title: "UGC Templates", emoji: "📝", subtitle: "Configure UGC request templates" }
   if (p.startsWith("/settings")) return { title: "Settings", emoji: "⚙️", subtitle: "Configure your account and preferences" }
   if (p === "/overview") return { title: "Overview", emoji: "👋", subtitle: "Live revenue protection status" }
-  if (p.startsWith("/confirm")) return { title: "Confirm", emoji: "✅", subtitle: "Orders needing your decision" }
+  if (p.startsWith("/confirm")) return { title: "Confirm", emoji: "✅", subtitle: "Review and confirm orders before shipping — every decision protects your revenue." }
   if (p.startsWith("/orders")) return { title: "Orders", emoji: "📦", subtitle: "All orders and their status" }
   if (p.startsWith("/inbox")) return { title: "Inbox", emoji: "📥", subtitle: "Customer content and messages" }
   if (p.startsWith("/capture")) return { title: "UGC & Captions", emoji: "📸", subtitle: "Capture and organize customer content" }
   if (p.startsWith("/flow")) return { title: "ZioFlow", emoji: "✨", subtitle: "Auto-repost flywheel" }
   if (p.startsWith("/growth")) return { title: "Growth", emoji: "📈", subtitle: "UGC performance metrics" }
-  if (p.startsWith("/shield")) return { title: "Shield", emoji: "🛡️", subtitle: "Risk and trust dashboard" }
+  if (p.startsWith("/shield")) return { title: "ZioShield", emoji: "🛡️", subtitle: "Stop fake COD orders before they waste your logistics capital." }
   if (p.startsWith("/blacklist")) return { title: "Blacklist", emoji: "🚫", subtitle: "Shared blacklist management" }
   if (p.startsWith("/stats")) return { title: "Statistics", emoji: "📊", subtitle: "Advanced analytics" }
   if (p.startsWith("/onboarding")) return { title: "Welcome", emoji: "🚀", subtitle: "Set up your shop" }

@@ -2,7 +2,6 @@
 
 import { Package, ShieldAlert, Ban, CheckCircle, MessageSquare, AlertTriangle } from "lucide-react";
 import { useState } from "react";
-import Header from "@/components/layout/Header";
 import MetricCard from "@/components/dashboard/MetricCard";
 import type { RiskAlertItem, RecentRiskOrder, RiskAggregateStats } from "@/types/risk";
 
@@ -76,20 +75,8 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
 
   return (
     <div className="flex flex-col gap-5 p-6 sm:p-8 overflow-y-auto h-full" style={{ backgroundColor: "#0B0D12" }}>
-      {/* ── Section 1: Header ── */}
+      {/* ── KPI Row ── */}
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
-        <Header
-          title="ZioShield"
-          emoji="🛡️"
-          subtitle="Stop fake COD orders before they waste your logistics capital."
-        />
-      </div>
-
-      {/* ── Section 2: KPI Row ── */}
-      <div
-        className="animate-fade-in-up"
-        style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
-      >
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricCard
             label="Total Orders"
@@ -129,10 +116,10 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
         </div>
       </div>
 
-      {/* ── Section 3: Flagged Orders ── */}
+      {/* ── Section 2: Flagged Orders ── */}
       <div
         className="animate-fade-in-up"
-        style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
+        style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
       >
         {displayOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border" style={{ backgroundColor: "#161A23", borderColor: "rgba(255,255,255,0.06)" }}>
