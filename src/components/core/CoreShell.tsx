@@ -52,7 +52,7 @@ export default function CoreShell({ children, orgName, orgId, pendingCount = 0, 
   }, [currentState])
 
   return (
-    <div className="mx-auto flex min-h-dvh bg-[var(--bg-base)]">
+    <div className="mx-auto flex h-dvh bg-[var(--bg-base)]">
       <SidebarNav
         orgName={orgName}
 pendingCount={pendingCount}
