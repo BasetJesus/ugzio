@@ -48,7 +48,7 @@ export default function GrowthViewClient({ metrics, opportunities, flowStats, lo
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <div className="grid grid-cols-5 gap-2">
         {kpis.map((k) => (
           <div key={k.label} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">

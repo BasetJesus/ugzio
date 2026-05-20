@@ -82,7 +82,7 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
             label="Total Orders"
             value={aggregate.totalOrders}
             change={0}
-            icon={<Package size={16} color="#22C55E" />}
+            icon={<Package size={16} color="var(--success-green)" />}
             variant="small"
             sparklineData={SPARKLINES.orders}
           />
@@ -90,7 +90,7 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
             label="High Risk"
             value={aggregate.highRiskCount}
             change={0}
-            icon={<ShieldAlert size={16} color="#EF4444" />}
+            icon={<ShieldAlert size={16} color="var(--status-danger)" />}
             variant="small"
             invertColor
             sparklineData={SPARKLINES.risk}
@@ -99,18 +99,18 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
             label="Revenue at Risk"
             value={`${aggregate.revenueAtRisk.toLocaleString()} TND`}
             change={0}
-            icon={<Ban size={16} color="#FFD700" />}
+            icon={<Ban size={16} color="var(--accent)" />}
             variant="small"
-            color="#FFD700"
+            color="var(--accent)"
             sparklineData={SPARKLINES.revenue}
           />
           <MetricCard
             label="Today Orders"
             value={aggregate.todayOrders}
             change={0}
-            icon={<CheckCircle size={16} color="#FFD700" />}
+            icon={<CheckCircle size={16} color="var(--accent)" />}
             variant="small"
-            color="#FFD700"
+            color="var(--accent)"
             sparklineData={SPARKLINES.today}
           />
         </div>
@@ -122,44 +122,42 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
         style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
       >
         {displayOrders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border" style={{ backgroundColor: "#161A23", borderColor: "rgba(255,255,255,0.06)" }}>
-            <CheckCircle className="h-10 w-10 text-[#22C55E] mb-3" />
-            <p className="text-sm" style={{ color: "#6B7280" }}>No high-risk orders detected. Your revenue is protected.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
+            <CheckCircle className="h-10 w-10 text-[var(--success-green)] mb-3" />
+            <p className="text-sm text-[var(--text-muted)]">No high-risk orders detected. Your revenue is protected.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#6B7280" }}>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
               Flagged Orders ({displayOrders.length})
             </h3>
             {displayOrders.map((order) => (
               <div
                 key={order.id}
-                className="rounded-xl border p-4 space-y-3"
-                style={{ backgroundColor: "#161A23", borderColor: "rgba(255,255,255,0.06)" }}
+                className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold" style={{ color: "#6B7280" }}>#{order.orderId.slice(-6)}</span>
-                      {order.riskLevel === "high" && <ShieldAlert className="h-3.5 w-3.5 text-[#EF4444]" />}
-                    </div>
-                    <h3 className="text-sm font-bold text-white truncate">{order.buyerName}</h3>
-                    <p className="text-[11px]" style={{ color: "#6B7280" }}>{order.amount.toLocaleString()} TND · Trust: {order.trustScore}%</p>
+                    <span className="text-xs font-mono font-bold text-[var(--text-tertiary)]">#{order.orderId.slice(-6)}</span>
+                    {order.riskLevel === "high" && <ShieldAlert className="h-3.5 w-3.5 text-[var(--status-danger)]" />}
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">{order.buyerName}</h3>
+                    <p className="text-[11px] text-[var(--text-tertiary)]">{order.amount.toLocaleString()} TND · Trust: {order.trustScore}%</p>
+                  </div>
                   </div>
                   <div className="text-right shrink-0 ml-3">
-                    <span className="text-[9px] font-bold block tracking-wider uppercase" style={{ color: "#6B7280" }}>RISK</span>
-                    <span className={`text-lg font-bold ${order.riskLevel === "high" ? "text-[#EF4444]" : "text-[#22C55E]"}`}>
+                    <span className="text-[9px] font-bold block tracking-wider uppercase text-[var(--text-tertiary)]">RISK</span>
+                    <span className={`text-lg font-bold ${order.riskLevel === "high" ? "text-[var(--status-danger)]" : "text-[var(--success-green)]"}`}>
                       {100 - order.trustScore}%
                     </span>
                   </div>
                 </div>
 
                 <div
-                  className="rounded-lg border p-2.5 flex gap-2 items-start"
-                  style={{ backgroundColor: "rgba(239,68,68,0.08)", borderColor: "rgba(239,68,68,0.2)" }}
+                  className="rounded-lg border p-2.5 flex gap-2 items-start bg-[var(--kpi-red-bg)] border-[var(--kpi-red-border)]"
                 >
-                  <AlertTriangle className="h-4 w-4 text-[#EF4444] shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-[#EF4444] leading-normal font-medium">
+                  <AlertTriangle className="h-4 w-4 text-[var(--status-danger)] shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-[var(--status-danger)] leading-normal font-medium">
                     {getAlertMessage(order.signal, order.buyerName)}
                   </p>
                 </div>
@@ -167,16 +165,16 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
                 <div className="flex gap-2 pt-1">
                   <button
                     onClick={() => handleWhatsApp(order.buyerPhone)}
-                    className="flex-1 h-10 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform text-white"
-                    style={{ backgroundColor: "#2A303C", border: "1px solid rgba(255,255,255,0.06)" }}
+                    className="flex-1 h-10 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform text-[var(--text-primary)] border border-[var(--border)]"
+                    style={{ backgroundColor: "var(--bg-elevated)" }}
                   >
-                    <MessageSquare className="h-3.5 w-3.5 text-[#FFD700]" />
+                    <MessageSquare className="h-3.5 w-3.5 text-[var(--accent)]" />
                     WHATSAPP CONFIRM
                   </button>
                   <button
                     onClick={() => handleBlacklist(order.buyerPhone)}
-                    className="h-10 px-3 rounded-lg text-[11px] font-bold active:scale-[0.97] transition-transform text-[#EF4444]"
-                    style={{ backgroundColor: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.3)" }}
+                    className="h-10 px-3 rounded-lg text-[11px] font-bold active:scale-[0.97] transition-transform text-[var(--status-danger)] border"
+                    style={{ backgroundColor: "var(--kpi-red-bg)", borderColor: "var(--kpi-red-border)" }}
                   >
                     <Ban className="h-3.5 w-3.5 inline mr-1" />
                     BLACKLIST
@@ -189,8 +187,8 @@ export default function ZioShieldClient({ alerts, aggregate, recentOrders }: Pro
       </div>
 
       {snackbar && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 rounded-xl px-4 py-2.5 text-xs font-bold text-white shadow-lg z-50 animate-fade-in-up"
-          style={{ backgroundColor: "#161A23", border: "1px solid rgba(255,255,255,0.06)" }}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 rounded-xl px-4 py-2.5 text-xs font-bold text-[var(--text-primary)] shadow-lg z-50 animate-fade-in-up border border-[var(--border)]"
+          style={{ backgroundColor: "var(--bg-card)" }}
         >
           {snackbar}
         </div>

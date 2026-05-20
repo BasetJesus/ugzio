@@ -160,7 +160,7 @@ export default function SecurityClient({ orgId }: Props) {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <div className="space-y-4">
         {sections.map((section) => (
           <div key={section.id} className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-5">

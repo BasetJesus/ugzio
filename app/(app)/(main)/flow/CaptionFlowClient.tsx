@@ -107,16 +107,7 @@ export default function CaptionFlowClient({ initialProfile }: Props) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-          ZioFlow <span className="text-[var(--accent)]">Caption Engine</span>
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-          Turn your products into high-conversion social assets instantly.
-        </p>
-      </div>
-
+    <div className="flex flex-col gap-5">
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 space-y-4">
         <div>
           <label className="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2 font-space">

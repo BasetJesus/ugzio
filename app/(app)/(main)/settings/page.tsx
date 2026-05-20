@@ -47,7 +47,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div data-state="live" className="space-y-6">
+    <div className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CATEGORIES.map((cat) => (
           <Link

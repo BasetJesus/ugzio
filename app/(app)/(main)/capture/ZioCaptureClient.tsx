@@ -120,18 +120,7 @@ export default function ZioCaptureClient({ items, stats }: Props) {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-space text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-            Zio<span className="text-[var(--accent)]">Capture</span>
-          </h1>
-          <p className="text-xs text-[var(--text-secondary)] font-inter mt-1">
-            Collect, review, and approve customer content for your brand.
-          </p>
-        </div>
-      </div>
-
+    <div className="flex flex-col gap-5">
       <div className="grid grid-cols-4 gap-2">
         {kpis.map((k) => (
           <div key={k.label} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">

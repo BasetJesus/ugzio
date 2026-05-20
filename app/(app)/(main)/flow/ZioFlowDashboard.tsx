@@ -295,7 +295,7 @@ export default function ZioFlowDashboard(props: Props) {
   const [tab, setTab] = useState<Tab>("publish");
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <div className="flex gap-2">
         <button
           onClick={() => setTab("publish")}

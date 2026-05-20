@@ -38,7 +38,7 @@ export default async function OrdersImportPage() {
   function l(key: string): string { return L[key]?.[lang] ?? key }
 
   return (
-    <div data-state="history" className="space-y-4">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <Link
           href="/orders"
@@ -47,11 +47,6 @@ export default async function OrdersImportPage() {
           {l("back")}
           </Link>
         </div>
-
-      <div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">{l("title")}</h1>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{l("desc")}</p>
-      </div>
 
       <OrderImportPanel />
 

@@ -28,7 +28,7 @@ export default async function OrdersPage() {
   }
 
   return (
-    <div data-state="history" className="space-y-section">
+    <div className="flex flex-col gap-5">
       <div className="flex justify-end">
         <Link
           href="/orders/import"

@@ -17,7 +17,7 @@ export default async function BlacklistPage() {
   const lang = await getServerLang();
 
   return (
-    <div data-state="live" className="space-y-section">
+    <div className="flex flex-col gap-5">
       <BlacklistClient />
     </div>
   );

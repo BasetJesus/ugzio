@@ -32,7 +32,7 @@ export default async function DeliverySettingsPage() {
   }
 
   return (
-    <div data-state="live" className="space-y-4">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <Link
           href="/overview"

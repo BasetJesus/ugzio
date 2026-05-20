@@ -40,7 +40,7 @@ export default function StatsClient({ rpStats, todayProtected, allTimeOutcomes, 
   const recentEvents = todayProtected.slice(0, 10);
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <div className="grid grid-cols-2 gap-3">
         {kpis.map((s, i) => {
           const Icon = s.icon;

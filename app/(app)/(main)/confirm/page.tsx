@@ -67,36 +67,36 @@ export default async function ConfirmPage() {
             label="Revenue at Risk"
             value={`${revenueAtRisk.toFixed(0)} TND`}
             change={0}
-            icon={<Ban size={16} color="#EF4444" />}
+            icon={<Ban size={16} color="var(--status-danger)" />}
             variant="small"
-            color="#EF4444"
+            color="var(--status-danger)"
             sparklineData={sparklines.revenue}
           />
           <MetricCard
             label="Orders at Risk"
             value={highRiskItems.length}
             change={0}
-            icon={<ShieldAlert size={16} color="#FF9500" />}
+            icon={<ShieldAlert size={16} color="var(--warning-amber)" />}
             variant="small"
-            color="#FF9500"
+            color="var(--warning-amber)"
             sparklineData={sparklines.risk}
           />
           <MetricCard
             label="Pending"
             value={queue.pendingCount}
             change={0}
-            icon={<Package size={16} color="#6B7280" />}
+            icon={<Package size={16} color="var(--text-tertiary)" />}
             variant="small"
-            color="#6B7280"
+            color="var(--text-tertiary)"
             sparklineData={sparklines.pending}
           />
           <MetricCard
             label="Losses Prevented"
             value={`${potentialLossPrevented.toFixed(0)} TND`}
             change={0}
-            icon={<CheckCircle size={16} color="#22C55E" />}
+            icon={<CheckCircle size={16} color="var(--success-green)" />}
             variant="small"
-            color="#22C55E"
+            color="var(--success-green)"
             sparklineData={sparklines.prevented}
           />
         </div>
