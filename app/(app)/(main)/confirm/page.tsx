@@ -72,10 +72,10 @@ export default async function ConfirmPage() {
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-        <MiniKpiCard label={st(lang, "ov.revenue-at-risk")} value={revenueLabel} tier="high" emotion="tense" />
-        <MiniKpiCard label={st(lang, "cf.orders-at-risk")} value={highRiskItems.length} tier="medium" />
-        <MiniKpiCard label={st(lang, "cf.pending")} value={queue.pendingCount} tier="neutral" />
-        <MiniKpiCard label={st(lang, "cf.losses-prevented")} value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" />
+        <MiniKpiCard label={st(lang, "ov.revenue-at-risk")} value={revenueLabel} tier="high" emotion="tense" href="/confirm" />
+        <MiniKpiCard label={st(lang, "cf.orders-at-risk")} value={highRiskItems.length} tier="medium" href="/confirm" />
+        <MiniKpiCard label={st(lang, "cf.pending")} value={queue.pendingCount} tier="neutral" href="/confirm" />
+        <MiniKpiCard label={st(lang, "cf.losses-prevented")} value={`${potentialLossPrevented.toFixed(0)} TND`} tier="low" emotion="protective" href="/shield" />
       </div>
 
       <ConfirmationPanel

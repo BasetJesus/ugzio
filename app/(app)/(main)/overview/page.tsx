@@ -106,6 +106,7 @@ export default async function OverviewPage() {
           value={`${revenueAtRisk.toFixed(0)} TND`}
           tier="high"
           emotion={tense ? "tense" : "calm"}
+          href="/confirm"
         >
           {tense && <p className="text-[10px] text-red-400/60 mt-1">{st(lang, "ov.needs-action")}</p>}
         </KpiCard>
@@ -114,6 +115,7 @@ export default async function OverviewPage() {
           value={needsAction}
           tier={needsAction > 0 ? "medium" : "low"}
           emotion={needsAction > 0 ? "tense" : "calm"}
+          href="/confirm"
         >
           {needsAction > 0 && <p className="text-[10px] text-amber-400/60 mt-1">{st(lang, "ov.decisions-pending")}</p>}
         </KpiCard>
@@ -122,6 +124,7 @@ export default async function OverviewPage() {
           value={revenueAtRisk > 0 ? st(lang, "ov.active") : st(lang, "ov.stable")}
           tier={revenueAtRisk > 0 ? "low" : "neutral"}
           emotion={revenueAtRisk > 0 ? "protective" : "calm"}
+          href="/shield"
         >
           {revenueAtRisk === 0 && <p className="text-[10px] text-emerald-400/60 mt-1">{st(lang, "ov.all-protected")}</p>}
         </KpiCard>
@@ -139,10 +142,10 @@ export default async function OverviewPage() {
         <div>
           <p className="text-caption text-[var(--text-tertiary)] mb-3">{st(lang, "ov.results-today")}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-card">
-            <MiniKpiCard label={st(lang, "ov.protected-revenue")} value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" />
-            <MiniKpiCard label={st(lang, "ov.rts-prevented")} value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" />
-            <MiniKpiCard label={st(lang, "ov.confirmation-rate")} value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} />
-            <MiniKpiCard label={st(lang, "ov.actions-taken")} value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" />
+            <MiniKpiCard label={st(lang, "ov.protected-revenue")} value={`${protectedToday.toFixed(0)} TND`} tier="low" emotion="protective" href="/shield" />
+            <MiniKpiCard label={st(lang, "ov.rts-prevented")} value={`${preventedToday.toFixed(0)} TND`} tier="low" emotion="achievement" href="/shield" />
+            <MiniKpiCard label={st(lang, "ov.confirmation-rate")} value={`${confirmationRate}%`} tier={confirmationRate >= 70 ? "low" : confirmationRate >= 50 ? "medium" : "high"} emotion={confirmationRate >= 70 ? "protective" : "tense"} href="/confirm" />
+            <MiniKpiCard label={st(lang, "ov.actions-taken")} value={today?.totalActions ?? 0} tier="neutral" emotion="achievement" href="/stats" />
           </div>
         </div>
       )}

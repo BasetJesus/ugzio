@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import Link from "next/link"
 
 type RiskTier = "high" | "medium" | "low" | "neutral"
 
@@ -11,6 +12,7 @@ interface Props {
   emotion?: EmotionTier
   children?: ReactNode
   onClick?: () => void
+  href?: string
   shareable?: boolean
 }
 
@@ -36,10 +38,11 @@ const emotionLabels: Record<EmotionTier, string> = {
   neutral: "",
 }
 
-export default function KpiCard({ label, value, tier = "neutral", emotion, children, onClick, shareable = true }: Props) {
-  return (
+export default function KpiCard({ label, value, tier = "neutral", emotion, children, onClick, href, shareable = true }: Props) {
+  const interactive = onClick || href
+  const content = (
     <div
-      className={`relative rounded-xl border p-4 sm:p-5 overflow-hidden ${tierStyles[tier]} ${onClick ? "cursor-pointer hover:opacity-80" : ""}`}
+      className={`relative rounded-xl border p-4 sm:p-5 overflow-hidden ${tierStyles[tier]} ${interactive ? "cursor-pointer hover:opacity-80 transition-opacity" : ""}`}
       onClick={onClick}
     >
       {shareable && (
@@ -57,11 +60,17 @@ export default function KpiCard({ label, value, tier = "neutral", emotion, child
       {children}
     </div>
   )
+  if (href) return <Link href={href} className="block">{content}</Link>
+  return content
 }
 
-export function MiniKpiCard({ label, value, tier = "neutral", shareable = true }: Props) {
-  return (
-    <div className={`relative rounded-xl border p-3 overflow-hidden ${tierStyles[tier]}`}>
+export function MiniKpiCard({ label, value, tier = "neutral", href, onClick, shareable = true }: Props) {
+  const interactive = onClick || href
+  const content = (
+    <div
+      className={`relative rounded-xl border p-3 overflow-hidden ${tierStyles[tier]} ${interactive ? "cursor-pointer hover:opacity-80 transition-opacity" : ""}`}
+      onClick={onClick}
+    >
       {shareable && (
         <span className="absolute top-2 right-2 text-[7px] text-[var(--text-tertiary)]/50 select-none pointer-events-none">
           🇹🇳
@@ -71,6 +80,8 @@ export function MiniKpiCard({ label, value, tier = "neutral", shareable = true }
       <p className={`text-base font-bold mt-0.5 ${valueColors[tier]}`}>{value}</p>
     </div>
   )
+  if (href) return <Link href={href} className="block">{content}</Link>
+  return content
 }
 
 export function EmotionBadge({ emotion, label }: { emotion: EmotionTier; label?: string }) {
