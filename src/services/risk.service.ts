@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { computeScore, computeAndAlert } from "@/lib/zioshield/scoring";
 import { addToBlacklist, removeFromBlacklist } from "@/lib/zioshield/blacklist";
+import { reportToZioGuard, clearZioGuardEntry } from "@/services/zioguard.service";
 import { determineRiskLevel } from "@/lib/risk/config";
 import { emit } from "@/lib/events/event-bus";
 import { EventType } from "@/lib/events/taxonomy";
@@ -346,6 +347,7 @@ export async function getBlacklistedPhones(orgId: string): Promise<BlacklistEntr
 export async function blacklistPhone(orgId: string, phone: string) {
   try {
     await addToBlacklist(orgId, phone);
+    await reportToZioGuard(orgId, phone);
     await ensureActivationEvent(orgId, "FIRST_HIGH_RISK_BLOCKED");
 
     const flaggedOrder = await prisma.order.findFirst({
@@ -371,6 +373,7 @@ export async function blacklistPhone(orgId: string, phone: string) {
 export async function unblacklistPhone(orgId: string, phone: string) {
   try {
     await removeFromBlacklist(orgId, phone);
+    await clearZioGuardEntry(phone);
   } catch (e) {
     console.error("[risk.service] unblacklistPhone failed:", e);
   }

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { alertSeller, highRiskAlert } from "@/lib/alerts/seller";
+import { checkZioGuard } from "@/services/zioguard.service";
 
 async function ensureActivationEvent(orgId: string, eventType: string) {
   const existing = await prisma.activationEvent.findFirst({
@@ -57,6 +58,12 @@ export async function computeScore(
   if (prevFailed.length > 0) {
     score += prevFailed.length * 10;
     signals.push("prior-failures");
+  }
+
+  const guard = await checkZioGuard(phone);
+  if (guard.flagged) {
+    score += Math.min(guard.flagCount * 15, 40);
+    signals.push("zio-guard-flagged");
   }
 
   score = Math.max(0, Math.min(100, score));

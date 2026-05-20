@@ -532,3 +532,13 @@ model SocialConnection {
 
   @@unique([organizationId, platform])
 }
+
+// ─── ZIOGUARD (Shared Blacklist) ─────────────────────────────────────────────
+
+model ZioGuardEntry {
+  id            String   @id @default(cuid())
+  phoneHash     String   @unique // SHA-256 of phone number for privacy
+  flagCount     Int      @default(1) // how many unique sellers flagged this phone
+  firstSeenAt   DateTime @default(now())
+  lastFlaggedAt DateTime @updatedAt
+}
