@@ -59,7 +59,7 @@ export default async function ConfirmPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 p-6 sm:p-8 overflow-y-auto h-full" style={{ backgroundColor: "#0B0D12" }}>
+    <div className="flex flex-col gap-5 p-6 sm:p-8" style={{ backgroundColor: "#0B0D12" }}>
       {/* ── KPI Row ── */}
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

@@ -28,7 +28,7 @@ export default async function OverviewPage() {
   const growthSection = await getOverviewGrowthSection(orgId)
 
   return (
-    <div className="flex flex-col gap-5 p-6 sm:p-8 overflow-y-auto h-full" style={{ backgroundColor: "#0B0D12" }}>
+    <div className="flex flex-col gap-5 p-6 sm:p-8" style={{ backgroundColor: "#0B0D12" }}>
       {/* ── Section 1: Header ── */}
       <div className="animate-fade-in-up" style={{ animationFillMode: "backwards" }}>
         <Header
